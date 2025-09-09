@@ -1,4 +1,4 @@
-#include "Point.h"
+#include "../lib_point/point.h"
 #include <iostream>
 
 Point::Point() {
