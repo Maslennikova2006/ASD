@@ -1,3 +1,5 @@
+// Copyright 2025 Mary Maslennikova
+
 #include "../lib_point/point.h"
 #include <iostream>
 

@@ -1,3 +1,5 @@
+// Copyright 2025 Mary Maslennikova
+
 #include "../lib_circle/circle.h"
 #include <iostream>
 

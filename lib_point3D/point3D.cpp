@@ -1,3 +1,5 @@
+// Copyright 2025 Mary Maslennikova
+
 #include "../lib_point3D/point3D.h"
 #include <iostream>
 
