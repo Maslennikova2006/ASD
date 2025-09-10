@@ -1,4 +1,4 @@
-// Copyright 2024 Mary Maslennikova
+// Copyright 2025 Mary Maslennikova
 
 #include <gtest/gtest.h>
 #include "../lib_point/point.h"
