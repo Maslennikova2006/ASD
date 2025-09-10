@@ -3,12 +3,15 @@
 #include <gtest/gtest.h>
 #include "../lib_circle/circle.h"
 
+TEST(TestCircleLib, can_create_constructor) {
+    ASSERT_NO_THROW(Circle(2, 3, 8));
+}
 TEST(TestCircleLib, can_create_copy_constructor) {
     Circle circle( 2, 3, 4);
     ASSERT_NO_THROW(Circle(circle));
 }
-TEST(TestCircleLib, can_create_constructor) {
-    ASSERT_NO_THROW(Circle(2, 3, 8));
+TEST(TestCircleLib, throw_when_the_radius_is_less_than_zero) {
+    ASSERT_ANY_THROW(Circle(2, 3, -4));
 }
 TEST(TestCircleLib, can_create_initiazation_constructor) {
     Point point(2, 3);

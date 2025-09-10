@@ -2,6 +2,7 @@
 
 #ifndef LIB_POINT3D_POINT3D_H_
 #define LIB_POINT3D_POINT3D_H_
+
 #include "../lib_point/point.h"
 
 class Point3D : public Point {
