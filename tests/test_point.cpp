@@ -31,11 +31,13 @@ TEST(TestPointLib, check_the_equality) {
     Point point1(2, 3);
     Point point2(2, 3);
     bool actual_result = (point1 == point2);
-    EXPECT_EQ(true, actual_result);
+    bool expected_result = true;
+    EXPECT_EQ(expected_result, actual_result);
 }
 TEST(TestPointLib, check_the_inequality) {
     Point point1(2, 3);
     Point point2(2, 5);
     bool actual_result = (point1 == point2);
-    EXPECT_EQ(false, actual_result);
+    bool expected_result = false;
+    EXPECT_EQ(expected_result, actual_result);
 }

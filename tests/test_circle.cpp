@@ -5,6 +5,9 @@ TEST(TestCircleLib, can_create_copy_constructor) {
     Circle circle( 2, 3, 4);
     ASSERT_NO_THROW(Circle(circle));
 }
+TEST(TestCircleLib, can_create_constructor) {
+    ASSERT_NO_THROW(Circle(2, 3, 8));
+}
 TEST(TestCircleLib, can_create_initiazation_constructor) {
     Point point(2, 3);
     ASSERT_NO_THROW(Circle(point, 5));
