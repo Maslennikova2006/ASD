@@ -1,0 +1,8 @@
+
+
+
+class MathVector {
+
+public:
+    MathVector();
+};
