@@ -1,1 +1,2 @@
 create_executable_project(Application)
+add_depend(Application Matrix lib_matrix)

@@ -7,7 +7,7 @@ TEST(TestTVectorLib, check_the_default_constructor) {
     TVector<float> vec;
     EXPECT_EQ(static_cast <size_t>(0), vec.size());
     EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
-    EXPECT_EQ(true, vec.is_empty());
+    EXPECT_TRUE(vec.is_empty());
 }
 TEST(TestTVectorLib, check_the_initialization_constructor) {
     int array[5] = { 1, 2, 3, 4, 5 };
@@ -22,8 +22,8 @@ TEST(TestTVectorLib, check_the_initialization_constructor) {
     }
     EXPECT_EQ(static_cast <size_t>(5), vec.size());
     EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
-    EXPECT_EQ(true, check_address_data);
-    EXPECT_EQ(true, check_correct_values_data);
+    EXPECT_TRUE(check_address_data);
+    EXPECT_TRUE(check_address_data);
 }
 TEST(TestTVectorLib, check_the_initialization_list_constructor) {
     TVector<int> vec(4, { 1, 2, 3, 4 });
@@ -378,8 +378,6 @@ TEST(TestTVectorLib, check_at) {
 }
 TEST(TestTVectorLib, check_the_exception_in_at) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-    bool expected_result = false;
-    bool actual_result = true;
     ASSERT_ANY_THROW(vec.at(10));
 }
 TEST(TestTVectorLib, check_assign_value) {

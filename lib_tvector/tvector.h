@@ -24,6 +24,7 @@ template <class T> void shuffle(TVector<T>& data);
 
 template <class T>
 class TVector {
+protected:
     T* _data;
     size_t _size;
     size_t _capacity;
@@ -93,7 +94,7 @@ public:
     friend TVector<T*> find_elem_by_pointer<T>(const TVector<T>& data, T value);
     friend void shuffle<T>(TVector<T>& data);
 
-private:
+protected:
     inline bool is_full() const noexcept;
     void set_memory(size_t size) noexcept;
     void reallocation_memory(size_t count) noexcept;
