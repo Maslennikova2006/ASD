@@ -340,14 +340,24 @@ int main() {
             MathVector<int> vector_c;
             actions_with_ordinary_matrices<int>(matrix_a, matrix_b, matrix_c, vector_c, answer_operation);
             std::cout << "Result: \n";
-            std::cout << matrix_c;
+            if (answer_operation != 5) {
+                std::cout << matrix_c;
+            }
+            else {
+                std::cout << vector_c;
+            }
         }
         else {
             TriangleMatrix<int> matrix_a, matrix_b, matrix_c;
             MathVector<int> vector_c;
             actions_with_triangle_matrices<int>(matrix_a, matrix_b, matrix_c, vector_c, answer_operation);
             std::cout << "Result: \n";
-            std::cout << matrix_c;
+            if (answer_operation != 5) {
+                std::cout << matrix_c;
+            }
+            else {
+                std::cout << vector_c;
+            }
         }
         char answer;
         std::cout << "Do you want to continue?\n";
