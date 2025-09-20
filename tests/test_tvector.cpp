@@ -38,8 +38,8 @@ TEST(TestTVectorLib, check_the_initialization_list_constructor) {
     }
     EXPECT_EQ(static_cast <size_t>(4), vec.size());
     EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
-    EXPECT_EQ(true, check_address_data);
-    EXPECT_EQ(true, check_correct_values_data);
+    EXPECT_TRUE(check_address_data);
+    EXPECT_TRUE(check_correct_values_data);
 }
 TEST(TestTVectorLib, throw_when_try_copy_vector) {
     TVector<int>* obj = nullptr;
@@ -59,44 +59,34 @@ TEST(TestTVectorLib, check_the_copy_constructor) {
     }
     EXPECT_EQ(static_cast <size_t>(5), vec2.size());
     EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec2.capacity());
-    EXPECT_EQ(true, check_address_data);
-    EXPECT_EQ(true, check_correct_values_data);
+    EXPECT_TRUE(check_address_data);
+    EXPECT_TRUE(check_correct_values_data);
 }
 TEST(TestTVectorLib, check_for_equivalence) {
     int array[4] = { 1, 2, 3, 4 };
     TVector<int> vec1(4, array), vec2(4, { 1, 2, 3, 4 });
-    bool expected_result = true;
-    bool actual_result = (vec1 == vec2);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec1 == vec2);
 }
 TEST(TestTVectorLib, check_for_equivalence_2) {
     int array[4] = { 1, 2, 3, 4 };
     TVector<int> vec1(4, array), vec2(4, { 1, 2, 3, 4 });
-    bool expected_result = false;
-    bool actual_result = (vec1 != vec2);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_FALSE(vec1 != vec2);
 }
 TEST(TestTVectorLib, check_for_not_equivalence) {
     int array[4] = { 1, 2, 3, 4 };
     TVector<int> vec1(4, array), vec2(5, { 1, 2, 3, 4, 5 });
-    bool expected_result = true;
-    bool actual_result = (vec1 != vec2);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec1 != vec2);
 }
 TEST(TestTVectorLib, check_for_not_equivalence_2) {
     int array[5] = { 1, 2, 3, 4, 5 };
     TVector<int> vec1(5, array), vec2(4, { 1, 2, 3, 4 });
-    bool expected_result = false;
-    bool actual_result = (vec1 == vec2);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_FALSE(vec1 == vec2);
 }
 TEST(TestTVectorLib, check_reserve_with_decreasing_capacity) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.reserve(5);
     TVector<int> res({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_reserve_with_increasing_capacity) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -107,9 +97,7 @@ TEST(TestTVectorLib, check_resize_with_decreasing_size) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.resize(5);
     TVector<int> res({ 1, 2, 3, 4, 5 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_resize_with_increasing_size_and_capacity) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -121,60 +109,47 @@ TEST(TestTVectorLib, check_resize_with_filling_in_the_value) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.resize(16, 0);
     TVector<int> res({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(16), vec.size());
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_shrink_to_fit) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.shrink_to_fit();
     TVector<int> res({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(10), vec.size());
     EXPECT_EQ(static_cast<size_t>(10), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_assignment_operator) {
     TVector<int> vec1({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     TVector<int> vec2;
     vec2 = vec1;
-    bool expected_result = true;
-    bool actual_result = (vec2 == vec1);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec2 == vec1);
 }
 TEST(TestTVectorLib, check_the_index_conversion_operator) {
     TVector<int> vec({ 1, 2, 3, 4, 5 });
-    int expected_value = 4;
-    int actual_value = vec[3];
-    EXPECT_EQ(expected_value, actual_value);
+    EXPECT_EQ(4, vec[3]);
 }
 TEST(TestTVectorLib, check_the_index_conversion_operator_2) {
     TVector<int> vec({ 1, 2, 3, 4, 5 });
-    int expected_value = 5;
     vec[3] = 5;
-    EXPECT_EQ(expected_value, vec[3]);
+    EXPECT_EQ(5, vec[3]);
 }
 TEST(TestTVectorLib, check_the_insertion_at_the_beginning) {
     TVector<int> vec(10, { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.push_front(55);
     TVector<int> res(11,
         { 55, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_in_the_middle) {
     TVector<int> vec(10, { 6, 2, 3, 4, 5, 6, 7, 8, 3, 4 });
     vec.insert(3, 44);
     TVector<int> res(11, { 6, 2, 3, 44, 4, 5, 6, 7, 8, 3, 4 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_several_elems) {
     TVector<int> vec(10, { 6, 2, 3, 4, 5, 6, 7, 8, 5, 6 });
@@ -188,67 +163,53 @@ TEST(TestTVectorLib, check_the_insertion_from_the_list) {
     vec.insert(3, { 11, 22, 33 });
     TVector<int> res(13,
         { 6, 2, 3, 11, 22, 33, 4, 5, 6, 7, 8, 99, 87 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_at_the_end) {
     TVector<int> vec(10, { 4, 5, 6, 7, 8, 2, 3, 4, 5, 6 });
     vec.push_back(9);
     TVector<int> res(11, { 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 9 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_at_the_beginning_with_memory_reallocation) {
     TVector<int> vec(15, { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
     vec.push_front(55);
     TVector<int> res(16,
         { 55, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_in_the_middle_with_memory_reallocation) {
     TVector<int> vec(15, { 6, 2, 3, 4, 5, 6, 7, 8, 3, 4, 5, 6, 7, 8, 9 });
     vec.insert(3, 44);
     TVector<int> res(16, { 6, 2, 3, 44, 4, 5, 6, 7, 8, 3, 4, 5, 6, 7, 8, 9 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_several_elems_with_memory_reallocation) {
     TVector<int> vec(14, { 6, 2, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8, 9, 3 });
     vec.insert(2, 4, 99);
     TVector<int> res(18,
         { 6, 2, 99, 99, 99, 99, 3, 4, 5, 6, 7, 8, 5, 6, 7, 8, 9, 3 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_from_the_list_with_memory_reallocation) {
     TVector<int> vec(13, { 6, 2, 3, 4, 5, 6, 7, 8, 99, 87, 5, 66, 7 });
     vec.insert(3, { 11, 22, 33 });
     TVector<int> res(16,
         { 6, 2, 3, 11, 22, 33, 4, 5, 6, 7, 8, 99, 87, 5, 66, 7 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_insertion_at_the_end_with_memory_reallocation) {
     TVector<int> vec(15, { 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 34, 5, 4, 6 });
     vec.push_back(9);
     TVector<int> res(16, { 4, 5, 6, 7, 8, 2, 3, 4, 5, 6, 7, 34, 5, 4, 6, 9 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_for_deletion_from_the_beginning) {
     TVector<int> vec(10,
@@ -257,10 +218,8 @@ TEST(TestTVectorLib, check_for_deletion_from_the_beginning) {
     vec.pop_front();
     vec.pop_front();
     TVector<int> res(7, { 4, 5, 6, 7, 8, 9, 10 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_for_deletion_from_the_middle) {
     TVector<int> vec(10,
@@ -269,10 +228,8 @@ TEST(TestTVectorLib, check_for_deletion_from_the_middle) {
     vec.erase(3);
     vec.erase(5);
     TVector<int> res(7, { 1, 2, 3, 6, 7, 9, 10 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_for_deletion_from_the_beginning_with_memory_reallocation) {
     TVector<int> vec(16,
@@ -281,10 +238,8 @@ TEST(TestTVectorLib, check_for_deletion_from_the_beginning_with_memory_reallocat
     vec.pop_front();
     vec.pop_front();
     TVector<int> res(13, { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_for_deletion_from_the_middle_with_memory_reallocation) {
     TVector<int> vec(16,
@@ -293,10 +248,8 @@ TEST(TestTVectorLib, check_for_deletion_from_the_middle_with_memory_reallocation
     vec.erase(3);
     vec.erase(5);
     TVector<int> res(13, { 1, 2, 3, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(15), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_for_deletion_from_the_back) {
     TVector<int> vec(16,
@@ -305,10 +258,8 @@ TEST(TestTVectorLib, check_for_deletion_from_the_back) {
     vec.pop_back();
     vec.pop_back();
     TVector<int> res(13, { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_for_complete_deletion) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -335,17 +286,13 @@ TEST(TestTVectorLib, check_the_insertion_after_deletion) {
         64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
         80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
         96, 97, 98, 99 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_replacement_by_index) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.replace(4, 77);
     TVector<int> res({ 1, 2, 3, 4, 77, 6, 7, 8, 9, 10 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_the_replacement_by_index_after_deleted) {
     int* mass = new int[100];
@@ -365,16 +312,12 @@ TEST(TestTVectorLib, check_the_replacement_by_index_after_deleted) {
         65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
         81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96,
         97, 98, 99 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_at) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     size_t res = vec.at(4);
-    bool expected_result = true;
-    bool actual_result = (res == 5);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(5, res);
 }
 TEST(TestTVectorLib, check_the_exception_in_at) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -384,9 +327,7 @@ TEST(TestTVectorLib, check_assign_value) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
     vec.assign(4, 66);
     TVector<int> res({ 66, 66, 66, 66 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_assign_list) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
@@ -430,18 +371,14 @@ TEST(TestTVectorLib, check_the_insertion_into_an_empty_vector) {
 TEST(TestTVectorLib, check_shuffle_vector) {
     TVector<int> vec1({ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
     TVector<int> vec2({ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-    bool expected_result = true;
     shuffle(vec2);
-    bool actual_result = (vec1 != vec2);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec1 != vec2);
 }
 TEST(TestTVectorLib, check_hoara_sort) {
     TVector<int> vec({ 2, 7, 3, 9, 28, 38, 93, 9, 6, 4, 2 });
     hoara_sort(vec);
     TVector<int> res({ 2, 2, 3, 4, 6, 7, 9, 9, 28, 38, 93 });
-    bool expected_result = true;
-    bool actual_result = (vec == res);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(vec == res);
 }
 TEST(TestTVectorLib, check_find_first_element) {
     TVector<int> vec({ 1, 2, 5, 4, 5, 3, 6, 7, 9 });
@@ -493,9 +430,7 @@ TEST(TestTVectorLib, check_find_first_elem_after_deletion) {
     vec.pop_back();
     vec.erase(3);
     int pos = find_first_elem_by_index(vec, 7);
-    bool expected_result = true;
-    bool actual_result = (pos == 3);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(3, pos);
 }
 TEST(TestTVectorLib, check_find_last_elem_after_deletion) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -509,12 +444,10 @@ TEST(TestTVectorLib, check_find_last_elem_after_deletion) {
     vec.pop_back();
     vec.erase(3);
     int pos = find_last_elem_by_index(vec, 7);
-    bool expected_result = true;
-    bool actual_result = (pos == 93);
     EXPECT_EQ(vec.front(), 2);
     EXPECT_EQ(vec.back(), 99);
     EXPECT_EQ(vec[3], 7);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(93, pos);
 }
 TEST(TestTVectorLib, check_find_all_elements_after_deletion) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -550,8 +483,8 @@ TEST(TestTVectorLib, check_the_replacement_by_the_pointer) {
     bool expected_result = true;
     vec.erase(2);
     vec.replace(vec.begin() + 4, 99);
-    EXPECT_EQ(vec[0], 1);
-    EXPECT_EQ(vec[4], 99);
+    EXPECT_EQ(1, vec[0]);
+    EXPECT_EQ(99, vec[4]);
 }
 TEST(TestTVectorLib, check_shifted_insert_into_a_full_array_with_deleted_elems) {
     TVector<int> vec({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
@@ -561,9 +494,9 @@ TEST(TestTVectorLib, check_shifted_insert_into_a_full_array_with_deleted_elems) 
     vec.erase(5);
     vec.insert(5, 88);
     vec.insert(7, 99);
-    EXPECT_EQ(vec[0], 1);
-    EXPECT_EQ(vec[5], 88);
-    EXPECT_EQ(vec[7], 99);
+    EXPECT_EQ(1, vec[0]);
+    EXPECT_EQ(88, vec[5]);
+    EXPECT_EQ(99, vec[7]);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
 }
 TEST(TestTVectorLib, check_find_first_element_2) {
@@ -574,9 +507,8 @@ TEST(TestTVectorLib, check_find_first_element_2) {
 }
 TEST(TestTVectorLib, check_find_first_element_if_there_is_no_element_2) {
     TVector<int> vec({ 1, 2, 5, 4, 5, 3, 6, 7, 9 });
-    int* null_ptr = nullptr;
     int* ptr = find_first_elem_by_pointer(vec, 11);
-    EXPECT_EQ(null_ptr, ptr);
+    EXPECT_EQ(nullptr, ptr);
 }
 TEST(TestTVectorLib, check_find_last_element_2) {
     TVector<int> vec({ 1, 2, 5, 4, 5, 3, 6, 7, 9 });
@@ -586,9 +518,8 @@ TEST(TestTVectorLib, check_find_last_element_2) {
 }
 TEST(TestTVectorLib, check_find_last_element_if_there_is_no_element_2) {
     TVector<int> vec({ 1, 2, 5, 4, 5, 3, 6, 7, 9 });
-    int* null_ptr = nullptr;
     int* ptr = find_last_elem_by_pointer(vec, 11);
-    EXPECT_EQ(null_ptr, ptr);
+    EXPECT_EQ(nullptr, ptr);
 }
 TEST(TestTVectorLib, check_find_several_elements_2) {
     TVector<int> vec({ 1, 2, 5, 4, 5, 3, 6, 7, 5, 9 });
