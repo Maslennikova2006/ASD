@@ -1,0 +1,117 @@
+// Copyright 2025 Mary Maslennikova
+
+#include <gtest/gtest.h>
+#include <iostream>
+#include "../lib_mathvector/mathvector.h"
+
+TEST(TestMathVectorLib, check_the_default_constructor) {
+    MathVector<float> vec;
+    EXPECT_EQ(static_cast <size_t>(0), vec.get_start_index());
+}
+TEST(TestMathVectorLib, check_the_initialization_constructor) {
+    int array[5] = { 1, 2, 3, 4, 5 };
+    MathVector<int> vec(5, array);
+    EXPECT_EQ(static_cast <size_t>(5), vec.size());
+    EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
+}
+TEST(TestMathVectorLib, check_the_initialization_list_constructor) {
+    MathVector<int> vec(4, { 1, 2, 3, 4 });
+    EXPECT_EQ(static_cast <size_t>(4), vec.size());
+    EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
+}
+TEST(TestMathVectorLib, throw_when_try_copy_vector) {
+    MathVector<int>* obj = nullptr;
+    ASSERT_ANY_THROW(MathVector<int> copy_obj(*obj));
+}
+TEST(TestMathVectorLib, check_the_copy_constructor) {
+    int array[5] = { 1, 2, 3, 4, 5 };
+    MathVector<int> vec1(5, array);
+    MathVector<int> vec2(vec1);
+    EXPECT_EQ(static_cast <size_t>(5), vec2.size());
+    EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec2.capacity());
+}
+TEST(TestMathVectorLib, check_the_addition) {
+    MathVector<int> vec1({ 2, 3, 4, 5 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    MathVector<int> res({ 3, 5, 7, 9 });
+    EXPECT_EQ(res, vec1 + vec2);
+}
+TEST(TestMathVectorLib, check_the_addition_exception) {
+    MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 + vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction) {
+    MathVector<int> vec1({ 2, 3, 4, 5 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    MathVector<int> res({ 1, 1, 1, 1 });
+    EXPECT_EQ(res, vec1 - vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction_exception) {
+    MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 - vec2);
+}
+TEST(TestMathVectorLib, check_the_multiplication) {
+    MathVector<int> vec1({ 2, 3, 4, 5 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    EXPECT_EQ(40, vec1 * vec2);
+}
+TEST(TestMathVectorLib, check_the_multiplication_exception) {
+    MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 * vec2);
+}
+TEST(TestMathVectorLib, check_addition_with_assignment) {
+    MathVector<int> vec1({ 2, 3, 4, 5 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    MathVector<int> res({ 3, 5, 7, 9 });
+    EXPECT_EQ(res, vec1 += vec2);
+}
+TEST(TestMathVectorLib, check_the_addition_with_assignment_exception) {
+    MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 += vec2);
+}
+TEST(TestMathVectorLib, check_subtraction_with_assignment) {
+    MathVector<int> vec1({ 2, 3, 4, 5 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    MathVector<int> res({ 1, 1, 1, 1 });
+    EXPECT_EQ(res, vec1 -= vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception) {
+    MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 += vec2);
+}
+TEST(TestMathVectorLib, check_the_assignment) {
+    MathVector<int> vec1;
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    vec1 = vec2;
+    EXPECT_EQ(vec2, vec1);
+}
+TEST(TestMathVectorLib, check_the_index_conversion_operator) {
+    MathVector<int> vec({ 1, 2, 3, 4 });
+    vec[2] = 6;
+    EXPECT_EQ(6, vec[2]);
+}
+TEST(TestMathVectorLib, check_the_equality_operator) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    EXPECT_TRUE(vec1 == vec2);
+}
+TEST(TestMathVectorLib, check_the_equality_operator_2) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2({ 1, 4, 3, 4 });
+    EXPECT_FALSE(vec1 == vec2);
+}
+TEST(TestMathVectorLib, check_the_not_equality_operator) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2({ 1, 4, 3, 4 });
+    EXPECT_TRUE(vec1 != vec2);
+}
+TEST(TestMathVectorLib, check_the_not_equality_operator_2) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    EXPECT_FALSE(vec1 != vec2);
+}
