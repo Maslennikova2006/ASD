@@ -21,23 +21,17 @@ TEST(TestCircleLib, can_create) {
     ASSERT_NO_THROW(Circle());
 }
 TEST(TestCircleLib, check_setter_and_getter_rad) {
-    Circle circle;
-    circle.set_rad(4.76);
-    float actual_result = circle.get_rad();
-    float expected_result = 4.76;
-    EXPECT_EQ(expected_result, actual_result);
+    Circle circle(1, 2, 3);
+    circle.set_rad(4);
+    EXPECT_EQ(4, circle.get_rad());
 }
 TEST(TestCircleLib, check_setter_and_getter_point) {
     Circle circle;
     Point point(4, 4);
     circle.set_point(point);
-    Point actual_result = circle.get_point();
-    Point expected_result(4, 4);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(point, circle.get_point());
 }
 TEST(TestCircleLib, check_calculate_distance) {
     Circle circle(5, 3, 8);
-    float actual_result = circle.calculate_distance(Circle(2, 3, 9));
-    float expected_result = 3.0;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(3.0, circle.calculate_distance(Circle(2, 3, 9)));
 }

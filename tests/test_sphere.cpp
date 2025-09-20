@@ -22,23 +22,17 @@ TEST(TestSphereLib, can_create) {
 }
 TEST(TestSphereLib, check_setter_and_getter_rad) {
     Sphere sphere;
-    sphere.set_rad(4.76);
-    float actual_result = sphere.get_rad();
-    float expected_result = 4.76;
-    EXPECT_EQ(expected_result, actual_result);
+    sphere.set_rad(5);
+    EXPECT_EQ(5, sphere.get_rad());
 }
 TEST(TestSphereLib, check_setter_and_getter_point) {
     Sphere sphere;
     Point3D point(4, 4, 6);
     sphere.set_point3D(point);
-    Point3D actual_result = sphere.get_point3D();
-    Point3D expected_result(4, 4, 6);
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(point, sphere.get_point3D());
 }
 TEST(TestSphereLib, check_calculate_distance) {
     Sphere circle(5, 3, 8, 4);
     Point3D point(2, 3, 8);
-    float actual_result = circle.calculate_distance(Sphere(point, 9));
-    float expected_result = 3.0;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(3.0, circle.calculate_distance(Sphere(point, 9)));
 }

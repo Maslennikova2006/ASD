@@ -16,35 +16,25 @@ TEST(TestPoint3DLib, can_create) {
 TEST(TestPoint3DLib, check_setter_and_getter_x) {
     Point3D point;
     point.set_x(4);
-    int actual_result = point.get_x();
-    int expected_result = 4;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(4, point.get_x());
 }
 TEST(TestPoint3DLib, check_setter_and_getter_y) {
     Point3D point;
     point.set_y(8);
-    int actual_result = point.get_y();
-    int expected_result = 8;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(8, point.get_y());
 }
 TEST(TestPoint3DLib, check_setter_and_getter_z) {
     Point3D point;
     point.set_z(3);
-    int actual_result = point.get_z();
-    int expected_result = 3;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(3, point.get_z());
 }
 TEST(TestPoint3DLib, check_the_equality) {
     Point3D point1(2, 3, 8);
     Point3D point2(2, 3, 8);
-    bool actual_result = (point1 == point2);
-    bool expected_result = true;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(point1 == point2);
 }
 TEST(TestPoint3DLib, check_the_inequality) {
     Point3D point1(2, 3, 4);
     Point3D point2(2, 5, 4);
-    bool actual_result = (point1 == point2);
-    bool expected_result = false;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_FALSE(point1 == point2);
 }
