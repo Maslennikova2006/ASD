@@ -36,8 +36,13 @@ TEST(TestMathVectorLib, check_the_addition) {
     MathVector<int> res({ 3, 5, 7, 9 });
     EXPECT_EQ(res, vec1 + vec2);
 }
-TEST(TestMathVectorLib, check_the_addition_exception) {
+TEST(TestMathVectorLib, check_the_addition_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 + vec2);
+}
+TEST(TestMathVectorLib, check_the_addition_exception_when_empty_vector) {
+    MathVector<int> vec1;
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 + vec2);
 }
@@ -47,8 +52,13 @@ TEST(TestMathVectorLib, check_the_subtraction) {
     MathVector<int> res({ 1, 1, 1, 1 });
     EXPECT_EQ(res, vec1 - vec2);
 }
-TEST(TestMathVectorLib, check_the_subtraction_exception) {
+TEST(TestMathVectorLib, check_the_subtraction_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 - vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction_exception_when_empty_vector) {
+    MathVector<int> vec1;
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 - vec2);
 }
@@ -57,10 +67,24 @@ TEST(TestMathVectorLib, check_the_multiplication) {
     MathVector<int> vec2({ 1, 2, 3, 4 });
     EXPECT_EQ(40, vec1 * vec2);
 }
-TEST(TestMathVectorLib, check_the_multiplication_exception) {
+TEST(TestMathVectorLib, check_the_multiplication_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 * vec2);
+}
+TEST(TestMathVectorLib, check_the_multiplication_exception_when_empty_vector) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2;
+    ASSERT_ANY_THROW(vec1 * vec2);
+}
+TEST(TestMathVectorLib, check_the_multiplication_by_a_scalar) {
+    MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> res({ 6, 9, 12, 15, 18 });
+    EXPECT_EQ(res, vec1 * 3);
+}
+TEST(TestMathVectorLib, check_the_multiplication_by_a_scalar_exception_when_empty_vector) {
+    MathVector<int> vec2;
+    ASSERT_ANY_THROW(vec2 * 4);
 }
 TEST(TestMathVectorLib, check_addition_with_assignment) {
     MathVector<int> vec1({ 2, 3, 4, 5 });
@@ -68,12 +92,17 @@ TEST(TestMathVectorLib, check_addition_with_assignment) {
     MathVector<int> res({ 3, 5, 7, 9 });
     EXPECT_EQ(res, vec1 += vec2);
 }
-TEST(TestMathVectorLib, check_the_addition_with_assignment_exception) {
+TEST(TestMathVectorLib, check_the_addition_with_assignment_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 += vec2);
 }
-TEST(TestMathVectorLib, check_subtraction_with_assignment) {
+TEST(TestMathVectorLib, check_the_addition_with_assignment_exception_when_empty_vector) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2;
+    ASSERT_ANY_THROW(vec1 += vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction_with_assignment) {
     MathVector<int> vec1({ 2, 3, 4, 5 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
     MathVector<int> res({ 1, 1, 1, 1 });
@@ -82,7 +111,21 @@ TEST(TestMathVectorLib, check_subtraction_with_assignment) {
 TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
-    ASSERT_ANY_THROW(vec1 += vec2);
+    ASSERT_ANY_THROW(vec1 -= vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception_when_empty_vector) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2;
+    ASSERT_ANY_THROW(vec1 -= vec2);
+}
+TEST(TestMathVectorLib, check_the_multiplication_by_a_scalar_with_assignment) {
+    MathVector<int> vec1({ 2, 3, 4 });
+    MathVector<int> res({ 6, 9, 12 });
+    EXPECT_EQ(res, vec1 *= 3);
+}
+TEST(TestMathVectorLib, check_the_multiplication_by_a_scalar_with_assignment_exception_when_empty_vector) {
+    MathVector<int> vec1;
+    ASSERT_ANY_THROW(vec1 *= 2);
 }
 TEST(TestMathVectorLib, check_the_assignment) {
     MathVector<int> vec1;

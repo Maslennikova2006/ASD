@@ -34,16 +34,20 @@ public:
     const size_t size() const noexcept;
     const size_t capacity() const noexcept;
 
+    inline bool is_empty() const noexcept;
+
     void set_start_index(const size_t ind);
 
     const size_t get_start_index() const noexcept;
 
-    MathVector<T> operator+(const MathVector<T>& second) const;
-    MathVector<T> operator-(const MathVector<T>& second) const;
-    T operator*(const MathVector<T>& second) const;
+    MathVector<T> operator+(const MathVector<T>& second) const;  // +
+    MathVector<T> operator-(const MathVector<T>& second) const;  // +
+    T operator*(const MathVector<T>& second) const;  // +
+    MathVector<T> operator*(const T scalar) const;  // +
 
-    MathVector<T>& operator+=(const MathVector<T>& second);
-    MathVector<T>& operator-=(const MathVector<T>& second);
+    MathVector<T>& operator+=(const MathVector<T>& second);  // +
+    MathVector<T>& operator-=(const MathVector<T>& second);  // +
+    MathVector<T>& operator*=(const T scalar);  // +
 
     MathVector<T>& operator=(const MathVector<T>& other);
 
@@ -95,6 +99,11 @@ const size_t MathVector<T>::capacity() const noexcept{
 }
 
 template <class T>
+bool MathVector<T>::is_empty() const noexcept {
+    return TVector<T>::is_empty();
+}
+
+template <class T>
 void MathVector<T>::set_start_index(const size_t ind) {
     _start_index = ind;
 }
@@ -106,6 +115,8 @@ const size_t MathVector<T>::get_start_index() const noexcept {
 
 template <class T>
 MathVector<T> MathVector<T>::operator+(const MathVector<T>& second) const {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
     MathVector<T> res;
@@ -117,6 +128,8 @@ MathVector<T> MathVector<T>::operator+(const MathVector<T>& second) const {
 }
 template <class T>
 MathVector<T> MathVector<T>::operator-(const MathVector<T>& second) const {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
     MathVector<T> res;
@@ -128,6 +141,8 @@ MathVector<T> MathVector<T>::operator-(const MathVector<T>& second) const {
 }
 template <class T>
 T MathVector<T>::operator*(const MathVector<T>& second) const {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
     T res = T();
@@ -136,9 +151,22 @@ T MathVector<T>::operator*(const MathVector<T>& second) const {
     }
     return res;
 }
+template <class T>
+MathVector<T> MathVector<T>::operator*(const T scalar) const {
+    if (this->is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
+    MathVector<T> res;
+    res = *this;
+    for (size_t i = 0; i < this->size(); i++) {
+        res[i] = (*this)[i] * scalar;
+    }
+    return res;
+}
 
 template <class T>
 MathVector<T>& MathVector<T>::operator+=(const MathVector<T>& second) {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
     for (size_t i = 0; i < this->size(); i++) {
@@ -148,10 +176,21 @@ MathVector<T>& MathVector<T>::operator+=(const MathVector<T>& second) {
 }
 template <class T>
 MathVector<T>& MathVector<T>::operator-=(const MathVector<T>& second) {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
     for (size_t i = 0; i < this->size(); i++) {
         (*this)[i] -= second[i];
+    }
+    return *this;
+}
+template <class T>
+MathVector<T>& MathVector<T>::operator*=(const T scalar) {
+    if (this->is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");
+    for (size_t i = 0; i < this->size(); i++) {
+        (*this)[i] *= scalar;
     }
     return *this;
 }
