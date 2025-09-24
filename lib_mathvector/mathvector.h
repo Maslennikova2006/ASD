@@ -34,8 +34,6 @@ public:
     const size_t size() const noexcept;
     const size_t capacity() const noexcept;
 
-    inline bool is_empty() const noexcept;
-
     void set_start_index(const size_t ind);
 
     const size_t get_start_index() const noexcept;
@@ -96,11 +94,6 @@ const size_t MathVector<T>::size() const noexcept {
 template <class T>
 const size_t MathVector<T>::capacity() const noexcept{
     return TVector<T>::capacity();
-}
-
-template <class T>
-bool MathVector<T>::is_empty() const noexcept {
-    return TVector<T>::is_empty();
 }
 
 template <class T>
