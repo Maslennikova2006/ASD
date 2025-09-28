@@ -116,6 +116,10 @@ template <class T>
 TVector<T>::TVector(size_t size) {
     set_memory(size);
     _deleted = 0;
+    for (size_t i = 0; i < _size; i++) {
+        _data[i] = T();
+        _states[i] = busy;
+    }
 }
 template <class T>
 TVector<T>::TVector(size_t size, const T* data) {

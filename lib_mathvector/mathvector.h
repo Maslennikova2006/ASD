@@ -31,8 +31,10 @@ public:
 
     ~MathVector();
 
-    const size_t size() const noexcept;
-    const size_t capacity() const noexcept;
+    inline T* data() noexcept;
+    inline size_t size() const noexcept;
+    inline size_t capacity() const noexcept;
+    inline const T* data() const noexcept;
 
     void set_start_index(const size_t ind);
 
@@ -88,12 +90,20 @@ template <class T>
 MathVector<T>::~MathVector() {}
 
 template <class T>
-const size_t MathVector<T>::size() const noexcept {
+T* MathVector<T>::data() noexcept {
+    return TVector<T>::data();
+}
+template <class T>
+size_t MathVector<T>::size() const noexcept {
     return TVector<T>::size();
 }
 template <class T>
-const size_t MathVector<T>::capacity() const noexcept{
+size_t MathVector<T>::capacity() const noexcept{
     return TVector<T>::capacity();
+}
+template <class T>
+inline const T* MathVector<T>::data() const noexcept {
+    return TVector<T>::data();
 }
 
 template <class T>
@@ -112,8 +122,7 @@ MathVector<T> MathVector<T>::operator+(const MathVector<T>& second) const {
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
-    MathVector<T> res;
-    res = *this;
+    MathVector<T> res(this->size());
     for (size_t i = 0; i < this->size(); i++) {
         res[i] = (*this)[i] + second[i];
     }
@@ -134,8 +143,8 @@ MathVector<T> MathVector<T>::operator-(const MathVector<T>& second) const {
 }
 template <class T>
 T MathVector<T>::operator*(const MathVector<T>& second) const {
-    if (this->is_empty() || second.is_empty())
-        throw std::invalid_argument("You cannot perform actions with an empty vector!");
+    /*if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty vector!");*/
     if (this->size() != second.size())
         throw std::invalid_argument("The length of the vectors must match!");
     T res = T();
@@ -194,16 +203,23 @@ MathVector<T>& MathVector<T>::operator=(const MathVector<T>& other) {
         TVector<T>::operator=(other);
         _start_index = other._start_index;
     }
+    
     return *this;
 }
 
 template <class T>
 const T& MathVector<T>::operator[](size_t index) const {
-    return TVector::operator[](index - _start_index);
+    /*if (index < _start_index)
+        return T();*/
+    /*if (index < _start_index || index - _start_index >= this->size())
+        throw std::out_of_range("Index out of range");*/
+    return TVector<T>::operator[](index);
 }
 template <class T>
 T& MathVector<T>::operator[](size_t index) {
-    return TVector::operator[](index - _start_index);
+    /*if (index < _start_index || index - _start_index >= this->size())
+        throw std::out_of_range("Index out of range");*/
+    return TVector<T>::operator[](index);
 }
 
 template <class T>
@@ -222,7 +238,7 @@ std::ostream& operator<<(std::ostream& os, const MathVector<T>& vec) {
     }
     return os;
 }
-template <typename T>
+template <class T>
 std::istream& operator>>(std::istream& is, MathVector<T>& vec) {
     for (size_t i = 0; i < vec.size(); i++) {
         is >> vec[i];
