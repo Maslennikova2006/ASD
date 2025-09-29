@@ -38,24 +38,23 @@ public:
 
     bool is_empty() const noexcept;
 
-    Matrix<T> Trans() const;
+    Matrix<T> Trans() const noexcept;  // делать ли исключение, если пустая матрица?
 
     Matrix<T> operator+(const Matrix<T>& other);  // +
     Matrix<T> operator-(const Matrix<T>& other);  // +
     Matrix<T> operator*(const Matrix<T>& other);  // +
     Matrix<T> operator*(const T scalar);  // +
-    MathVector<T> operator*(const MathVector<T>& vector);
+    MathVector<T> operator*(const MathVector<T>& vector);  // +
 
-    Matrix<T>& operator+=(const Matrix<T>& second);
-    Matrix<T>& operator-=(const Matrix<T>& second);
-    Matrix<T>& operator*=(const Matrix<T>& second);
-    Matrix<T>& operator*=(const T scalar);
-    Matrix<T>& operator*=(const MathVector<T>& vector);
+    Matrix<T>& operator+=(const Matrix<T>& second);  // +
+    Matrix<T>& operator-=(const Matrix<T>& second);  // +
+    Matrix<T>& operator*=(const Matrix<T>& second);  // +
+    Matrix<T>& operator*=(const T scalar); // +
 
     MathVector<T>& operator[](size_t index);  // +
     const MathVector<T>& operator[](size_t index) const;  // +
 
-    Matrix<T>& operator=(const Matrix<T>& other);
+    Matrix<T>& operator=(const Matrix<T>& other);  // +
 
     bool operator==(const Matrix<T>& second) const;  // +
     bool operator!=(const Matrix<T>& second) const;  // +
@@ -81,10 +80,10 @@ Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> lists) :
     _m = lists.size();
     _n = (_m > 0) ? lists.begin()->size() : 0;
 
-    size_t i = 0;
-    for (const auto& m : lists) {
-        (*this)[i] = MathVector<T>(m);
-        i++;
+    auto it = lists.begin();
+    for (size_t i = 0; i < _m; i++) {
+        (*this)[i] = MathVector<T>(*it);
+        it++;
     }
 }
 template <typename T>
@@ -132,7 +131,7 @@ bool Matrix<T>::is_empty() const noexcept {
 }
 
 template <typename T>
-Matrix<T> Matrix<T>::Trans() const {
+Matrix<T> Matrix<T>::Trans() const noexcept {  // !!!!!!!!!!!!!!!!!!!!!!!!!!
     if (this->is_empty())
         return *this;
     Matrix<T> res(_n, _m);
@@ -146,18 +145,24 @@ Matrix<T> Matrix<T>::Trans() const {
 
 template <typename T>
 Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) {
+    if (this->is_empty() || other.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
     if (_m != other._m || _n != other._n)
         throw std::invalid_argument("The matrices are not compatible in size!");
     return Matrix<T>(this->MathVector<MathVector<T>>::operator+(other));
 }
 template <typename T>
 Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) {
+    if (this->is_empty() || other.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
     if (_m != other._m || _n != other._n)
         throw std::invalid_argument("The matrices are not compatible in size!");
     return Matrix<T>(this->MathVector<MathVector<T>>::operator-(other));
 }
 template <typename T>
 Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) {
+    if (this->is_empty() || other.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
     if (_n != other._m)
         throw std::invalid_argument("The matrices are not compatible in size!");
     Matrix<T> res(_m, other._n);
@@ -181,11 +186,52 @@ Matrix<T> Matrix<T>::operator*(const T scalar) {
 }
 template <typename T>
 MathVector<T> Matrix<T>::operator*(const MathVector<T>& vector) {
+    if (this->is_empty() || vector.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_n != vector.size())
+        throw std::invalid_argument("The matrix and vector are not compatible in size!");
     MathVector<T> res(_m);
     for (size_t i = 0; i < _m; i++) {
-        res[i] = (*this)[i] * vec;
+        res[i] = (*this)[i] * vector;
     }
     return res;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& second) {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != second._m || _n != second._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+    this->MathVector<MathVector<T>>::operator+=(second);
+    return *this;
+}
+template <typename T>
+Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& second) {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != second._m || _n != second._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+    this->MathVector<MathVector<T>>::operator-=(second);
+    return *this;
+}
+template <typename T>        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& second) {
+    if (this->is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != _n || _m != second._m || second._m != second._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+    *this = (*this) * second;
+    return *this;
+}
+template <typename T>
+Matrix<T>& Matrix<T>::operator*=(const T scalar) {
+    if (this->is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    for (size_t i = 0; i < _m; i++) {
+        (*this)[i] *= scalar;
+    }
+    return *this;
 }
 
 template <typename T>
@@ -227,12 +273,16 @@ template <typename T>
 std::ostream& operator<<(std::ostream& os, const Matrix<T>& matrix) {
     for (size_t i = 0; i < matrix.get_m(); i++) {
         os << matrix[i];
-        if (i < matrix.get_m() - 1) os << "\n";
+        if (i < matrix.get_m() - 1) 
+            os << "\n";
     }
     return os;
 }
 template <typename T>
 std::istream& operator>>(std::istream& is, Matrix<T>& matrix) {
+    for (size_t i = 0; i < matrix.get_m(); i++) {
+        is >> matrix[i];
+    }
     return is;
 }
 #endif  // LIB_MATRIX_MATRIX_H_
