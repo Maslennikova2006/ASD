@@ -4,49 +4,6 @@
 #define CIRCLE
 //#define SPHERE
 
-#include <iostream>
-#include <clocale>
-
-enum Position { intersect, inside, no_point, match, touch };
-
-template<class T>
-Position check_position(const T& first, const T& second) {
-    int d = first.calculate_distance(second);
-    if (first.get_rad() == second.get_rad() && first.get_point() == second.get_point())
-        return match;
-    else if (d == first.get_rad() + second.get_rad())
-        return touch;
-    else if ((d < first.get_rad() - second.get_rad()) && d > 0)
-        return inside;
-    else if (d > second.get_rad() + first.get_rad())
-        return no_point;
-    else
-        return intersect;
-}
-
-void show_position(Position pos) {
-    switch (pos)
-    {
-    case intersect:
-        std::cout << "Объекты пересекаются\n";
-        break;
-    case inside:
-        std::cout << "Один объект внутри другого\n";
-        break;
-    case no_point:
-        std::cout << "Объекты не имеют общих точек\n";
-        break;
-    case match:
-        std::cout << "Объекты совпадают\n";
-        break;
-    case touch:
-        std::cout << "Объекты касаются в одной точке\n";
-        break;
-    default:
-        break;
-    }
-}
-
 #ifdef EASY_EXAMPLE
 #include <iostream>
 #include <iomanip>
@@ -81,6 +38,8 @@ int main() {
 
 #ifdef CIRCLE
 #include "../lib_circle/circle.h"
+#include "../lib_algorithms/algorithms.h"
+#include <clocale>
 
 int main() {
     setlocale(LC_ALL, "rus");
@@ -96,9 +55,8 @@ int main() {
     Circle c5(point3, 3);
     Circle c6(8, 0, 5);
     show_position(check_position(c5, c6));
-    Point point4(-2, 2);
-    Circle c7(point4, 3);
-    Circle c8(8, 2, 7);
+    Circle c7(0, 0, 5);
+    Circle c8(3, 0, 4);
     show_position(check_position(c7, c8));
     Point point5(-2, 2);
     Circle c9(point5, 3);
@@ -110,6 +68,8 @@ int main() {
 
 #ifdef SPHERE
 #include "../lib_sphere/sphere.h"
+#include "../lib_algorithms/algorithms.h"
+#include <clocale>
 
 int main() {
     setlocale(LC_ALL, "rus");
