@@ -24,8 +24,10 @@ protected:
 public:
     MathVector();  // םו גûהוכÿעü ןאלÿעü
     explicit MathVector(size_t size);
+    MathVector(size_t size, size_t start_index);
     MathVector(size_t size, const T* data);
     MathVector(size_t size, std::initializer_list<T> data);
+    MathVector(std::initializer_list<T> data, size_t start_index);
     MathVector(std::initializer_list<T> data);
     MathVector(const MathVector<T>& other);
 
@@ -55,6 +57,7 @@ public:
 
     const T& operator[](size_t index) const;
     T& operator[](size_t index);
+    const T& at(size_t index) const;
 
     bool operator==(const MathVector<T>& second) const;
     bool operator!=(const MathVector<T>& second) const;
@@ -72,6 +75,10 @@ MathVector<T>::MathVector(size_t size) : TVector<T>(size) {
     _start_index = 0;
 }
 template <class T>
+MathVector<T>::MathVector(size_t size, size_t start_index) : TVector<T>(size) {
+    _start_index = start_index;
+}
+template <class T>
 MathVector<T>::MathVector(size_t size, const T* data) : TVector<T>(size, data) {
     _start_index = 0;
 }
@@ -82,6 +89,10 @@ MathVector<T>::MathVector(size_t size, std::initializer_list<T> data) : TVector<
 template <class T>
 MathVector<T>::MathVector(std::initializer_list<T> data) : TVector<T>(data) {
     _start_index = 0;
+}
+template <class T>
+MathVector<T>::MathVector(std::initializer_list<T> data, size_t start_index) : TVector<T>(data) {
+    _start_index = start_index;
 }
 template <class T>
 MathVector<T>::MathVector(const MathVector<T>& other) : TVector<T>(other) {
@@ -210,23 +221,20 @@ MathVector<T>& MathVector<T>::operator=(const MathVector<T>& other) {
         TVector<T>::operator=(other);
         _start_index = other._start_index;
     }
-    
     return *this;
 }
 
 template <class T>
 const T& MathVector<T>::operator[](size_t index) const {
-    /*if (index < _start_index)
-        return T();*/
-    /*if (index < _start_index || index - _start_index >= this->size())
-        throw std::out_of_range("Index out of range");*/
     return TVector<T>::operator[](index);
 }
 template <class T>
 T& MathVector<T>::operator[](size_t index) {
-    /*if (index < _start_index || index - _start_index >= this->size())
-        throw std::out_of_range("Index out of range");*/
     return TVector<T>::operator[](index);
+}
+template <class T>
+const T& MathVector<T>::at(size_t index) const {
+    return TVector<T>::at(index);
 }
 
 template <class T>

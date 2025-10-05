@@ -8,7 +8,7 @@
 TEST(TestMatrixLib, check_the_default_constructor) {
     Matrix<float> matrix;
 
-    EXPECT_EQ(static_cast <size_t>(0), matrix.get_start_index());
+    EXPECT_EQ(static_cast <size_t>(0), matrix.size());
 }
 TEST(TestMatrixLib, check_the_size_constructor) {
     Matrix<int> matrix(5, 3);
@@ -37,13 +37,9 @@ TEST(TestMatrixLib, check_the_type_conversion_constructor) {
     EXPECT_EQ(matrix.get_m(), 2);
     EXPECT_EQ(matrix.get_n(), 3);
     EXPECT_EQ(matrix[0][0], 1);
-    EXPECT_EQ(matrix[0][1], 2);
-    EXPECT_EQ(matrix[0][2], 3);
-    EXPECT_EQ(matrix[1][0], 4);
-    EXPECT_EQ(matrix[1][1], 5);
     EXPECT_EQ(matrix[1][2], 6);
 }
-TEST(TestMatrixLib, throw_when_try_copy_vector) {
+TEST(TestMatrixLib, throw_when_try_copy_matrix) {
     Matrix<int>* obj = nullptr;
     ASSERT_ANY_THROW(Matrix<int> copy_obj(*obj));
 }

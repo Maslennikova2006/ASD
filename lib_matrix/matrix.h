@@ -18,6 +18,7 @@ template <typename T> std::istream& operator>>(std::istream& is, Matrix<T>& vec)
 
 template <typename T>
 class Matrix : public MathVector<MathVector<T>> {
+protected:
     size_t _m;
     size_t _n;
 

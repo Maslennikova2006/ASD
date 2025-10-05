@@ -14,6 +14,11 @@ TEST(TestMathVectorLib, check_the_initialization_constructor) {
     EXPECT_EQ(static_cast <size_t>(5), vec.size());
     EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
 }
+TEST(TestMathVectorLib, check_the_constructor_with_size_and_start_index) {
+    MathVector<float> vec(5, 2);
+    EXPECT_EQ(static_cast <size_t>(5), vec.size());
+    EXPECT_EQ(static_cast <size_t>(2), vec.get_start_index());
+}
 TEST(TestMathVectorLib, check_the_initialization_list_constructor) {
     MathVector<int> vec(4, { 1, 2, 3, 4 });
     EXPECT_EQ(static_cast <size_t>(4), vec.size());
@@ -137,6 +142,10 @@ TEST(TestMathVectorLib, check_the_index_conversion_operator) {
     MathVector<int> vec({ 1, 2, 3, 4 });
     vec[2] = 6;
     EXPECT_EQ(6, vec[2]);
+}
+TEST(TestMathVectorLib, check_the_at) {
+    MathVector<int> vec({ 1, 2, 3, 4 });
+    EXPECT_EQ(2, vec.at(1));
 }
 TEST(TestMathVectorLib, check_the_equality_operator) {
     MathVector<int> vec1({ 1, 2, 3, 4 });
