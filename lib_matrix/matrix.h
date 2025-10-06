@@ -216,7 +216,7 @@ Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& second) {
     this->MathVector<MathVector<T>>::operator-=(second);
     return *this;
 }
-template <typename T>        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+template <typename T>
 Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& second) {
     if (this->is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");

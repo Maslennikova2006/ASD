@@ -12,7 +12,7 @@ TEST(TestMathVectorLib, check_the_initialization_constructor) {
     int array[5] = { 1, 2, 3, 4, 5 };
     MathVector<int> vec(5, array);
     EXPECT_EQ(static_cast <size_t>(5), vec.size());
-    EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
+    EXPECT_EQ(static_cast<size_t>(5), vec.capacity());
 }
 TEST(TestMathVectorLib, check_the_constructor_with_size_and_start_index) {
     MathVector<float> vec(5, 2);
@@ -22,7 +22,7 @@ TEST(TestMathVectorLib, check_the_constructor_with_size_and_start_index) {
 TEST(TestMathVectorLib, check_the_initialization_list_constructor) {
     MathVector<int> vec(4, { 1, 2, 3, 4 });
     EXPECT_EQ(static_cast <size_t>(4), vec.size());
-    EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec.capacity());
+    EXPECT_EQ(static_cast<size_t>(4), vec.capacity());
 }
 TEST(TestMathVectorLib, throw_when_try_copy_vector) {
     MathVector<int>* obj = nullptr;
@@ -33,7 +33,7 @@ TEST(TestMathVectorLib, check_the_copy_constructor) {
     MathVector<int> vec1(5, array);
     MathVector<int> vec2(vec1);
     EXPECT_EQ(static_cast <size_t>(5), vec2.size());
-    EXPECT_EQ(static_cast<size_t>(STEP_OF_CAPACITY), vec2.capacity());
+    EXPECT_EQ(static_cast<size_t>(5), vec2.capacity());
 }
 TEST(TestMathVectorLib, check_the_addition) {
     MathVector<int> vec1({ 2, 3, 4, 5 });
@@ -41,9 +41,22 @@ TEST(TestMathVectorLib, check_the_addition) {
     MathVector<int> res({ 3, 5, 7, 9 });
     EXPECT_EQ(res, vec1 + vec2);
 }
+TEST(TestMathVectorLib, check_the_addition_2) {
+    MathVector<int> vec1({ 2, 3, 4, 5 }, 2);
+    MathVector<int> vec2({ 1, 2, 3, 4 }, 2);
+    MathVector<int> res({ 3, 5, 7, 9 }, 2);
+    EXPECT_EQ(res, vec1 + vec2);
+}
 TEST(TestMathVectorLib, check_the_addition_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
+
+    ASSERT_ANY_THROW(vec1 + vec2);
+}
+TEST(TestMathVectorLib, check_the_addition_exception_when_different_size_2) {
+    MathVector<int> vec1({ 2, 3, 4, 5 }, 1);
+    MathVector<int> vec2({ 1, 2, 3, 4 }, 2);
+
     ASSERT_ANY_THROW(vec1 + vec2);
 }
 TEST(TestMathVectorLib, check_the_addition_exception_when_empty_vector) {
@@ -62,6 +75,12 @@ TEST(TestMathVectorLib, check_the_subtraction_exception_when_different_size) {
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 - vec2);
 }
+TEST(TestMathVectorLib, check_the_subtraction_exception_when_different_size_2) {
+    MathVector<int> vec1({ 2, 3, 4, 5 });
+    MathVector<int> vec2({ 1, 2, 3, 4 }, 1);
+
+    ASSERT_ANY_THROW(vec1 - vec2);
+}
 TEST(TestMathVectorLib, check_the_subtraction_exception_when_empty_vector) {
     MathVector<int> vec1;
     MathVector<int> vec2({ 1, 2, 3, 4 });
@@ -74,6 +93,11 @@ TEST(TestMathVectorLib, check_the_multiplication) {
 }
 TEST(TestMathVectorLib, check_the_multiplication_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 * vec2);
+}
+TEST(TestMathVectorLib, check_the_multiplication_exception_when_different_size_2) {
+    MathVector<int> vec1({ 2, 3, 4, 5}, 2);
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 * vec2);
 }
@@ -102,6 +126,11 @@ TEST(TestMathVectorLib, check_the_addition_with_assignment_exception_when_differ
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 += vec2);
 }
+TEST(TestMathVectorLib, check_the_addition_with_assignment_exception_when_different_size_2) {
+    MathVector<int> vec1({ 2, 3, 4, 5 }, 2);
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 += vec2);
+}
 TEST(TestMathVectorLib, check_the_addition_with_assignment_exception_when_empty_vector) {
     MathVector<int> vec1({ 1, 2, 3, 4 });
     MathVector<int> vec2;
@@ -113,8 +142,13 @@ TEST(TestMathVectorLib, check_the_subtraction_with_assignment) {
     MathVector<int> res({ 1, 1, 1, 1 });
     EXPECT_EQ(res, vec1 -= vec2);
 }
-TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception) {
+TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    ASSERT_ANY_THROW(vec1 -= vec2);
+}
+TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception_when_different_size_2) {
+    MathVector<int> vec1({ 2, 3, 4, 5 }, 5);
     MathVector<int> vec2({ 1, 2, 3, 4 });
     ASSERT_ANY_THROW(vec1 -= vec2);
 }

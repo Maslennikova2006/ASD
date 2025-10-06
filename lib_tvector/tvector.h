@@ -607,11 +607,19 @@ bool TVector<T>::operator==(const TVector<T>& other) const noexcept {
 template <class T>
 const T& TVector<T>::operator[](size_t index) const {
     size_t new_index = recalculate_the_position(index);
+    if (new_index >= _size + _deleted) {
+        static T default_val = T();
+        return default_val;
+    }
     return _data[new_index];
 }
 template <class T>
 T& TVector<T>::operator[](size_t index) {
     size_t new_index = recalculate_the_position(index);
+    if (new_index >= _size + _deleted) {
+        static T default_val = T();
+        return default_val;
+    }
     return _data[new_index];
 }
 
@@ -694,6 +702,7 @@ size_t TVector<T>::recalculate_the_position(size_t index) const noexcept {
             count_busy++;
         }
     }
+    return 0;
 }
 template <class T>
 T* TVector<T>::recalculate_the_address(size_t index) const noexcept {
@@ -706,6 +715,7 @@ T* TVector<T>::recalculate_the_address(size_t index) const noexcept {
             count_busy++;
         }
     }
+    return nullptr;
 }
 template <class T>
 void TVector<T>::move_the_elements(size_t begin, size_t end) noexcept {

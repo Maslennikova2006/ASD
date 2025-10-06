@@ -140,8 +140,8 @@ TEST(TestTriangleMatrixLib, check_the_multiplication_exception_when_empty_matrix
     ASSERT_ANY_THROW(matrix1 * matrix2);
 }
 TEST(TestTriangleMatrixLib, check_the_multiplication_by_a_scalar) {
-    TriangleMatrix<int> matrix({ { 1, 2, 4 }, {4, 5}, {6} });
-    TriangleMatrix<int> res({ {3, 6, 12}, {12, 15}, {18} });
+    TriangleMatrix<int> matrix({ { 1, 2, 4, 5 }, {4, 5, 6}, {6, 4}, {3} });
+    TriangleMatrix<int> res({ {3, 6, 12, 15}, {12, 15, 18}, {18, 12}, {9} });
 
     EXPECT_EQ(res, matrix * 3);
 }

@@ -44,10 +44,10 @@ template <typename T> class TriangleMatrix;
 template <typename T> class MathVector;
 
 template <typename T>
-void actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
+bool actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
     Matrix<T>& C, MathVector<T>& vector_c, int answer_operation);
 template <typename T>
-void actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
+bool actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
     TriangleMatrix<T>& C, MathVector<T>& vector_c, int answer_operation);
 
 void matrix_menu(int& answer_matrix, bool& isExit) {
@@ -90,7 +90,7 @@ void check_size(int size) {
         throw std::logic_error("The size must be greater than 0!\n");
 }
 template <typename T>
-void actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
+bool actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
     Matrix<T>& C, MathVector<T>& vector_c, int answer_operation) {
     size_t M_a, N_a;
     size_t M_b, N_b;
@@ -183,6 +183,7 @@ void actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     case 2:
@@ -191,6 +192,7 @@ void actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     case 3:
@@ -199,6 +201,7 @@ void actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     case 4:
@@ -210,14 +213,16 @@ void actions_with_ordinary_matrices(Matrix<T>& A, Matrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     default:
         break;
     }
+    return true;
 }
 template <typename T>
-void actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
+bool actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
     TriangleMatrix<T>& C, MathVector<T>& vector_c, int answer_operation) {
     size_t size_a, size_b;
     size_t size;
@@ -285,6 +290,7 @@ void actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     case 2:
@@ -293,6 +299,7 @@ void actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     case 3:
@@ -301,6 +308,7 @@ void actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     case 4:
@@ -312,11 +320,13 @@ void actions_with_triangle_matrices(TriangleMatrix<T>& A, TriangleMatrix<T>& B,
         }
         catch (const std::exception& ex) {
             std::cerr << ex.what();
+            return false;
         }
         break;
     default:
         break;
     }
+    return true;
 }
 
 #ifdef INTERFACE
@@ -328,6 +338,7 @@ int main() {
         int answer_matrix;
         int answer_operation;
         bool isExit = false;
+        bool isSuccess = false;
         operation_menu(answer_operation, isExit);
         if (isExit)
             break;
@@ -338,29 +349,33 @@ int main() {
         if (answer_matrix == 1) {
             Matrix<int> matrix_a, matrix_b, matrix_c;
             MathVector<int> vector_c;
-            actions_with_ordinary_matrices<int>(matrix_a, matrix_b, matrix_c, vector_c, answer_operation);
-            std::cout << "Result: \n";
-            if (answer_operation != 5) {
-                std::cout << matrix_c;
-            }
-            else {
-                std::cout << vector_c;
+            isSuccess = actions_with_ordinary_matrices<int>(matrix_a, matrix_b, matrix_c, vector_c, answer_operation);
+            if (isSuccess) {
+                std::cout << "Result: \n";
+                if (answer_operation != 5) {
+                    std::cout << matrix_c;
+                }
+                else {
+                    std::cout << vector_c;
+                }
             }
         }
         else {
             TriangleMatrix<int> matrix_a, matrix_b, matrix_c;
             MathVector<int> vector_c;
-            actions_with_triangle_matrices<int>(matrix_a, matrix_b, matrix_c, vector_c, answer_operation);
-            std::cout << "Result: \n";
-            if (answer_operation != 5) {
-                std::cout << matrix_c;
-            }
-            else {
-                std::cout << vector_c;
+            isSuccess = actions_with_triangle_matrices<int>(matrix_a, matrix_b, matrix_c, vector_c, answer_operation);
+            if (isSuccess) {
+                std::cout << "Result: \n";
+                if (answer_operation != 5) {
+                    std::cout << matrix_c;
+                }
+                else {
+                    std::cout << vector_c;
+                }
             }
         }
         char answer;
-        std::cout << "Do you want to continue?\n";
+        std::cout << "\nDo you want to continue?\n";
         std::cout << "Your choice: ";
         std::cin >> answer;
         if (answer == 'n')

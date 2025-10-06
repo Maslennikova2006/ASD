@@ -97,9 +97,9 @@ TriangleMatrix<T> TriangleMatrix<T>::operator*(const TriangleMatrix<T>& other) {
         for (size_t j = i; j < _n; j++) {
             T sum = T();
             for (size_t k = i; k <= j; k++) {
-                sum += (*this)[i][k - i] * other[k][j - k];
+                sum += (*this)[i][k] * other[k][j];
             }
-            res[i][j - i] = sum;
+            res[i][j] = sum;
         }
     }
     return res;
@@ -118,7 +118,7 @@ MathVector<T> TriangleMatrix<T>::operator*(const MathVector<T>& vector) {
     for (size_t i = 0; i < _n; i++) {
         T sum = T();
         for (size_t j = i; j < _n; j++) {
-            sum += (*this)[i][j - i] * vector[j];
+            sum += (*this)[i][j] * vector[j];
         }
         res[i] = sum;
     }
@@ -127,22 +127,22 @@ MathVector<T> TriangleMatrix<T>::operator*(const MathVector<T>& vector) {
 
 template <typename T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator+=(const TriangleMatrix<T>& other) {
-    (*this) = (*this) + other;
+    Matrix<T>::operator+=(other);
     return *this;
 }
 template <typename T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator-=(const TriangleMatrix<T>& other) {
-    (*this) = (*this) - other;
+    Matrix<T>::operator-=(other);
     return *this;
 }
 template <typename T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator*=(const TriangleMatrix<T>& other) {
-    (*this) = (*this) * other;
+    *this = *this * other;
     return *this;
 }
 template <typename T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator*=(const T& scalar) {
-    (*this) = (*this) * scalar;
+    Matrix<T>::operator*=(scalar);
     return *this;
 }
 
@@ -165,26 +165,21 @@ bool TriangleMatrix<T>::operator!=(const TriangleMatrix<T>& second) const {
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const TriangleMatrix<T>& matrix) {
-    for (size_t i = 0; i < matrix.get_m(); i++) {
-        for (size_t j = 0; j < matrix.get_m(); j++) {
-            if (j >= i) {
-                os << matrix[i][j];
-            }
-            else {
-                os << "0";
-            }
-
-            if (j < matrix.get_m() - 1) os << " ";
+    for (size_t i = 0; i < matrix.get_n(); i++) {
+        for (size_t j = 0; j < i; j++) {
+            os << "0 ";
         }
-
-        if (i < matrix.get_m() - 1) os << "\n";
+        for (size_t j = i; j < matrix.get_n(); j++) {
+            os << matrix[i][j] << " ";
+        }
+        os << std::endl;
     }
     return os;
 }
 template <typename T>
 std::istream& operator>>(std::istream& is, TriangleMatrix<T>& matrix) {
-    for (size_t i = 0; i < matrix.get_m(); i++) {
-        for (size_t j = i; j < matrix.get_m(); j++) {
+    for (size_t i = 0; i < matrix.get_n(); i++) {
+        for (size_t j = i; j < matrix.get_n(); j++) {
             is >> matrix[i][j];
         }
     }
