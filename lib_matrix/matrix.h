@@ -13,6 +13,7 @@
 template <typename T>
 class Matrix;
 
+// template <typename T> MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix);
 template <typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>& vec);
 template <typename T> std::istream& operator>>(std::istream& is, Matrix<T>& vec);
 
@@ -39,7 +40,7 @@ public:
 
     bool is_empty() const noexcept;
 
-    Matrix<T> Trans() const noexcept;  // делать ли исключение, если пустая матрица?
+    Matrix<T> Trans() const noexcept;
 
     Matrix<T> operator+(const Matrix<T>& other);  // +
     Matrix<T> operator-(const Matrix<T>& other);  // +
@@ -59,6 +60,19 @@ public:
 
     bool operator==(const Matrix<T>& second) const;  // +
     bool operator!=(const Matrix<T>& second) const;  // +
+
+    friend MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix) {
+        if (vec.is_empty() || matrix.is_empty())
+            throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+        if (vec.size() != matrix.get_m())
+            throw std::invalid_argument("The matrix and vector are not compatible in size!");
+        MathVector<T> res(matrix.get_n());
+        Matrix<T> trans_matrix = matrix.Trans();
+        for (size_t i = 0; i < matrix.get_n(); i++) {
+            res[i] = vec * trans_matrix[i];
+        }
+        return res;
+    }
 
     friend std::ostream& operator<< <T>(std::ostream& os, const Matrix<T>&);
     friend std::istream& operator>> <T>(std::istream& is, Matrix<T>&);
@@ -132,7 +146,7 @@ bool Matrix<T>::is_empty() const noexcept {
 }
 
 template <typename T>
-Matrix<T> Matrix<T>::Trans() const noexcept {  // !!!!!!!!!!!!!!!!!!!!!!!!!!
+Matrix<T> Matrix<T>::Trans() const noexcept {
     if (this->is_empty())
         return *this;
     Matrix<T> res(_n, _m);

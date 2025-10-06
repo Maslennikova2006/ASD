@@ -42,6 +42,22 @@ public:
     bool operator==(const TriangleMatrix<T>& second) const;  // +
     bool operator!=(const TriangleMatrix<T>& second) const;  // +
 
+    friend MathVector<T> operator*(const MathVector<T>& vec, const TriangleMatrix<T>& matrix) {
+        if (vec.is_empty() || matrix.is_empty())
+            throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+        if (vec.size() != matrix.get_m())
+            throw std::invalid_argument("The matrix and vector are not compatible in size!");
+        MathVector<T> res(matrix.get_m());
+        for (size_t i = 0; i < matrix.get_n(); i++) {
+            T sum = T();
+            for (size_t j = 0; j < matrix.get_m(); j++) {
+                sum += vec[j] * matrix[j][i];
+            }
+            res[i] = sum;
+        }
+        return res;
+    }
+
     friend std::ostream& operator<< <T>(std::ostream& os, const TriangleMatrix<T>&);
     friend std::istream& operator>> <T>(std::istream& is, TriangleMatrix<T>&);
 };
