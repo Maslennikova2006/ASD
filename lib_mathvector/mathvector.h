@@ -142,7 +142,7 @@ bool MathVector<T>::is_empty() const noexcept {
 }
 
 template <class T>
-MathVector<T> MathVector<T>::operator+(const MathVector<T>& second) const {
+MathVector<T> MathVector<T>::operator+(const MathVector<T>& second) const { // start_index
     if (this->is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size() || _start_index != second._start_index)
@@ -189,7 +189,7 @@ MathVector<T> MathVector<T>::operator*(const T scalar) const {
 }
 
 template <class T>
-MathVector<T>& MathVector<T>::operator+=(const MathVector<T>& second) {
+MathVector<T>& MathVector<T>::operator+=(const MathVector<T>& second) { // +
     if (this->is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
     if (this->size() != second.size() || _start_index != second._start_index)
@@ -223,7 +223,7 @@ MathVector<T>& MathVector<T>::operator*=(const T scalar) {
 template <class T>
 MathVector<T>& MathVector<T>::operator=(const MathVector<T>& other) {
     if (this != &other) {
-        TVector<T>::operator=(other);
+        this->TVector<T>::operator=(other);
         _start_index = other._start_index;
     }
     return *this;
@@ -254,7 +254,7 @@ bool MathVector<T>::operator==(const MathVector<T>& second) const {
     return TVector<T>::operator==(second) && _start_index == second._start_index;
 }
 template <class T>
-bool MathVector<T>::operator!=(const MathVector<T>& second) const {
+bool MathVector<T>::operator!=(const MathVector<T>& second) const { // !
     return TVector<T>::operator!=(second) || _start_index != second._start_index;
 }
 
