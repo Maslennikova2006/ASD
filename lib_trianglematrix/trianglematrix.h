@@ -104,20 +104,8 @@ TriangleMatrix<T> TriangleMatrix<T>::operator-(const TriangleMatrix<T>& other) {
 }
 template <typename T>
 TriangleMatrix<T> TriangleMatrix<T>::operator*(const TriangleMatrix<T>& other) {
-    if (this->is_empty() || other.is_empty())
-        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
-    if (_m != other._n)
-        throw std::invalid_argument("You can only multiply triangular matrices of the same size!");
-    TriangleMatrix<T> res(_n);
-    for (size_t i = 0; i < _n; i++) {
-        for (size_t j = i; j < _n; j++) {
-            T sum = T();
-            for (size_t k = i; k <= j; k++) {
-                sum += (*this)[i][k] * other[k][j];
-            }
-            res[i][j] = sum;
-        }
-    }
+    TriangleMatrix<T> res(*this);
+    res *= other;
     return res;
 }
 template <typename T>
@@ -126,19 +114,7 @@ TriangleMatrix<T> TriangleMatrix<T>::operator*(const T& scalar) {
 }
 template <typename T>
 MathVector<T> TriangleMatrix<T>::operator*(const MathVector<T>& vector) {
-    if (this->is_empty() || vector.is_empty())
-        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
-    if (_n != vector.size())
-        throw std::invalid_argument("The matrix and vector are not compatible in size!");
-    MathVector<T> res(_n);
-    for (size_t i = 0; i < _n; i++) {
-        T sum = T();
-        for (size_t j = i; j < _n; j++) {
-            sum += (*this)[i][j] * vector[j];
-        }
-        res[i] = sum;
-    }
-    return res;
+    return this->Matrix<T>::operator*(vector);
 }
 
 template <typename T>
@@ -153,7 +129,21 @@ TriangleMatrix<T>& TriangleMatrix<T>::operator-=(const TriangleMatrix<T>& other)
 }
 template <typename T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator*=(const TriangleMatrix<T>& other) {
-    *this = *this * other;
+    if (this->is_empty() || other.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != other._n)
+        throw std::invalid_argument("You can only multiply triangular matrices of the same size!");
+    TriangleMatrix<T> res(_n);
+    for (size_t i = 0; i < _n; i++) {
+        for (size_t j = i; j < _n; j++) {
+            T sum = T();
+            for (size_t k = i; k <= j; k++) {
+                sum += (*this)[i][k] * other[k][j];
+            }
+            res[i][j] = sum;
+        }
+    }
+    (*this) = res;
     return *this;
 }
 template <typename T>
@@ -165,14 +155,14 @@ TriangleMatrix<T>& TriangleMatrix<T>::operator*=(const T& scalar) {
 template <typename T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator=(const TriangleMatrix<T>& other) {
     if (this != &other) {
-        Matrix<T>::operator=(other);
+        this->Matrix<T>::operator=(other);
     }
     return *this;
 }
 
 template <typename T>
 bool TriangleMatrix<T>::operator==(const TriangleMatrix<T>& second) const {
-    return Matrix<T>::operator==(second);
+    return this->Matrix<T>::operator==(second);
 }
 template <typename T>
 bool TriangleMatrix<T>::operator!=(const TriangleMatrix<T>& second) const {

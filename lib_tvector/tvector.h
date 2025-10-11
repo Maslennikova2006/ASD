@@ -555,29 +555,20 @@ template <class T>
 TVector<T>& TVector<T>::operator=(const TVector<T>& other) noexcept {
     if (this == &other)
         return *this;
-    size_t size = other._size;
-    size_t capacity = (size / STEP_OF_CAPACITY + 1) * STEP_OF_CAPACITY;
-    if (_capacity != capacity) {
-        reallocation_memory(size);
-    }
-    else {
-        _size = size;
-    }
+    set_memory(other._size);
+
     size_t j = 0;
-    for (size_t i = 0; i < size + other._deleted; i++) {
+    for (size_t i = 0; i < other._size + other._deleted; i++) {
         if (other._states[i] == busy) {
             _data[j] = other._data[i];
             _states[j] = busy;
-            if (j == size) {
-                break;
-            }
             j++;
         }
     }
-    while (j < _capacity) {
-        _states[j++] = empty;
+    while(j < _capacity) {
+        _states[j] = empty;
+        j++;
     }
-    _deleted = 0;
     return *this;
 }
 template <class T>

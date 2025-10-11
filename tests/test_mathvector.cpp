@@ -121,6 +121,18 @@ TEST(TestMathVectorLib, check_addition_with_assignment) {
     MathVector<int> res({ 3, 5, 7, 9 });
     EXPECT_EQ(res, vec1 += vec2);
 }
+TEST(TestMathVectorLib, check_addition_with_assignment_with_different_start_index) {
+    MathVector<int> vec1({ 4, 5 }, 2);
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    MathVector<int> res({ 1, 2, 7, 9 });
+    EXPECT_EQ(res, vec1 += vec2);
+}
+TEST(TestMathVectorLib, check_addition_with_assignment_with_different_start_index_2) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2({ 4, 5, 6 }, 1);
+    MathVector<int> res({ 1, 6, 8, 10 });
+    EXPECT_EQ(res, vec1 += vec2);
+}
 TEST(TestMathVectorLib, check_the_addition_with_assignment_exception_when_different_size) {
     MathVector<int> vec1({ 2, 3, 4, 5, 6 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
@@ -140,6 +152,18 @@ TEST(TestMathVectorLib, check_the_subtraction_with_assignment) {
     MathVector<int> vec1({ 2, 3, 4, 5 });
     MathVector<int> vec2({ 1, 2, 3, 4 });
     MathVector<int> res({ 1, 1, 1, 1 });
+    EXPECT_EQ(res, vec1 -= vec2);
+}
+TEST(TestMathVectorLib, check_subtraction_with_assignment_with_different_start_index) {
+    MathVector<int> vec1({ 4, 5 }, 2);
+    MathVector<int> vec2({ 1, 2, 3, 4 });
+    MathVector<int> res({ -1, -2, 1, 1 });
+    EXPECT_EQ(res, vec1 -= vec2);
+}
+TEST(TestMathVectorLib, check_subtraction_with_assignment_with_different_start_index_2) {
+    MathVector<int> vec1({ 1, 2, 3, 4 });
+    MathVector<int> vec2({ 4, 5, 6 }, 1);
+    MathVector<int> res({ 1, -2, -2, -2 });
     EXPECT_EQ(res, vec1 -= vec2);
 }
 TEST(TestMathVectorLib, check_the_subtraction_with_assignment_exception_when_different_size) {
