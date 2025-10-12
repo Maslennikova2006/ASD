@@ -14,6 +14,13 @@ TEST(TestMathVectorLib, check_the_initialization_constructor) {
     EXPECT_EQ(static_cast <size_t>(5), vec.size());
     EXPECT_EQ(static_cast<size_t>(5), vec.capacity());
 }
+TEST(TestMathVectorLib, check_the_initialization_constructor_with_start_index) {
+    int array[5] = { 1, 2, 3, 4, 5 };
+    MathVector<int> vec(5, array, 2);
+    EXPECT_EQ(static_cast <size_t>(5), vec.size());
+    EXPECT_EQ(static_cast<size_t>(5), vec.capacity());
+    EXPECT_EQ(static_cast<size_t>(2), vec.get_start_index());
+}
 TEST(TestMathVectorLib, check_the_constructor_with_size_and_start_index) {
     MathVector<float> vec(5, 2);
     EXPECT_EQ(static_cast <size_t>(5), vec.size());
@@ -23,6 +30,12 @@ TEST(TestMathVectorLib, check_the_initialization_list_constructor) {
     MathVector<int> vec(4, { 1, 2, 3, 4 });
     EXPECT_EQ(static_cast <size_t>(4), vec.size());
     EXPECT_EQ(static_cast<size_t>(4), vec.capacity());
+}
+TEST(TestMathVectorLib, check_the_initialization_list_constructor_with_start_index) {
+    MathVector<int> vec(4, { 1, 2, 3, 4 }, 2);
+    EXPECT_EQ(static_cast <size_t>(4), vec.size());
+    EXPECT_EQ(static_cast<size_t>(4), vec.capacity());
+    EXPECT_EQ(static_cast<size_t>(2), vec.get_start_index());
 }
 TEST(TestMathVectorLib, throw_when_try_copy_vector) {
     MathVector<int>* obj = nullptr;

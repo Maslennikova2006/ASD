@@ -10,25 +10,27 @@
 
 #include "../lib_tvector/tvector.h"
 
-template <typename T>
+template <class T>
 class MathVector;
 
-template <typename T> std::ostream& operator<<(std::ostream& os, const MathVector<T>& vec);
-template <typename T> std::istream& operator>>(std::istream& is, MathVector<T>& vec);
+template <class T> std::ostream& operator<<(std::ostream& os, const MathVector<T>& vec);
+template <class T> std::istream& operator>>(std::istream& is, MathVector<T>& vec);
 
-template <typename T>
+template <class T>
 class MathVector : private TVector<T> {
 protected:
     size_t _start_index;
 
 public:
     MathVector();
-    explicit MathVector(size_t size);
-    MathVector(size_t size, size_t start_index);
-    MathVector(size_t size, const T* data);
-    MathVector(size_t size, std::initializer_list<T> data);
-    MathVector(std::initializer_list<T> data, size_t start_index);
+    explicit MathVector(const size_t size);
+    MathVector(const size_t size, const size_t start_index);
+    MathVector(const size_t size, const T* data);
+    MathVector(const size_t size, const T* data, const size_t start_index);
+    MathVector(const size_t size, std::initializer_list<T> data);
+    MathVector(const size_t size, std::initializer_list<T> data, const size_t start_index);
     MathVector(std::initializer_list<T> data);
+    MathVector(std::initializer_list<T> data, const size_t start_index);
     MathVector(const MathVector<T>& other);
 
     ~MathVector();
@@ -53,14 +55,14 @@ public:
     MathVector<T>& operator-=(const MathVector<T>& second);  // +
     MathVector<T>& operator*=(const T scalar);  // +
 
-    MathVector<T>& operator=(const MathVector<T>& other);
+    MathVector<T>& operator=(const MathVector<T>& other) noexcept;
 
-    const T& operator[](const size_t index) const;  // +
-    T& operator[](const size_t index);  // +
-    const T& at(size_t index) const;  // +
+    const T& operator[](const size_t index) const noexcept;  // +
+    T& operator[](const size_t index) noexcept;  // +
+    const T& at(const size_t index) const;  // +
 
-    bool operator==(const MathVector<T>& second) const;  // +
-    bool operator!=(const MathVector<T>& second) const;  // +
+    bool operator==(const MathVector<T>& second) const noexcept;  // +
+    bool operator!=(const MathVector<T>& second) const noexcept;  // +
 
     friend std::ostream& operator<< <T>(std::ostream& os, const MathVector<T>& vec);
     friend std::istream& operator>> <T>(std::istream& is, MathVector<T>& vec);
@@ -71,24 +73,32 @@ MathVector<T>::MathVector() {
     _start_index = 0;
 }
 template <class T>
-MathVector<T>::MathVector(size_t size) : TVector<T>(size) {
+MathVector<T>::MathVector(const size_t size) : TVector<T>(size) {
     _start_index = 0;
     shrink_to_fit();
 }
 template <class T>
-MathVector<T>::MathVector(size_t size, size_t start_index) : TVector<T>(size) {
+MathVector<T>::MathVector(const size_t size, const size_t start_index) : TVector<T>(size) {
     _start_index = start_index;
     shrink_to_fit();
 }
 template <class T>
-MathVector<T>::MathVector(size_t size, const T* data) : TVector<T>(size, data) {
+MathVector<T>::MathVector(const size_t size, const T* data) : TVector<T>(size, data) {
     _start_index = 0;
     shrink_to_fit();
 }
 template <class T>
-MathVector<T>::MathVector(size_t size, std::initializer_list<T> data) : TVector<T>(size, data) {
+MathVector<T>::MathVector(const size_t size, const T* data, const size_t start_index) : MathVector<T>(size, data) {
+    _start_index = start_index;
+}
+template <class T>
+MathVector<T>::MathVector(const size_t size, std::initializer_list<T> data) : TVector<T>(size, data) {
     _start_index = 0;
     shrink_to_fit();
+}
+template <class T>
+MathVector<T>::MathVector(const size_t size, std::initializer_list<T> data, const size_t start_index) : MathVector<T>(size, data) {
+    _start_index = start_index;
 }
 template <class T>
 MathVector<T>::MathVector(std::initializer_list<T> data) : TVector<T>(data) {
@@ -96,7 +106,7 @@ MathVector<T>::MathVector(std::initializer_list<T> data) : TVector<T>(data) {
     shrink_to_fit();
 }
 template <class T>
-MathVector<T>::MathVector(std::initializer_list<T> data, size_t start_index) : TVector<T>(data) {
+MathVector<T>::MathVector(std::initializer_list<T> data, const size_t start_index) : TVector<T>(data) {
     _start_index = start_index;
     shrink_to_fit();
 }
@@ -110,15 +120,15 @@ template <class T>
 MathVector<T>::~MathVector() {}
 
 template <class T>
-T* MathVector<T>::data() noexcept {
+inline T* MathVector<T>::data() noexcept {
     return this->TVector<T>::data();
 }
 template <class T>
-size_t MathVector<T>::size() const noexcept {
+inline size_t MathVector<T>::size() const noexcept {
     return this->TVector<T>::size();
 }
 template <class T>
-size_t MathVector<T>::capacity() const noexcept{
+inline size_t MathVector<T>::capacity() const noexcept{
     return this->TVector<T>::capacity();
 }
 template <class T>
@@ -127,19 +137,17 @@ inline const T* MathVector<T>::data() const noexcept {
 }
 
 template <class T>
-void MathVector<T>::set_start_index(const size_t ind) {
-    if (ind < 0)
-        throw std::invalid_argument("The starting index cannot be less than zero!");
+inline void MathVector<T>::set_start_index(const size_t ind) {
     _start_index = ind;
 }
 
 template <class T>
-const size_t MathVector<T>::get_start_index() const noexcept {
+inline const size_t MathVector<T>::get_start_index() const noexcept {
     return _start_index;
 }
 
 template <class T>
-bool MathVector<T>::is_empty() const noexcept {
+inline bool MathVector<T>::is_empty() const noexcept {
     return this->TVector<T>::is_empty();
 }
 
@@ -220,7 +228,7 @@ MathVector<T>& MathVector<T>::operator*=(const T scalar) {
 }
 
 template <class T>
-MathVector<T>& MathVector<T>::operator=(const MathVector<T>& other) {
+MathVector<T>& MathVector<T>::operator=(const MathVector<T>& other) noexcept {
     if (this != &other) {
         this->TVector<T>::operator=(other);
         _start_index = other._start_index;
@@ -229,7 +237,7 @@ MathVector<T>& MathVector<T>::operator=(const MathVector<T>& other) {
 }
 
 template <class T>
-const T& MathVector<T>::operator[](const size_t index) const {
+const T& MathVector<T>::operator[](const size_t index) const noexcept {
     const T zero = T();
     if (index < _start_index || index >= _start_index + size()) {
         return zero;
@@ -237,7 +245,7 @@ const T& MathVector<T>::operator[](const size_t index) const {
     return this->TVector<T>::operator[](index - _start_index);
 }
 template <class T>
-T& MathVector<T>::operator[](const size_t index) {
+T& MathVector<T>::operator[](const size_t index) noexcept {
     T zero = T();
     if (index < _start_index || index >= _start_index + size()) {
         return zero;
@@ -245,16 +253,16 @@ T& MathVector<T>::operator[](const size_t index) {
     return this->TVector<T>::operator[](index - _start_index);
 }
 template <class T>
-const T& MathVector<T>::at(size_t index) const {
+const T& MathVector<T>::at(const size_t index) const {
     return this->TVector<T>::at(index - _start_index);
 }
 
 template <class T>
-bool MathVector<T>::operator==(const MathVector<T>& second) const {
+bool MathVector<T>::operator==(const MathVector<T>& second) const noexcept {
     return this->TVector<T>::operator==(second) && _start_index == second._start_index;
 }
 template <class T>
-bool MathVector<T>::operator!=(const MathVector<T>& second) const {
+bool MathVector<T>::operator!=(const MathVector<T>& second) const noexcept {
     return !((*this) == second);
 }
 

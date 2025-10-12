@@ -12,11 +12,10 @@
 
 template <class T>
 class Matrix;
-
 template <class T>
 class MathVector;
 
-//template <class T> MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix);
+template <class T> MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix);
 template <class T> std::ostream& operator<<(std::ostream& os, const Matrix<T>& vec);
 template <class T> std::istream& operator>>(std::istream& is, Matrix<T>& vec);
 
@@ -28,15 +27,15 @@ protected:
 
 public:
     Matrix();  // +
-    Matrix(size_t m, size_t n);  // +
+    Matrix(const size_t m, const size_t n);  // +
     Matrix(std::initializer_list<std::initializer_list<T>> lists);  // +
     Matrix(const MathVector<MathVector<T>>& matrix);  // +
     Matrix(const Matrix<T>& other);  // +
 
     ~Matrix();
 
-    inline void set_m(const size_t m);
-    inline void set_n(const size_t n);
+    inline void set_m(const size_t m) noexcept;
+    inline void set_n(const size_t n) noexcept;
 
     inline const size_t get_m() const noexcept;
     inline const size_t get_n() const noexcept;
@@ -45,43 +44,45 @@ public:
 
     Matrix<T> Trans() const noexcept;
 
-    Matrix<T> operator+(const Matrix<T>& other);  // +
-    Matrix<T> operator-(const Matrix<T>& other);  // +
-    Matrix<T> operator*(const Matrix<T>& other);  // +
-    Matrix<T> operator*(const T scalar);  // +
-    MathVector<T> operator*(const MathVector<T>& vector);  // +
+    Matrix<T> operator+(const Matrix<T>& other) const;  // +
+    Matrix<T> operator-(const Matrix<T>& other) const;  // +
+    Matrix<T> operator*(const Matrix<T>& other) const;  // +
+    Matrix<T> operator*(const T scalar) const;  // +
+    MathVector<T> operator*(const MathVector<T>& vector) const;  // +
 
     Matrix<T>& operator+=(const Matrix<T>& second);  // +
     Matrix<T>& operator-=(const Matrix<T>& second);  // +
     Matrix<T>& operator*=(const Matrix<T>& second);  // +
     Matrix<T>& operator*=(const T scalar); // +
 
-    MathVector<T>& operator[](size_t index);  // +
-    const MathVector<T>& operator[](size_t index) const;  // +
+    MathVector<T>& operator[](const size_t index) noexcept;  // +
+    const MathVector<T>& operator[](const size_t index) const noexcept;  // +
 
-    Matrix<T>& operator=(const Matrix<T>& other);  // +
+    Matrix<T>& operator=(const Matrix<T>& other) noexcept;  // +
 
-    bool operator==(const Matrix<T>& second) const;  // +
-    bool operator!=(const Matrix<T>& second) const;  // +
+    bool operator==(const Matrix<T>& second) const noexcept;  // +
+    bool operator!=(const Matrix<T>& second) const noexcept;  // +
 
-    //friend MathVector<T> operator* <T>(const MathVector<T>& vec, const Matrix<T>& matrix);
+    friend MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix);
 
     friend std::ostream& operator<< <T>(std::ostream& os, const Matrix<T>&);
     friend std::istream& operator>> <T>(std::istream& is, Matrix<T>&);
 };
 
-template <typename T>
+template <class T>
 Matrix<T>::Matrix() : MathVector<MathVector<T>>() {
     _m = 0;
     _n = 0;
 }
-template <typename T>
-Matrix<T>::Matrix(size_t m, size_t n) : MathVector<MathVector<T>>(m), _m(m), _n(n) {
+template <class T>
+Matrix<T>::Matrix(const size_t m, const size_t n) : MathVector<MathVector<T>>(m) {
+    _m = m;
+    _n = n;
     for (int i = 0; i < m; i++) {
         (*this)[i] = MathVector<T>(n);
     }
 }
-template <typename T>
+template <class T>
 Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> lists) : 
     MathVector<MathVector<T>>(lists.size()) {
     _m = lists.size();
@@ -93,51 +94,47 @@ Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> lists) :
         it++;
     }
 }
-template <typename T>
+template <class T>
 Matrix<T>::Matrix(const MathVector<MathVector<T>>& matrix) 
     : MathVector<MathVector<T>>(matrix) {
     _m = matrix.size();
     _n = (_m > 0) ? matrix[0].size() : 0;
 }
-template <typename T>
+template <class T>
 Matrix<T>::Matrix(const Matrix<T>& other) : MathVector<MathVector<T>>(other) {
     _m = other._m;
     _n = other._n;
 }
 
-template <typename T>
+template <class T>
 Matrix<T>::~Matrix() {
 
 }
 
-template <typename T>
-void Matrix<T>::set_m(const size_t m) {
-    if (m <= 0)
-        throw std::invalid_argument("The size cannot be less than or equal to 0!");
+template <class T>
+inline void Matrix<T>::set_m(const size_t m) noexcept {
     _m = m;
 }
-template <typename T>
-void Matrix<T>::set_n(const size_t n) {
-    if (n <= 0)
-        throw std::invalid_argument("The size cannot be less than or equal to 0!");
+template <class T>
+inline void Matrix<T>::set_n(const size_t n) noexcept {
     _n = n;
 }
 
-template <typename T>
-const size_t Matrix<T>::get_m() const noexcept {
+template <class T>
+inline const size_t Matrix<T>::get_m() const noexcept {
     return _m;
 }
-template <typename T>
-const size_t Matrix<T>::get_n() const noexcept {
+template <class T>
+inline const size_t Matrix<T>::get_n() const noexcept {
     return _n;
 }
 
-template <typename T>
-bool Matrix<T>::is_empty() const noexcept {
+template <class T>
+inline bool Matrix<T>::is_empty() const noexcept {
     return (_m == 0 && _n == 0);
 }
 
-template <typename T>
+template <class T>
 Matrix<T> Matrix<T>::Trans() const noexcept {
     if (this->is_empty())
         return *this;
@@ -150,8 +147,8 @@ Matrix<T> Matrix<T>::Trans() const noexcept {
     return res;
 }
 
-template <typename T>
-Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) {
+template <class T>
+Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) const {
     if (this->is_empty() || other.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
     if (_m != other._m || _n != other._n)
@@ -159,8 +156,8 @@ Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) {
 
     return Matrix<T>(this->MathVector<MathVector<T>>::operator+(other));
 }
-template <typename T>
-Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) {
+template <class T>
+Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) const {
     if (this->is_empty() || other.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
     if (_m != other._m || _n != other._n)
@@ -168,14 +165,14 @@ Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) {
 
     return Matrix<T>(this->MathVector<MathVector<T>>::operator-(other));
 }
-template <typename T>
-Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) {
+template <class T>
+Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
     Matrix<T> res(*this);
     res *= other;
     return res;
 }
-template <typename T>
-Matrix<T> Matrix<T>::operator*(const T scalar) {
+template <class T>
+Matrix<T> Matrix<T>::operator*(const T scalar) const {
     if (this->is_empty())
         throw std::invalid_argument("You can't multiply an empty matrix by a scalar!");
 
@@ -183,8 +180,8 @@ Matrix<T> Matrix<T>::operator*(const T scalar) {
     res *= scalar;
     return res;
 }
-template <typename T>
-MathVector<T> Matrix<T>::operator*(const MathVector<T>& vector) {
+template <class T>
+MathVector<T> Matrix<T>::operator*(const MathVector<T>& vector) const {
     if (this->is_empty() || vector.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
     if (_n != vector.size())
@@ -197,7 +194,7 @@ MathVector<T> Matrix<T>::operator*(const MathVector<T>& vector) {
     return res;
 }
 
-template <typename T>
+template <class T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& second) {
     if (this->is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
@@ -207,7 +204,7 @@ Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& second) {
     this->MathVector<MathVector<T>>::operator+=(second);
     return *this;
 }
-template <typename T>
+template <class T>
 Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& second) {
     if (this->is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
@@ -217,7 +214,7 @@ Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& second) {
     this->MathVector<MathVector<T>>::operator-=(second);
     return *this;
 }
-template <typename T>
+template <class T>
 Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& second) {
     if (this->is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
@@ -234,7 +231,7 @@ Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& second) {
     (*this) = res;
     return *this;
 }
-template <typename T>
+template <class T>
 Matrix<T>& Matrix<T>::operator*=(const T scalar) {
     if (this->is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty matrix!");
@@ -245,17 +242,17 @@ Matrix<T>& Matrix<T>::operator*=(const T scalar) {
     return *this;
 }
 
-template <typename T>
-MathVector<T>& Matrix<T>::operator[](size_t index) {
+template <class T>
+MathVector<T>& Matrix<T>::operator[](size_t index) noexcept {
     return this->MathVector<MathVector<T>>::operator[](index);
 }
-template <typename T>
-const MathVector<T>& Matrix<T>::operator[](size_t index) const {
+template <class T>
+const MathVector<T>& Matrix<T>::operator[](size_t index) const noexcept {
     return this->MathVector<MathVector<T>>::operator[](index);
 }
 
-template <typename T>
-Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
+template <class T>
+Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) noexcept {
     if (this != &other) {
         this->MathVector<MathVector<T>>::operator=(other);
         _m = other._m;
@@ -264,8 +261,8 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
     return *this;
 }
 
-template <typename T>
-bool Matrix<T>::operator==(const Matrix<T>& second) const {
+template <class T>
+bool Matrix<T>::operator==(const Matrix<T>& second) const noexcept {
     if (_m != second._m || _n != second._n)
         return false;
 
@@ -275,26 +272,26 @@ bool Matrix<T>::operator==(const Matrix<T>& second) const {
     }
     return true;
 }
-template <typename T>
-bool Matrix<T>::operator!=(const Matrix<T>& second) const {
+template <class T>
+bool Matrix<T>::operator!=(const Matrix<T>& second) const noexcept {
     return !(this->operator==(second));
 }
 
-//template <typename T>
-//MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix) {
-//    if (vec.is_empty() || matrix.is_empty())
-//        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
-//    if (vec.size() != matrix.get_m())
-//        throw std::invalid_argument("The matrix and vector are not compatible in size!");
-//    MathVector<T> res(matrix.get_n());
-//    Matrix<T> trans_matrix = matrix.Trans();
-//        for (size_t i = 0; i < matrix.get_n(); i++) {
-//        res[i] = vec * trans_matrix[i];
-//        }
-//    return res;
-//}
+template <class T>
+MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix) {
+    if (vec.is_empty() || matrix.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (vec.size() != matrix.get_m())
+        throw std::invalid_argument("The matrix and vector are not compatible in size!");
+    MathVector<T> res(matrix.get_n());
+    Matrix<T> trans_matrix = matrix.Trans();
+    for (size_t i = 0; i < matrix.get_n(); i++) {
+        res[i] = vec * trans_matrix[i];
+    }
+    return res;
+}
 
-template <typename T>
+template <class T>
 std::ostream& operator<<(std::ostream& os, const Matrix<T>& matrix) {
     for (size_t i = 0; i < matrix.get_m(); i++) {
         os << matrix[i];
@@ -303,7 +300,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix<T>& matrix) {
     }
     return os;
 }
-template <typename T>
+template <class T>
 std::istream& operator>>(std::istream& is, Matrix<T>& matrix) {
     for (size_t i = 0; i < matrix.get_m(); i++) {
         is >> matrix[i];
