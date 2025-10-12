@@ -17,7 +17,7 @@ class Stack {
 
 public:
     Stack() = default;
-    Stack(int size);  // +
+    Stack(const int size);  // +
     Stack(const Stack& other);  // +
 
     ~Stack();
@@ -35,7 +35,7 @@ public:
     void clear() noexcept;  // +
 };
 template <class T>
-Stack<T>::Stack(int size) {
+Stack<T>::Stack(const int size) {
     if (size <= 0)
         throw std::invalid_argument("The size must be greater than zero!\n");
     _data = new T[size];
