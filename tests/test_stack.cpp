@@ -3,6 +3,11 @@
 #include <gtest/gtest.h>
 #include "../lib_stack/stack.h"
 
+TEST(TestStackLib, can_create_default_stack) {
+    Stack<int> stack;
+    EXPECT_EQ(15, stack.get_size());
+    EXPECT_EQ(-1, stack.get_top());
+}
 TEST(TestStackLib, can_create_stack) {
     Stack<int> stack(20);
     EXPECT_EQ(20, stack.get_size());
@@ -88,5 +93,7 @@ TEST(TestStackLib, check_clear) {
     stack.push(8);
     stack.push(3);
     stack.clear();
-    EXPECT_EQ(-1, stack.get_top());
+    stack.push(8);
+    stack.push(3);
+    EXPECT_EQ(3, stack.top());
 }

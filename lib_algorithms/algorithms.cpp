@@ -3,6 +3,7 @@
 #include <iostream>
 #include <clocale>
 #include "../lib_algorithms/algorithms.h"
+#include "../lib_stack/stack.h"
 
 void show_position(Position pos) {
     switch (pos)

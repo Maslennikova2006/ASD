@@ -8,6 +8,8 @@
 #ifndef LIB_STACK_STACK_H_
 #define LIB_STACK_STACK_H_
 
+#define CAPACITY 15
+
 template <class T>
 
 class Stack {
@@ -16,7 +18,7 @@ class Stack {
     int _top;
 
 public:
-    Stack() = default;
+    Stack();  // +
     Stack(const int size);  // +
     Stack(const Stack& other);  // +
 
@@ -34,6 +36,14 @@ public:
 
     void clear() noexcept;  // +
 };
+
+template <class T>
+Stack<T>::Stack() {
+    _size = CAPACITY;
+    _data = new T[_size];
+    _top = -1;
+}
+
 template <class T>
 Stack<T>::Stack(const int size) {
     if (size <= 0)
@@ -70,28 +80,26 @@ inline const int Stack<T>::get_size() const noexcept {
 
 template <class T>
 void Stack<T>::push(const T& val) {
-    if (this->is_full())
+    if (is_full())
         throw std::invalid_argument("The stack is full!\n");
     _data[++_top] = val;
 }
 template <class T>
 void Stack<T>::pop() {
-    if (this->is_empty())
+    if (is_empty())
         throw std::invalid_argument("The stack is empty!\n");
     _top--;
 }
 template <class T>
 T Stack<T>::top() const {
-    if (this->is_empty())
+    if (is_empty())
         throw std::invalid_argument("The stack is empty!\n");
     return _data[_top];
 }
 
 template <class T>
 bool Stack<T>::is_empty() const noexcept {
-    if (_top == -1)
-        return true;
-    return false;
+    return _top == -1;
 }
 template <class T>
 bool Stack<T>::is_full() const noexcept {
