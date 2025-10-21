@@ -22,4 +22,8 @@ Position check_position(const T& first, const T& second) {
 
 void show_position(Position pos);
 
+bool check_breckets(std::string str);
+
+void read_expression(std::string expression);
+
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_

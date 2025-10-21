@@ -27,3 +27,49 @@ void show_position(Position pos) {
         break;
     }
 }
+
+bool check_breckets(std::string str) {
+    Stack<char> stack;
+
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] == '[' || str[i] == '(' || str[i] == '{') {
+            stack.push(str[i]);
+        }
+        else {
+            if (stack.is_empty())
+                return false;
+
+            switch (str[i]) {
+            case ')':
+                if (stack.top() == '(')
+                    stack.pop();
+                else
+                    return false;
+                break;
+            case '}':
+                if (stack.top() == '{')
+                    stack.pop();
+                else
+                    return false;
+                break;
+            case ']':
+                if (stack.top() == '[')
+                    stack.pop();
+                else
+                    return false;
+                break;
+            }
+        }
+    }
+    return true;
+}
+
+// +, -, *, /, ^ два аргумента
+// проверка скобок
+
+
+void read_expression(std::string expression) {
+    if (check_breckets(expression))
+        throw std::invalid_argument("Неправильно расcтавлены скобки!\n");
+
+}
