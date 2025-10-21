@@ -73,12 +73,15 @@ TEST(TestAlgorithmsLib, check_match_sphere) {
 
     EXPECT_EQ(match, check_position(s1, s2));
 }
-TEST(TestAlgorithmsLib, check_breckets_1) {
-    EXPECT_TRUE(check_breckets("((){})"));
+TEST(TestAlgorithmsLib, check_brackets_1) {
+    EXPECT_TRUE(check_brackets("((){})"));
 }
-TEST(TestAlgorithmsLib, check_breckets_2) {
-    EXPECT_FALSE(check_breckets("()){)"));
+TEST(TestAlgorithmsLib, check_brackets_2) {
+    EXPECT_FALSE(check_brackets("()){)"));
 }
-TEST(TestAlgorithmsLib, check_breckets_3) {
-    EXPECT_FALSE(check_breckets("(){)"));
+TEST(TestAlgorithmsLib, check_brackets_3) {
+    EXPECT_FALSE(check_brackets("(){)"));
+}
+TEST(TestAlgorithmsLib, check_brackets_4) {
+    EXPECT_FALSE(check_brackets("((){}))"));
 }

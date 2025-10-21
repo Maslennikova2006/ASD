@@ -22,7 +22,7 @@ Position check_position(const T& first, const T& second) {
 
 void show_position(Position pos);
 
-bool check_breckets(std::string str);
+bool check_brackets(std::string str);
 
 void read_expression(std::string expression);
 
