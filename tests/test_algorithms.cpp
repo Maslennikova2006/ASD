@@ -85,3 +85,33 @@ TEST(TestAlgorithmsLib, check_brackets_3) {
 TEST(TestAlgorithmsLib, check_brackets_4) {
     EXPECT_FALSE(check_brackets("((){}))"));
 }
+TEST(TestAlgorithmsLib, check_read_expression_1) {
+    ASSERT_NO_THROW(read_expression("3 * (15 + (x + y) * (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_2) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x  y) * (2x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_3) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x + y) * (2*x - 7*y^))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_4) {
+    ASSERT_ANY_THROW(read_expression("((x + y) * (x - y)"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_5) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x + y) * (2*x - 7*^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_6) {
+    ASSERT_ANY_THROW(read_expression("((x + y) * (x - y)))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_7) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 (x + y) * (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_8) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x + y)  (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_9) {
+    ASSERT_ANY_THROW(read_expression("(*(x + y) * (x - y))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_10) {
+    ASSERT_ANY_THROW(read_expression("((x + y) * (x - y *))"));
+}

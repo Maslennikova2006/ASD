@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <clocale>
+#include <string>
+#include <sstream>
 #include "../lib_algorithms/algorithms.h"
 #include "../lib_stack/stack.h"
 
@@ -64,20 +66,78 @@ bool check_brackets(std::string str) {
     return true;
 }
 
+// (, ), +, -, *, /, ^, числа, переменные
 // +, -, *, /, ^ два аргумента
 // проверка скобок
 
 
 void read_expression(std::string expression) {
-    if (!check_brackets(expression))
-        throw std::invalid_argument("Неправильно расcтавлены скобки!\n");
-    for (int i = 0; i < expression.length(); i++) {
-        if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*'
-            || expression[i] == '/' || expression[i] == '^') {
-            if ((expression[i - 1] < '0' || (expression[i - 1] > '9' && expression[i - 1] < 'a') || expression[i - 1] > 'z') ||
-                (expression[i + 1] < '0' || (expression[i + 1] > '9' && expression[i + 1] < 'a') || expression[i + 1] > 'z')) {
-                throw std::invalid_argument("Не хватает одного из операндов для бинарной операции!\n");
+    std::istringstream iss(expression);
+    std::string symbol;
+    Stack<char> brackets;
+    char prev = '\0';
+
+    while (iss >> symbol) {
+        for (int i = 0; i < symbol.length(); i++) {
+            if (symbol[i] == '(') {
+                if ((prev >= 'a' && prev <= 'z') || (prev >= '0' && prev <= '9') || prev == ')')
+                    throw std::invalid_argument("An operation is missing between the opening bracket and the number, variable or closing bracket!\n");
+                brackets.push(symbol[i]);
+                if (symbol[i + 1] == '+' || symbol[i + 1] == '-' || symbol[i + 1] == '*' ||
+                    symbol[i + 1] == '/' || symbol[i + 1] == '^' || symbol[i + 1] == ')')
+                    throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
             }
+            else if (symbol[i] == ')') {
+                if (brackets.is_empty())
+                    throw std::invalid_argument("Missing opened bracket!\n");
+                brackets.pop();
+                if (prev == '+' || prev == '-' || prev == '*' ||
+                    prev == '/' || prev == '^')
+                    throw std::invalid_argument("The operation cannot be performed before the closing bracket!\n");
+            }
+
+            else if (symbol[i] == '+' || symbol[i] == '-' || symbol[i] == '*' ||
+                symbol[i] == '/' || symbol[i] == '^') {
+                if (prev == '\0' || prev == '(' || prev == '+' || prev == '-' ||
+                    prev == '*' || prev == '/' || prev == '^') {
+                    throw std::invalid_argument("Missing first operand in operation " + std::string(1, symbol[i]) + "!\n");
+                }
+
+                bool isRightOperand = false;
+                if (i < symbol.length() - 1) {
+                    if (symbol[i + 1] != ')' && symbol[i + 1] != '+' && symbol[i + 1] != '-' && 
+                        symbol[i + 1] != '*' && symbol[i + 1] != '/' && symbol[i + 1] != '^')
+                        isRightOperand = true;
+                }
+                else {
+                    std::string next;
+                    if (iss >> next) {
+                        if (next[0] != ')' && next[0] != '+' && next[0] != '-' &&
+                            next[0] != '*' && next[0] != '/' && next[0] != '^') {
+                            isRightOperand = true;
+                        }
+                        for (int j = next.length() - 1; j >= 0; j--) {
+                            iss.putback(next[j]);
+                        }
+                    }
+                }
+                if (!isRightOperand)
+                    throw std::invalid_argument("Missing second operand in operation " + std::string(1, symbol[i]) + "!\n");
+            }
+
+            else if (symbol[i] >= 'a' && symbol[i] <= 'z') {
+                if (prev >= 'a' && prev <= 'z')
+                    throw std::invalid_argument("Missing operation between variables!\n");
+                if (prev >= '0' && prev <= '9')
+                    throw std::invalid_argument("Missing operation between variable and number!\n");
+            }
+            else if (symbol[i] >= '0' && symbol[i] <= '9') {
+                if (prev >= 'a' && prev <= 'z')
+                    throw std::invalid_argument("Missing operation between variable and number!\n");
+            }
+            prev = symbol[i];
         }
     }
+    if (!brackets.is_empty())
+        throw std::invalid_argument("Missing closed bracket!");
 }

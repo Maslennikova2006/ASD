@@ -3,6 +3,8 @@
 #ifndef LIB_ALGORITHMS_ALGORITHMS_H_
 #define LIB_ALGORITHMS_ALGORITHMS_H_
 
+#include <string>
+
 enum Position { intersect, inside, no_point, match, touch };
 
 template<class T>
