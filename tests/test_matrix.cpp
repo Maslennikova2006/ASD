@@ -177,25 +177,25 @@ TEST(TestMatrixLib, check_the_multiplication_by_a_vector_exception_when_empty_ma
 
     ASSERT_ANY_THROW(matrix * vector);
 }
-//TEST(TestMatrixLib, check_the_multiplication_by_a_vector_leftward) {
-//    Matrix<int> matrix({ { 4, 5, 6 }, {7, 8, 4}, {1, 2, 3}, {4, 8, 2} });
-//    MathVector<int> vec({ 4, 5, 1, 8 });
-//    MathVector<int> res({ 84, 126, 63 });
-//
-//    EXPECT_EQ(res, vec * matrix);
-//}
-//TEST(TestMatrixLib, check_the_multiplication_by_a_vector_leftward_exception_when_different_size) {
-//    Matrix<int> matrix({ { 1, 2, 3, 4 }, {2, 3, 4, 5} });
-//    MathVector<int> vec({ 4, 5, 6 });
-//
-//    ASSERT_ANY_THROW(vec * matrix);
-//}
-//TEST(TestMatrixLib, check_the_multiplication_by_a_vector_leftward_exception_when_empty_vector) {
-//    Matrix<int> matrix({ { 4, 5, 6 }, {7, 8, 4}, {1, 2, 3}, {4, 8, 2} });
-//    MathVector<int> vector;
-//
-//    ASSERT_ANY_THROW(vector * matrix);
-//}
+TEST(TestMatrixLib, check_the_multiplication_by_a_vector_leftward) {
+    Matrix<int> matrix({ { 4, 5, 6 }, {7, 8, 4}, {1, 2, 3}, {4, 8, 2} });
+    MathVector<int> vec({ 4, 5, 1, 8 });
+    MathVector<int> res({ 84, 126, 63 });
+
+    EXPECT_EQ(res, vec * matrix);
+}
+TEST(TestMatrixLib, check_the_multiplication_by_a_vector_leftward_exception_when_different_size) {
+    Matrix<int> matrix({ { 1, 2, 3, 4 }, {2, 3, 4, 5} });
+    MathVector<int> vec({ 4, 5, 6 });
+
+    ASSERT_ANY_THROW(vec * matrix);
+}
+TEST(TestMatrixLib, check_the_multiplication_by_a_vector_leftward_exception_when_empty_vector) {
+    Matrix<int> matrix({ { 4, 5, 6 }, {7, 8, 4}, {1, 2, 3}, {4, 8, 2} });
+    MathVector<int> vector;
+
+    ASSERT_ANY_THROW(vector * matrix);
+}
 TEST(TestMatrixLib, check_addition_with_assignment) {
     Matrix<int> matrix1({ { 2, 3, 4, 5 }, {1, 2, 3, 4}, {3, 2, 1, 2} });
     Matrix<int> matrix2({ { 2, 1, 4, 3 }, {1, 3, 3, 8}, {1, 2, 1, 3} });

@@ -165,14 +165,14 @@ MathVector<T> MathVector<T>::operator-(const MathVector<T>& second) const {
 }
 template <class T>
 T MathVector<T>::operator*(const MathVector<T>& second) const {
-    if (this->is_empty() || second.is_empty())
+    if (is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
-    if (this->size() + _start_index != second.size() + second._start_index)
+    if (size() + _start_index != second.size() + second._start_index)
         throw std::invalid_argument("The length of the vectors must match!");
 
     size_t max_index = std::max(_start_index, second._start_index);
     T res = T();
-    for (size_t i = max_index; i < _start_index + this->size(); i++) {
+    for (size_t i = max_index; i < _start_index + size(); i++) {
         res += (*this)[i] * second[i];
     }
     return res;
@@ -186,15 +186,15 @@ MathVector<T> MathVector<T>::operator*(const T scalar) const {
 
 template <class T>
 MathVector<T>& MathVector<T>::operator+=(const MathVector<T>& second) {
-    if (this->is_empty() || second.is_empty())
+    if (is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
-    if (this->size() + _start_index != second.size() + second._start_index)
+    if (size() + _start_index != second.size() + second._start_index)
         throw std::invalid_argument("The length of the vectors must match!");
 
     size_t min_index = std::min(_start_index, second._start_index);
     size_t max_size = std::max(size(), second.size());
     MathVector<T> result(max_size, min_index);
-    for (size_t i = min_index; i < this->size() + _start_index; i++) {
+    for (size_t i = min_index; i < size() + _start_index; i++) {
         result[i] = (*this)[i] + second[i];
     }
     *this = result;
@@ -202,15 +202,15 @@ MathVector<T>& MathVector<T>::operator+=(const MathVector<T>& second) {
 }
 template <class T>
 MathVector<T>& MathVector<T>::operator-=(const MathVector<T>& second) {
-    if (this->is_empty() || second.is_empty())
+    if (is_empty() || second.is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
-    if (this->size() + _start_index != second.size() + second._start_index)
+    if (size() + _start_index != second.size() + second._start_index)
         throw std::invalid_argument("The length of the vectors must match!");
 
     size_t min_index = std::min(_start_index, second._start_index);
     size_t max_size = std::max(size(), second.size());
     MathVector<T> result(max_size, min_index);
-    for (size_t i = min_index; i < this->size() + _start_index; i++) {
+    for (size_t i = min_index; i < size() + _start_index; i++) {
         result[i] = (*this)[i] - second[i];
     }
     *this = result;
@@ -218,10 +218,10 @@ MathVector<T>& MathVector<T>::operator-=(const MathVector<T>& second) {
 }
 template <class T>
 MathVector<T>& MathVector<T>::operator*=(const T scalar) {
-    if (this->is_empty())
+    if (is_empty())
         throw std::invalid_argument("You cannot perform actions with an empty vector!");
 
-    for (size_t i = _start_index; i < this->size() + _start_index; i++) {
+    for (size_t i = _start_index; i < size() + _start_index; i++) {
         (*this)[i] *= scalar;
     }
     return *this;

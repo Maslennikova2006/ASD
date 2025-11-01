@@ -45,7 +45,21 @@ public:
     bool operator==(const TriangleMatrix<T>& second) const noexcept;  // +
     bool operator!=(const TriangleMatrix<T>& second) const noexcept;  // +
 
-    friend MathVector<T> operator*(const MathVector<T>& vec, const TriangleMatrix<T>& matrix);
+    friend MathVector<T> operator*(const MathVector<T>& vec, const TriangleMatrix<T>& matrix) {
+        if (vec.is_empty() || matrix.is_empty())
+            throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+        if (vec.size() != matrix.get_m())
+            throw std::invalid_argument("The matrix and vector are not compatible in size!");
+        MathVector<T> res(matrix.get_m());
+        for (size_t i = 0; i < matrix.get_n(); i++) {
+            T sum = T();
+            for (size_t j = 0; j < matrix.get_m(); j++) {
+                sum += vec[j] * matrix[j][i];
+            }
+            res[i] = sum;
+        }
+        return res;
+    }
 
     friend std::ostream& operator<< <T>(std::ostream& os, const TriangleMatrix<T>&);
     friend std::istream& operator>> <T>(std::istream& is, TriangleMatrix<T>&);
@@ -85,11 +99,11 @@ TriangleMatrix<T>::TriangleMatrix(const TriangleMatrix<T>& other) : Matrix<T>(ot
 
 template <class T>
 TriangleMatrix<T> TriangleMatrix<T>::operator+(const TriangleMatrix<T>& other) const {
-    return TriangleMatrix<T>(Matrix<T>::operator+(other));
+    return TriangleMatrix<T>(this->Matrix<T>::operator+(other));
 }
 template <class T>
 TriangleMatrix<T> TriangleMatrix<T>::operator-(const TriangleMatrix<T>& other) const {
-    return TriangleMatrix<T>(Matrix<T>::operator-(other));
+    return TriangleMatrix<T>(this->Matrix<T>::operator-(other));
 }
 template <class T>
 TriangleMatrix<T> TriangleMatrix<T>::operator*(const TriangleMatrix<T>& other) const {
@@ -99,7 +113,7 @@ TriangleMatrix<T> TriangleMatrix<T>::operator*(const TriangleMatrix<T>& other) c
 }
 template <class T>
 TriangleMatrix<T> TriangleMatrix<T>::operator*(const T& scalar) const {
-    return TriangleMatrix<T>(Matrix<T>::operator*(scalar));
+    return TriangleMatrix<T>(this->Matrix<T>::operator*(scalar));
 }
 template <class T>
 MathVector<T> TriangleMatrix<T>::operator*(const MathVector<T>& vector) const {
@@ -108,12 +122,12 @@ MathVector<T> TriangleMatrix<T>::operator*(const MathVector<T>& vector) const {
 
 template <class T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator+=(const TriangleMatrix<T>& other) {
-    Matrix<T>::operator+=(other);
+    this->Matrix<T>::operator+=(other);
     return *this;
 }
 template <class T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator-=(const TriangleMatrix<T>& other) {
-    Matrix<T>::operator-=(other);
+    this->Matrix<T>::operator-=(other);
     return *this;
 }
 template <class T>
@@ -137,7 +151,7 @@ TriangleMatrix<T>& TriangleMatrix<T>::operator*=(const TriangleMatrix<T>& other)
 }
 template <class T>
 TriangleMatrix<T>& TriangleMatrix<T>::operator*=(const T& scalar) {
-    Matrix<T>::operator*=(scalar);
+    this->Matrix<T>::operator*=(scalar);
     return *this;
 }
 
@@ -158,22 +172,22 @@ bool TriangleMatrix<T>::operator!=(const TriangleMatrix<T>& second) const noexce
     return !(*this == second);
 }
 
-template <class T>
-MathVector<T> operator*(const MathVector<T>& vec, const TriangleMatrix<T>& matrix) {
-    if (vec.is_empty() || matrix.is_empty())
-        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
-    if (vec.size() != matrix.get_m())
-        throw std::invalid_argument("The matrix and vector are not compatible in size!");
-    MathVector<T> res(matrix.get_m());
-    for (size_t i = 0; i < matrix.get_n(); i++) {
-        T sum = T();
-        for (size_t j = 0; j < matrix.get_m(); j++) {
-            sum += vec[j] * matrix[j][i];
-        }
-        res[i] = sum;
-    }
-    return res;
-}
+//template <class T>
+//MathVector<T> operator*(const MathVector<T>& vec, const TriangleMatrix<T>& matrix) {
+//    if (vec.is_empty() || matrix.is_empty())
+//        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+//    if (vec.size() != matrix.get_m())
+//        throw std::invalid_argument("The matrix and vector are not compatible in size!");
+//    MathVector<T> res(matrix.get_m());
+//    for (size_t i = 0; i < matrix.get_n(); i++) {
+//        T sum = T();
+//        for (size_t j = 0; j < matrix.get_m(); j++) {
+//            sum += vec[j] * matrix[j][i];
+//        }
+//        res[i] = sum;
+//    }
+//    return res;
+//}
 
 template <class T>
 std::ostream& operator<<(std::ostream& os, const TriangleMatrix<T>& matrix) {
