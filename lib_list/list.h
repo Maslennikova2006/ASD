@@ -19,6 +19,52 @@ public:
 
     ~List();
 
+    class Iterator {
+        Node<T>* _current;
+    public:
+        Iterator() {
+            _current = nullptr;
+        }
+        Iterator(Node<T>* node) {
+            _current = node;
+        }
+
+        Iterator& operator++() {
+            _current = _current->next;
+            return *this;
+        }
+        Iterator operator++(int) {
+            Iterator tmp = *this;
+            _current = _current->next;
+            return tmp;
+        }
+        Iterator operator+=(int num) {
+            Node<T> tmp = *this;
+            for (int i = 0; i < num; i++) {
+                _current = _current->next;
+            }
+            return tmp;
+        }
+        Iterator& operator=(const Iterator& other) {
+            if (*this != other)
+                _current = other._current;
+            return *this;
+        }
+        T& operator*() {
+            return _current->value;
+        }
+        bool operator!=(const Iterator& other) {
+            return _current != other._current;
+        }
+    };
+
+    Iterator begin() {
+        return Iterator(_head);
+    }
+    Iterator end() {
+        return Iterator(nullptr);
+    }
+
     inline Node<T>* head() const noexcept;
     inline Node<T>* tail() const noexcept;
 

@@ -188,3 +188,34 @@ TEST(TestListLib, check_erase_by_pos_when_wrong_pos) {
     list.push_front(27);
     ASSERT_ANY_THROW(list.erase((size_t)5));
 }
+TEST(TestListLib, check_iterator_when_list_is_empty) {
+    List<int> list;
+    List<int>::Iterator it;
+    bool enter—ycle = false;
+    for (it = list.begin(); it != list.end(); it++) {
+        enter—ycle = true;
+    }
+    EXPECT_FALSE(enter—ycle);
+}
+TEST(TestListLib, check_iterator_for_reading) {
+    List<int> list;
+    List<int>::Iterator it;
+    for (int i = 0; i < 10; i++) {
+        list.push_back(i + 1);
+    }
+    int i = 1;
+    for (it = list.begin(); it != list.end(); it++) {
+        EXPECT_EQ(i, *it);
+        i++;
+    }
+}
+TEST(TestListLib, check_iterator_for_writting) {
+    List<int> list;
+    List<int>::Iterator it;
+    int i = 1;
+    for (it = list.begin(); it != list.end(); it++) {
+        *it = i;
+        EXPECT_EQ(i, *it);
+        i++;
+    }
+}
