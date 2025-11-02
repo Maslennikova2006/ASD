@@ -12,12 +12,12 @@ public:
     Node();
     Node(T val, Node<T>* next_ = nullptr);
 
-    Node<T> operator=(const Node<T>&);
+    Node<T>& operator=(const Node<T>&);
 };
 
 template <class T>
 Node<T>::Node() {
-    value = 0;
+    value = T();
     next = nullptr;
 }
 template <class T>
@@ -26,13 +26,11 @@ Node<T>::Node(T val, Node<T>* next_) {
     next = next_;
 }
 template <class T>
-Node<T> Node<T>::operator=(const Node<T>& other) {
-    if (*this != other) {
+Node<T>& Node<T>::operator=(const Node<T>& other) {
+    if (this != &other) {
         value = other.value;
         next = other.next;
     }
     return *this;
 }
-
-
 #endif  // LIB_NODE_NODE_H_
