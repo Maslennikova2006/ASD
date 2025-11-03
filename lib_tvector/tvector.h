@@ -41,6 +41,96 @@ public:
 
     ~TVector();
 
+    friend class Iterator;
+    class Iterator {
+        TVector<T>* _vec;
+        size_t _index;
+
+    public:
+        Iterator() : _vec(nullptr), _index(0) {}
+        Iterator(TVector<T>* vec, size_t index) : _vec(vec), _index(index) {
+            while (_index < _vec->capacity() && _vec->_states[_index] != busy) {
+                _index++;
+            }
+        }
+
+        Iterator& operator++() {
+            if (_vec != nullptr) {
+                _index++;
+                while (_index < _vec->capacity() && _vec->_states[_index] != busy) {
+                    _index++;
+                }
+            }
+            return *this;
+        }
+        Iterator operator++(int) {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+        Iterator& operator+=(int num) {
+            for (int i = 0; i < num && _vec != nullptr; i++) {
+                _index++;
+                while (_index < _vec->capacity() && _vec->_states[_index] != busy) {
+                    _index++;
+                }
+            }
+            return *this;
+        }
+
+        Iterator& operator--() {
+            if (_vec != nullptr) {
+                _index--;
+                while (_index > 0 && _vec->_states[_index] != busy) {
+                    _index--;
+                }
+            }
+            return *this;
+        }
+        Iterator operator--(int) {
+            Iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+        Iterator& operator-=(int num) {
+            for (int i = 0; i < num && _vec != nullptr && _index > 0; i++) {
+                _index--;
+                while (_index > 0 && _vec->_states[_index] != busy) {
+                    _index--;
+                }
+            }
+            return *this;
+        }
+
+        Iterator& operator=(const Iterator& other) {
+            if (this != &other) {
+                _vec = other._vec;
+                _index = other._index;
+            }
+            return *this;
+        }
+
+        T& operator*() {
+            if (_vec == nullptr || _index >= _vec->capacity() || _vec->_states[_index] != busy) {
+                throw std::out_of_range("Dereferencing invalid iterator");
+            }
+            return _vec->_data[_index];
+        }
+        const T& operator*() const {
+            if (_vec == nullptr || _index >= _vec->capacity() || _vec->_states[_index] != busy) {
+                throw std::out_of_range("Dereferencing invalid iterator");
+            }
+            return _vec->_data[_index];
+        }
+        
+        bool operator!=(const Iterator& other) const {
+            return _vec != other._vec || _index != other._index;
+        }
+        bool operator==(const Iterator& other) const {
+            return _vec == other._vec && _index == other._index;
+        }
+    };
+
     inline T* data() noexcept;
 
     inline size_t size() const noexcept;
@@ -48,8 +138,15 @@ public:
     inline const T* data() const noexcept;
     inline const T& front();
     inline const T& back();
-    inline const T* begin() const noexcept;
-    inline const T* end() const noexcept;
+    inline const T* data_begin() const noexcept;
+    inline const T* data_end() const noexcept;
+
+    inline Iterator begin() noexcept {
+        return Iterator(this, 0);
+    }
+    inline Iterator end() noexcept {
+        return Iterator(this, _capacity);
+    }
 
     void reserve(size_t new_capacity) noexcept;
     void resize(size_t count) noexcept;
@@ -218,13 +315,13 @@ inline const T& TVector<T>::back() {
     return _data[new_index];
 }
 template <class T>
-inline const T* TVector<T>::begin() const noexcept {
+inline const T* TVector<T>::data_begin() const noexcept {
     if (is_empty()) return nullptr;
     T* new_address = recalculate_the_address(0);
     return new_address;
 }
 template <class T>
-inline const T* TVector<T>::end() const noexcept {
+inline const T* TVector<T>::data_end() const noexcept {
     if (is_empty()) return nullptr;
     T* new_address = recalculate_the_address(_size - 1) + 1;
     return new_address;
@@ -492,9 +589,9 @@ void TVector<T>::replace(const T* pointer, const T& value) {
     if (is_empty())
         throw std::invalid_argument
         ("It is impossible to replace an element in an empty vector\n");
-    if (pointer < begin() || pointer >= end())
+    if (pointer < data_begin() || pointer >= data_end())
         throw std::invalid_argument("The index goes beyond the boundaries\n");
-    size_t index = pointer - begin();
+    size_t index = pointer - data_begin();
     if (_states[index] != busy)
         throw std::invalid_argument("The item has already been deleted\n");
     T* new_pointer = recalculate_the_address(index);

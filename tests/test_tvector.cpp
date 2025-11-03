@@ -482,7 +482,7 @@ TEST(TestTVectorLib, check_the_replacement_by_the_pointer) {
         7, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100 });
     bool expected_result = true;
     vec.erase(2);
-    vec.replace(vec.begin() + 4, 99);
+    vec.replace(vec.data_begin() + 4, 99);
     EXPECT_EQ(1, vec[0]);
     EXPECT_EQ(99, vec[4]);
 }
@@ -651,4 +651,35 @@ TEST(TestTVectorLib, check_shifted_push_back_into_a_full_array_with_deleted_elem
     EXPECT_EQ(22, vec.back());
     EXPECT_EQ(11, vec[27]);
     EXPECT_EQ(static_cast<size_t>(30), vec.capacity());
+}
+TEST(TestTVectorLib, check_iterator_when_vector_is_empty) {
+    TVector<int> vec;
+    TVector<int>::Iterator it;
+    bool enterCycle = false;
+    for (it = vec.begin(); it != vec.end(); it++) {
+        enterCycle = true;
+    }
+    EXPECT_FALSE(enterCycle);
+}
+TEST(TestTVectorLib, check_iterator_for_reading) {
+    TVector<int> vec;
+    TVector<int>::Iterator it;
+    for (int i = 0; i < 10; i++) {
+        vec.push_back(i + 1);
+    }
+    int i = 1;
+    for (it = vec.begin(); it != vec.end(); it++) {
+        EXPECT_EQ(i, *it);
+        i++;
+    }
+}
+TEST(TestTVectorLib, check_iterator_for_writting) {
+    TVector<int> vec;
+    TVector<int>::Iterator it;
+    int i = 1;
+    for (it = vec.begin(); it != vec.end(); it++) {
+        *it = i;
+        EXPECT_EQ(i, *it);
+        i++;
+    }
 }
