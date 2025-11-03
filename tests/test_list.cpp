@@ -191,11 +191,11 @@ TEST(TestListLib, check_erase_by_pos_when_wrong_pos) {
 TEST(TestListLib, check_iterator_when_list_is_empty) {
     List<int> list;
     List<int>::Iterator it;
-    bool enter—ycle = false;
+    bool enterCycle = false;
     for (it = list.begin(); it != list.end(); it++) {
-        enter—ycle = true;
+        enterCycle = true;
     }
-    EXPECT_FALSE(enter—ycle);
+    EXPECT_FALSE(enterCycle);
 }
 TEST(TestListLib, check_iterator_for_reading) {
     List<int> list;

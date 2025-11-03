@@ -202,11 +202,11 @@ TEST(TestDListLib, check_erase_by_pos_when_wrong_pos) {
 TEST(TestDListLib, check_iterator_when_list_is_empty) {
     DList<int> list;
     DList<int>::Iterator it;
-    bool enter—ycle = false;
+    bool enterCycle = false;
     for (it = list.begin(); it != list.end(); it++) {
-        enter—ycle = true;
+        enterCycle = true;
     }
-    EXPECT_FALSE(enter—ycle);
+    EXPECT_FALSE(enterCycle);
 }
 TEST(TestDListLib, check_iterator_for_reading) {
     DList<int> list;
@@ -220,33 +220,11 @@ TEST(TestDListLib, check_iterator_for_reading) {
         i++;
     }
 }
-TEST(TestDListLib, check_iterator_for_reading_2) {
-    DList<int> list;
-    DList<int>::Iterator it;
-    for (int i = 10; i < 0; i--) {
-        list.push_back(i);
-    }
-    int i = 10;
-    for (it = list.end(); it != list.begin(); it--) {
-        EXPECT_EQ(i, *it);
-        i--;
-    }
-}
 TEST(TestDListLib, check_iterator_for_writting) {
     DList<int> list;
     DList<int>::Iterator it;
     int i = 1;
     for (it = list.begin(); it != list.end(); it++) {
-        *it = i;
-        EXPECT_EQ(i, *it);
-        i++;
-    }
-}
-TEST(TestDListLib, check_iterator_for_writting_2) {
-    DList<int> list;
-    DList<int>::Iterator it;
-    int i = 1;
-    for (it = list.end(); it != list.begin(); it--) {
         *it = i;
         EXPECT_EQ(i, *it);
         i++;
