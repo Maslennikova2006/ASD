@@ -85,8 +85,10 @@ TEST(TestAlgorithmsLib, check_brackets_3) {
 TEST(TestAlgorithmsLib, check_brackets_4) {
     EXPECT_FALSE(check_brackets("((){}))"));
 }
+
+
 TEST(TestAlgorithmsLib, check_read_expression_1) {
-    ASSERT_NO_THROW(read_expression("3 * (15 + (x + y) * (2*x - 7*y^2))"));
+    ASSERT_NO_THROW(read_expression("3*[15 + (x + y) * (2*x - 7*y^2)]"));
 }
 TEST(TestAlgorithmsLib, check_read_expression_2) {
     ASSERT_ANY_THROW(read_expression("3 * (15 + (x  y) * (2x - 7*y^2))"));
@@ -114,4 +116,13 @@ TEST(TestAlgorithmsLib, check_read_expression_9) {
 }
 TEST(TestAlgorithmsLib, check_read_expression_10) {
     ASSERT_ANY_THROW(read_expression("((x + y) * (x - y *))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_11) {
+    ASSERT_ANY_THROW(read_expression("3*[15 + (x + y) * (2*x - 7*y^2)}"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_12) {
+    ASSERT_NO_THROW(read_expression("-3 * (15 + (x + y) * (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_13) {
+    ASSERT_NO_THROW(read_expression("-3 * (15 + (x + y) * (2*x - 7*y^2))"));
 }
