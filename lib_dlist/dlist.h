@@ -70,11 +70,10 @@ public:
             return tmp;
         }
         Iterator& operator+=(int num) {
-            Iterator tmp = *this;
             for (int i = 0; i < num && _current != nullptr; i++) {
                 _current = _current->next;
             }
-            return tmp;
+            return *this;
         }
         Iterator& operator--() {
             if (_current != nullptr && _current->prev != nullptr) {
@@ -89,12 +88,11 @@ public:
             }
             return tmp;
         }
-        Iterator operator-=(int num) {
-            Iterator tmp = *this;
+        Iterator& operator-=(int num) {
             for (int i = 0; i < num && _current->prev != nullptr; i++) {
                 _current = _current->prev;
             }
-            return tmp;
+            return *this;
         }
         Iterator& operator=(const Iterator& other) {
             if (this != &other)
