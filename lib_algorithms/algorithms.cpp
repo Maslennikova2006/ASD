@@ -63,6 +63,8 @@ bool check_brackets(std::string str) {
             }
         }
     }
+    if (!stack.is_empty())
+        return false;
     return true;
 }
 
@@ -86,10 +88,12 @@ void read_expression(std::string expression) {
             while (next_index < expression.length() && expression[next_index] == ' ') {
                 next_index++;
             }
-            if (expression[next_index] == '+' || expression[next_index] == '*' ||
-                expression[next_index] == '/' || expression[next_index] == '^' ||
-                expression[next_index] == ')' || expression[next_index] == ']' || expression[next_index] == '}')
-                throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
+            if (next_index < expression.length()) {
+                if (expression[next_index] == '+' || expression[next_index] == '*' ||
+                    expression[next_index] == '/' || expression[next_index] == '^' ||
+                    expression[next_index] == ')' || expression[next_index] == ']' || expression[next_index] == '}')
+                    throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
+            }
         }
         else if (expression[i] == ')' || expression[i] == ']' || expression[i] == '}') {
             if (brackets.is_empty())
@@ -120,10 +124,9 @@ void read_expression(std::string expression) {
         }
         else if (expression[i] == '+' || expression[i] == '*' || expression[i] == '/' || expression[i] == '^') {
             if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
-                prev == '+' || prev == '*' || prev == '/' || prev == '^') {
+                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
                 throw std::invalid_argument("Missing first operand in operation '" + std::string(1, expression[i]) + "'!\n");
             }
-
             bool isRightOperand = false;
             int next_index = i + 1;
             while (next_index < expression.length() && expression[next_index] == ' ') {
@@ -135,20 +138,13 @@ void read_expression(std::string expression) {
                     expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{') {
                     isRightOperand = true;
                 }
-                else if ((expression[i] == '-') &&
-                    ((expression[next_index] >= '0' && expression[next_index] <= '9') ||
-                        (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
-                        expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{')) {
-                    isRightOperand = true;
-                }
             }
             if (!isRightOperand)
                 throw std::invalid_argument("Missing second operand in operation '" + std::string(1, expression[i]) + "'!\n");
         }
         else if (expression[i] == '-') {
             if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
-                prev == '+' || prev == '*' || prev == '/' || prev == '^') {
-                // унарный
+                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
                 int next_index = i + 1;
                 while (next_index < expression.length() && expression[next_index] == ' ') {
                     next_index++;
@@ -161,7 +157,6 @@ void read_expression(std::string expression) {
                 }
             }
             else {
-                // бинарный
                 bool isRightOperand = false;
                 int next_index = i + 1;
                 while (next_index < expression.length() && expression[next_index] == ' ') {
