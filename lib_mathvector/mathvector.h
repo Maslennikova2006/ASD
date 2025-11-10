@@ -23,14 +23,10 @@ protected:
 
 public:
     MathVector();
-    explicit MathVector(const size_t size);
-    MathVector(const size_t size, const size_t start_index);
-    MathVector(const size_t size, const T* data);
-    MathVector(const size_t size, const T* data, const size_t start_index);
-    MathVector(const size_t size, std::initializer_list<T> data);
-    MathVector(const size_t size, std::initializer_list<T> data, const size_t start_index);
-    MathVector(std::initializer_list<T> data);
-    MathVector(std::initializer_list<T> data, const size_t start_index);
+    MathVector(const size_t size, const size_t start_index = 0);
+    MathVector(const size_t size, const T* data, const size_t start_index = 0);
+    MathVector(const size_t size, std::initializer_list<T> data, const size_t start_index = 0);
+    MathVector(std::initializer_list<T> data, const size_t start_index = 0);
     MathVector(const MathVector<T>& other);
 
     ~MathVector();
@@ -73,36 +69,18 @@ MathVector<T>::MathVector() {
     _start_index = 0;
 }
 template <class T>
-MathVector<T>::MathVector(const size_t size) : TVector<T>(size) {
-    _start_index = 0;
-    shrink_to_fit();
-}
-template <class T>
 MathVector<T>::MathVector(const size_t size, const size_t start_index) : TVector<T>(size) {
     _start_index = start_index;
     shrink_to_fit();
 }
 template <class T>
-MathVector<T>::MathVector(const size_t size, const T* data) : TVector<T>(size, data) {
-    _start_index = 0;
+MathVector<T>::MathVector(const size_t size, const T* data, const size_t start_index) : TVector<T>(size, data) {
+    _start_index = start_index;
     shrink_to_fit();
 }
 template <class T>
-MathVector<T>::MathVector(const size_t size, const T* data, const size_t start_index) : MathVector<T>(size, data) {
+MathVector<T>::MathVector(const size_t size, std::initializer_list<T> data, const size_t start_index) : TVector<T>(size, data) {
     _start_index = start_index;
-}
-template <class T>
-MathVector<T>::MathVector(const size_t size, std::initializer_list<T> data) : TVector<T>(size, data) {
-    _start_index = 0;
-    shrink_to_fit();
-}
-template <class T>
-MathVector<T>::MathVector(const size_t size, std::initializer_list<T> data, const size_t start_index) : MathVector<T>(size, data) {
-    _start_index = start_index;
-}
-template <class T>
-MathVector<T>::MathVector(std::initializer_list<T> data) : TVector<T>(data) {
-    _start_index = 0;
     shrink_to_fit();
 }
 template <class T>
