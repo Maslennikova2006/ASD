@@ -30,27 +30,33 @@ public:
         }
 
         Iterator& operator++() {
-            _current = _current->next;
+            if (_current != nullptr) {
+                _current = _current->next;
+            }
             return *this;
         }
         Iterator operator++(int) {
             Iterator tmp = *this;
-            _current = _current->next;
+            if (_current != nullptr) {
+                _current = _current->next;
+            }
             return tmp;
         }
         Iterator operator+=(int num) {
-            Node<T> tmp = *this;
-            for (int i = 0; i < num; i++) {
+            Iterator tmp = *this;
+            for (int i = 0; i < num && _current != nullptr; i++) {
                 _current = _current->next;
             }
             return tmp;
         }
         Iterator& operator=(const Iterator& other) {
-            if (*this != other)
+            if (this != &other)
                 _current = other._current;
             return *this;
         }
         T& operator*() {
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't dereference an empty pointer!");
             return _current->value;
         }
         bool operator!=(const Iterator& other) {
