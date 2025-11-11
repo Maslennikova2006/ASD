@@ -73,3 +73,61 @@ TEST(TestAlgorithmsLib, check_match_sphere) {
 
     EXPECT_EQ(match, check_position(s1, s2));
 }
+
+TEST(TestAlgorithmsLib, check_is_looped_1) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(i + 1);
+    }
+    Node<int>* node = list.head()->next->next;
+    list.tail()->next = node;
+    bool exp = is_looped(list);
+    EXPECT_TRUE(exp);
+    list.tail()->next = nullptr;
+}
+TEST(TestAlgorithmsLib, check_is_looped_2) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(i + 1);
+    }
+    bool exp = is_looped(list);
+    EXPECT_FALSE(exp);
+}
+TEST(TestAlgorithmsLib, check_is_looped_2_1) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(i + 1);
+    }
+    Node<int>* node = list.head()->next->next;
+    list.tail()->next = node;
+    bool exp = is_looped_2(list);
+    EXPECT_TRUE(exp);
+    list.tail()->next = nullptr;
+}
+TEST(TestAlgorithmsLib, check_is_looped_2_2) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(i + 1);
+    }
+    bool exp = is_looped_2(list);
+    EXPECT_FALSE(exp);
+}
+TEST(TestAlgorithmsLib, check_find_loop_1) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(i + 1);
+    }
+    Node<int>* node = list.head()->next->next;
+    list.tail()->next = node;
+    Node<int>* loopPoint = find_loop(list);
+    EXPECT_EQ(list.head()->next->next, loopPoint);
+    list.tail()->next = nullptr;
+}
+TEST(TestAlgorithmsLib, check_find_loop_2) {
+    List<int> list;
+    for (int i = 0; i < 5; i++) {
+        list.push_back(i + 1);
+    }
+    Node<int>* loopPoint = find_loop(list);
+    EXPECT_EQ(nullptr, loopPoint);
+}

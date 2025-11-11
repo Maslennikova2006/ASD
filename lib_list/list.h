@@ -29,6 +29,10 @@ public:
             _current = node;
         }
 
+        Iterator next() {
+            return _current->next;
+        }
+
         Iterator& operator++() {
             if (_current != nullptr) {
                 _current = _current->next;
@@ -58,8 +62,16 @@ public:
                 throw std::invalid_argument("You can't dereference an empty pointer!");
             return _current->value;
         }
+        /*Iterator* operator->() {
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't dereference an empty pointer!");
+            return _current;
+        }*/
         bool operator!=(const Iterator& other) {
             return _current != other._current;
+        }
+        bool operator==(const Iterator& other) {
+            return _current == other._current;
         }
     };
 
@@ -101,7 +113,7 @@ List<T>::List(const List<T>& other) {
     _count = 0;
 
     Node<T>* cur = other._head;
-    while (cur != nullptr) {
+    for (int i = 0; i < other._count; i++) {
         push_back(cur->value);
         cur = cur->next;
     }
