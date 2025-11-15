@@ -130,4 +130,59 @@ TEST(TestAlgorithmsLib, check_find_loop_2) {
     }
     Node<int>* loopPoint = find_loop(list);
     EXPECT_EQ(nullptr, loopPoint);
+
+TEST(TestAlgorithmsLib, check_brackets_1) {
+    EXPECT_TRUE(check_brackets("((){})"));
+}
+TEST(TestAlgorithmsLib, check_brackets_2) {
+    EXPECT_FALSE(check_brackets("()){)"));
+}
+TEST(TestAlgorithmsLib, check_brackets_3) {
+    EXPECT_FALSE(check_brackets("(){)"));
+}
+TEST(TestAlgorithmsLib, check_brackets_4) {
+    EXPECT_FALSE(check_brackets("((){}))"));
+}
+TEST(TestAlgorithmsLib, check_brackets_5) {
+    EXPECT_FALSE(check_brackets("(()()"));
+}
+
+TEST(TestAlgorithmsLib, check_read_expression_when_it_is_correct) {
+    ASSERT_NO_THROW(read_expression("3*[15 + (x + y) * (2*x - 7*y^2)]"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_the_operation_was_missed) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x  y) * (2x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_an_argument_is_missed) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x + y) * (2*x - 7*y^))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_there_is_no_closing_bracket) {
+    ASSERT_ANY_THROW(read_expression("((x + y) * (x - y)"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_an_argument_is_missed_2) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x + y) * (2*x - 7*^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_the_opening_bracket_is_missing) {
+    ASSERT_ANY_THROW(read_expression("((x + y) * (x - y)))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_the_operation_was_missed_2) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 (x + y) * (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_the_operation_was_missed_3) {
+    ASSERT_ANY_THROW(read_expression("3 * (15 + (x + y)  (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_an_argument_is_missed_3) {
+    ASSERT_ANY_THROW(read_expression("(*(x + y) * (x - y))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_an_argument_is_missed_4) {
+    ASSERT_ANY_THROW(read_expression("((x + y) * (x - y *))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_there_are_different_brackets) {
+    ASSERT_ANY_THROW(read_expression("3*[15 + (x + y) * (2*x - 7*y^2)}"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_the_expression_is_correct_with_a_unary_minus) {
+    ASSERT_NO_THROW(read_expression("-3 * (15 + (x + y) * (2*x - 7*y^2))"));
+}
+TEST(TestAlgorithmsLib, check_read_expression_when_the_expression_is_correct_with_a_unary_minus_2) {
+    ASSERT_NO_THROW(read_expression("-3 * (15 + (x + (-y)) * (2*x - 7*y^2))"));
 }
