@@ -3,6 +3,8 @@
 #ifndef LIB_ALGORITHMS_ALGORITHMS_H_
 #define LIB_ALGORITHMS_ALGORITHMS_H_
 
+#include <string>
+
 enum Position { intersect, inside, no_point, match, touch };
 
 template<class T>
@@ -21,5 +23,9 @@ Position check_position(const T& first, const T& second) {
 }
 
 void show_position(Position pos);
+
+bool check_brackets(std::string str);
+
+void read_expression(std::string expression);
 
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_
