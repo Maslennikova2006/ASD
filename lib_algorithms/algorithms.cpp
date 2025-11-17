@@ -37,3 +37,50 @@ int find_the_local_minimum(Matrix<int>& matrix) noexcept {
     }
     return currentMin;
 }
+
+int count_the_number_of_islands(Matrix<int> matr) {
+    int m = matr.get_m();
+    int n = matr.get_n();
+    int count = 0;
+
+    Dsu dsu(m * n);
+
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (matr[i][j] == 1) {
+                count++;
+                if (i > 0 && matr[i - 1][j] == -1) {
+                    int cur = i * n + j;
+                    int neighbour = (i - 1) * n + j;
+                    //dsu.union_set(cur, neighbour);
+                    if (dsu.find(cur) != dsu.find(neighbour)) {
+                        dsu.union_set(cur, neighbour);
+                        count--;
+                    }
+                }
+                if (j > 0 && matr[i][j - 1] == -1) {
+                    int cur = i * n + j;
+                    int neighbour = i * n + (j - 1);
+                    //dsu.union_set(cur, neighbour);
+                    if (dsu.find(cur) != dsu.find(neighbour)) {
+                        dsu.union_set(cur, neighbour);
+                        count--;
+                    }
+                }
+                matr[i][j] = -1;
+            }
+        }
+    }
+
+    /*int ind = 0;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (matr[i][j] == -1) {
+                ind = i * n + j;
+                if (dsu.find(ind) == ind)
+                    count++;
+            }
+        }
+    }*/
+    return count;
+}

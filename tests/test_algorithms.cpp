@@ -19,3 +19,25 @@ TEST(TestAlgorithmsLib, check_3) {
     int ans = find_the_local_minimum(matr);
     EXPECT_TRUE(ans == 1 || ans == 6);
 }
+
+TEST(TestAlgorithmsLib, check_count_the_number_of_islands_1) {
+    Matrix<int> matr({ {0, 1, 1, 0, 0}, {1, 0, 1, 0, 1}, {0, 0, 1, 0, 1}, {1, 0, 0, 0, 0} });
+
+    EXPECT_EQ(4, count_the_number_of_islands(matr));
+}
+TEST(TestAlgorithmsLib, check_count_the_number_of_islands_2) {
+    Matrix<int> matr({ {0, 1, 1, 0, 0, 1}, {1, 0, 1, 0, 0, 1}, {0, 0, 0, 1, 0, 1}, 
+        {1, 1, 0, 0, 0, 0}, {0, 1, 1, 1, 0, 0}, {0, 1, 1, 0, 1, 0}, {1, 1, 0, 1, 0, 0} });
+
+    EXPECT_EQ(7, count_the_number_of_islands(matr));
+}
+TEST(TestAlgorithmsLib, check_count_the_number_of_islands_3) {
+    Matrix<int> matr({ {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 0, 1, 1}, {1, 1, 1, 1}});
+
+    EXPECT_EQ(1, count_the_number_of_islands(matr));
+}
+TEST(TestAlgorithmsLib, check_count_the_number_of_islands_4) {
+    Matrix<int> matr({ {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} });
+
+    EXPECT_EQ(0, count_the_number_of_islands(matr));
+}
