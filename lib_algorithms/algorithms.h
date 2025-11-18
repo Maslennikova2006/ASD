@@ -4,6 +4,7 @@
 #define LIB_ALGORITHMS_ALGORITHMS_H_
 
 #include "../lib_list/list.h"
+#include <string>
 
 enum Position { intersect, inside, no_point, match, touch };
 
@@ -110,5 +111,9 @@ Node<T>* find_loop(List<T>& list) {
     }
     return i;
 }
+
+bool check_brackets(std::string str);
+
+void read_expression(std::string expression);
 
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_

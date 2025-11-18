@@ -2,7 +2,10 @@
 
 #include <iostream>
 #include <clocale>
+#include <string>
+#include <sstream>
 #include "../lib_algorithms/algorithms.h"
+#include "../lib_stack/stack.h"
 
 void show_position(Position pos) {
     switch (pos)
@@ -25,4 +28,163 @@ void show_position(Position pos) {
     default:
         break;
     }
+}
+
+bool check_brackets(std::string str) {
+    Stack<char> stack;
+
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] == '[' || str[i] == '(' || str[i] == '{') {
+            stack.push(str[i]);
+        }
+        else if (str[i] == ']' || str[i] == ')' || str[i] == '}') {
+            if (stack.is_empty())
+                return false;
+
+            switch (str[i]) {
+            case ')':
+                if (stack.top() == '(')
+                    stack.pop();
+                else
+                    return false;
+                break;
+            case '}':
+                if (stack.top() == '{')
+                    stack.pop();
+                else
+                    return false;
+                break;
+            case ']':
+                if (stack.top() == '[')
+                    stack.pop();
+                else
+                    return false;
+                break;
+            }
+        }
+    }
+    if (!stack.is_empty())
+        return false;
+    return true;
+}
+
+// (, ), +, -, *, /, ^, числа, переменные
+// +, -, *, /, ^ два аргумента
+// - унарный минус
+// проверка скобок
+
+void read_expression(std::string expression) {
+    Stack<char> brackets;
+    char prev = '\0';
+    for (int i = 0; i < expression.length(); i++) {
+        while (expression[i] == ' ') {
+            i++;
+        }
+        if (expression[i] == '(' || expression[i] == '[' || expression[i] == '{') {
+            if ((prev >= 'a' && prev <= 'z') || (prev >= '0' && prev <= '9') || prev == ')')
+                throw std::invalid_argument("An operation is missing between the opening bracket and the number, variable or closing bracket!\n");
+            brackets.push(expression[i]);
+            int next_index = i + 1;
+            while (next_index < expression.length() && expression[next_index] == ' ') {
+                next_index++;
+            }
+            if (next_index < expression.length()) {
+                if (expression[next_index] == '+' || expression[next_index] == '*' ||
+                    expression[next_index] == '/' || expression[next_index] == '^' ||
+                    expression[next_index] == ')' || expression[next_index] == ']' || expression[next_index] == '}')
+                    throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
+            }
+        }
+        else if (expression[i] == ')' || expression[i] == ']' || expression[i] == '}') {
+            if (brackets.is_empty())
+                throw std::invalid_argument("Missing opened bracket!\n");
+            switch (expression[i]) {
+            case ')':
+                if (brackets.top() == '(')
+                    brackets.pop();
+                else
+                    throw std::invalid_argument("An incorrect bracket was used, and ')' was expected!");
+                break;
+            case '}':
+                if (brackets.top() == '{')
+                    brackets.pop();
+                else
+                    throw std::invalid_argument("An incorrect bracket was used, and '}' was expected!");
+                break;
+            case ']':
+                if (brackets.top() == '[')
+                    brackets.pop();
+                else
+                    throw std::invalid_argument("An incorrect bracket was used, and ']' was expected!");
+                break;
+            }
+            if (prev == '+' || prev == '-' || prev == '*' ||
+                prev == '/' || prev == '^')
+                throw std::invalid_argument("The operation cannot be performed before the closing bracket!\n");
+        }
+        else if (expression[i] == '+' || expression[i] == '*' || expression[i] == '/' || expression[i] == '^') {
+            if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
+                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
+                throw std::invalid_argument("Missing first operand in operation '" + std::string(1, expression[i]) + "'!\n");
+            }
+            bool isRightOperand = false;
+            int next_index = i + 1;
+            while (next_index < expression.length() && expression[next_index] == ' ') {
+                next_index++;
+            }
+            if (next_index < expression.length()) {
+                if ((expression[next_index] >= '0' && expression[next_index] <= '9') ||
+                    (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
+                    expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{') {
+                    isRightOperand = true;
+                }
+            }
+            if (!isRightOperand)
+                throw std::invalid_argument("Missing second operand in operation '" + std::string(1, expression[i]) + "'!\n");
+        }
+        else if (expression[i] == '-') {
+            if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
+                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
+                int next_index = i + 1;
+                while (next_index < expression.length() && expression[next_index] == ' ') {
+                    next_index++;
+                }
+                if (next_index >= expression.length() ||
+                    !((expression[next_index] >= '0' && expression[next_index] <= '9') ||
+                        (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
+                        expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{')) {
+                    throw std::invalid_argument("Missing operand for unary minus!\n");
+                }
+            }
+            else {
+                bool isRightOperand = false;
+                int next_index = i + 1;
+                while (next_index < expression.length() && expression[next_index] == ' ') {
+                    next_index++;
+                }
+                if (next_index < expression.length()) {
+                    if ((expression[next_index] >= '0' && expression[next_index] <= '9') ||
+                        (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
+                        expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{') {
+                        isRightOperand = true;
+                    }
+                }
+                if (!isRightOperand)
+                    throw std::invalid_argument("Missing second operand in operation '-'\n");
+            }
+        }
+        else if (expression[i] >= 'a' && expression[i] <= 'z') {
+            if (prev >= 'a' && prev <= 'z')
+                throw std::invalid_argument("Missing operation between variables!\n");
+            if (prev >= '0' && prev <= '9')
+                throw std::invalid_argument("Missing operation between variable and number!\n");
+        }
+        else if (expression[i] >= '0' && expression[i] <= '9') {
+            if (prev >= 'a' && prev <= 'z')
+                throw std::invalid_argument("Missing operation between variable and number!\n");
+        }
+        prev = expression[i];
+    }
+    if (!brackets.is_empty())
+        throw std::invalid_argument("Missing closed bracket!");
 }

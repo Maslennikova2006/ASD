@@ -42,6 +42,7 @@ int main() {
 #include <clocale>
 
 int main() {
+    //read_expression("5t5 56hyh ggrr 6 yyv");
     setlocale(LC_ALL, "rus");
     Point point1(5, 8);
     Circle c1(point1, 9);
