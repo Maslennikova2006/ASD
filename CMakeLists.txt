@@ -21,6 +21,8 @@ add_subdirectory(lib_sphere)
 add_subdirectory(lib_algorithms)
 add_subdirectory(lib_list)
 add_subdirectory(lib_dlist)
+add_subdirectory(lib_listQueue)
+add_subdirectory(lib_listStack)
 add_subdirectory(lib_node)
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 
