@@ -20,7 +20,7 @@ class Queue {
 public:
     Queue();  // +
     Queue(const int size);  // +
-    Queue(const Queue& other);  // +
+    Queue(const Queue<T>& other);  // +
 
     ~Queue();
 

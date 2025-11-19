@@ -62,11 +62,6 @@ public:
                 throw std::invalid_argument("You can't dereference an empty pointer!");
             return _current->value;
         }
-        /*Iterator* operator->() {
-            if (_current == nullptr)
-                throw std::invalid_argument("You can't dereference an empty pointer!");
-            return _current;
-        }*/
         bool operator!=(const Iterator& other) {
             return _current != other._current;
         }

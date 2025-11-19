@@ -24,9 +24,9 @@ TEST(TestStackLib, check_the_copy_constructor) {
     Stack<int> st1(5);
     st1.push(3);
     Stack<int> st2(st1);
-    EXPECT_EQ(5, st2.get_size());
-    EXPECT_EQ(0, st2.get_top());
-    EXPECT_EQ(3, st2.top());
+    EXPECT_EQ(st1.get_size(), st2.get_size());
+    EXPECT_EQ(st1.get_top(), st2.get_top());
+    EXPECT_EQ(st1.top(), st2.top());
 }
 TEST(TestStackLib, check_push) {
     Stack<int> stack(5);
@@ -45,8 +45,9 @@ TEST(TestStackLib, check_pop) {
     stack.push(5);
     stack.push(8);
     stack.push(3);
+    stack.push(10);
     stack.pop();
-    EXPECT_EQ(8, stack.top());
+    EXPECT_EQ(3, stack.top());
 }
 TEST(TestStackLib, throw_when_try_pop) {
     Stack<int> stack(3);
@@ -93,7 +94,7 @@ TEST(TestStackLib, check_clear) {
     stack.push(8);
     stack.push(3);
     stack.clear();
-    stack.push(8);
-    stack.push(3);
-    EXPECT_EQ(3, stack.top());
+    stack.push(5);
+    stack.push(10);
+    EXPECT_EQ(10, stack.top());
 }

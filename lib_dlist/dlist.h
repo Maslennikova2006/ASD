@@ -23,15 +23,6 @@ public:
         next = next_;
         prev = prev_;
     }
-
-    DNode<T>& operator=(const DNode<T>& other) {
-        if (this != &other) {
-            value = other.value;
-            next = other.next;
-            prev = other.prev;
-        }
-        return *this;
-    }
 };
 
 template <class T>
@@ -106,6 +97,9 @@ public:
         }
         bool operator!=(const Iterator& other) {
             return _current != other._current;
+        }
+        bool operator==(const Iterator& other) {
+            return _current == other._current;
         }
     };
 

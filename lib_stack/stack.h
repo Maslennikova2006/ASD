@@ -20,7 +20,7 @@ class Stack {
 public:
     Stack();  // +
     Stack(const int size);  // +
-    Stack(const Stack& other);  // +
+    Stack(const Stack<T>& other);  // +
 
     ~Stack();
 
@@ -103,7 +103,7 @@ bool Stack<T>::is_empty() const noexcept {
 }
 template <class T>
 bool Stack<T>::is_full() const noexcept {
-    return _top == _size - 1;
+    return _top == (_size - 1);
 }
 
 template <class T>

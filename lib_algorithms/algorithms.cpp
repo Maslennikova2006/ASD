@@ -30,7 +30,7 @@ void show_position(Position pos) {
     }
 }
 
-bool check_brackets(std::string str) {
+bool check_brackets(const std::string str) {
     Stack<char> stack;
 
     for (int i = 0; i < str.length(); i++) {
@@ -73,7 +73,7 @@ bool check_brackets(std::string str) {
 // - унарный минус
 // проверка скобок
 
-void read_expression(std::string expression) {
+void read_expression(const std::string expression) {
     Stack<char> brackets;
     char prev = '\0';
     for (int i = 0; i < expression.length(); i++) {

@@ -208,14 +208,25 @@ TEST(TestListLib, check_iterator_for_reading) {
         EXPECT_EQ(i, *it);
         i++;
     }
+    it = list.begin();
+    EXPECT_EQ(1, *(it++));
+    EXPECT_EQ(4, *(it+=2));
+    EXPECT_EQ(5, *(++it));
 }
 TEST(TestListLib, check_iterator_for_writting) {
     List<int> list;
     List<int>::Iterator it;
     int i = 1;
+    for (int i = 0; i < 10; i++) {
+        list.push_back(i + 1);
+    }
     for (it = list.begin(); it != list.end(); it++) {
-        *it = i;
-        EXPECT_EQ(i, *it);
+        *it = i + 2;
+        EXPECT_EQ(i + 2, *it);
         i++;
     }
+    it = list.begin();
+    EXPECT_EQ(3, *(it++));
+    EXPECT_EQ(6, *(it += 2));
+    EXPECT_EQ(7, *(++it));
 }

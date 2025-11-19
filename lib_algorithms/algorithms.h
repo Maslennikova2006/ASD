@@ -40,17 +40,15 @@ bool is_looped(List<T>& list) {
     return false;
 }
 template <class T>
-bool is_looped_2(List<T>& list) {
-    bool isLoop = false;
+bool is_looped2(List<T>& list) {
     Node<T>* startHead = list.head();
-    
     Node<T>* cur = list.head();
     Node<T>* prev = nullptr;
-    Node<T>* loopPoint = nullptr;
+    bool isLoop = false;
+
     while (cur != nullptr) {
         if (cur->next == startHead) {
             isLoop = true;
-            loopPoint = cur;
             break;
         }
         Node<T>* next = cur->next;
@@ -58,31 +56,12 @@ bool is_looped_2(List<T>& list) {
         prev = cur;
         cur = next;
     }
-    if (isLoop) {
-        Node<T>* cur = prev;
-        Node<T>* prev = nullptr;
-        while (cur != nullptr && cur != loopPoint) {
-            Node<T>* next = cur->next;
-            cur->next = prev;
-            prev = cur;
-            cur = next;
-        }
-        if (cur == loopPoint && cur != nullptr) {
-            if (prev != nullptr)
-                cur->next = prev;
-            else
-                cur->next = startHead;
-        }
-    }
-    else {
+
+    while (prev != nullptr) {
+        Node<T>* next = prev->next;
+        prev->next = cur;
         cur = prev;
-        prev = nullptr;
-        while (cur != nullptr) {
-            Node<T>* next = cur->next;
-            cur->next = prev;
-            prev = cur;
-            cur = next;
-        }
+        prev = next;
     }
     return isLoop;
 }
@@ -112,8 +91,8 @@ Node<T>* find_loop(List<T>& list) {
     return i;
 }
 
-bool check_brackets(std::string str);
+bool check_brackets(const std::string str);
 
-void read_expression(std::string expression);
+void read_expression(const std::string expression);
 
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_

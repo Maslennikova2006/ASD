@@ -219,14 +219,31 @@ TEST(TestDListLib, check_iterator_for_reading) {
         EXPECT_EQ(i, *it);
         i++;
     }
+    it = list.begin();
+    EXPECT_EQ(1, *(it++));
+    EXPECT_EQ(5, *(it += 3));
+    EXPECT_EQ(6, *(++it));
+    EXPECT_EQ(6, *(it--));
+    EXPECT_EQ(3, *(it -= 2));
+    EXPECT_EQ(2, *(--it));
 }
 TEST(TestDListLib, check_iterator_for_writting) {
     DList<int> list;
     DList<int>::Iterator it;
+    for (int i = 0; i < 10; i++) {
+        list.push_back(i + 1);
+    }
     int i = 1;
     for (it = list.begin(); it != list.end(); it++) {
-        *it = i;
-        EXPECT_EQ(i, *it);
+        *it = i * 2;
+        EXPECT_EQ(i * 2, *it);
         i++;
     }
+    it = list.begin();
+    EXPECT_EQ(2, *(it++));
+    EXPECT_EQ(10, *(it += 3));
+    EXPECT_EQ(12, *(++it));
+    EXPECT_EQ(12, *(it--));
+    EXPECT_EQ(6, *(it -= 2));
+    EXPECT_EQ(4, *(--it));
 }
