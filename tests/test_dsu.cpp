@@ -19,7 +19,7 @@ TEST(TestDsuLib, check_find) {
     EXPECT_EQ(dsu.find(3), 2);
     EXPECT_EQ(dsu.find(5), 2);
 }
-TEST(TestDsuLib, check_union_set) {
+TEST(TestDsuLib, check_union_set_when_the_first_rank_is_higher_than_the_second) {
     Dsu dsu(8);
 
     dsu.union_set(2, 3);
@@ -27,6 +27,35 @@ TEST(TestDsuLib, check_union_set) {
     EXPECT_EQ(dsu.find(2), 2);
     EXPECT_EQ(dsu.find(3), 2);
     EXPECT_EQ(dsu.find(5), 2);
+}
+TEST(TestDsuLib, check_union_set_when_the_first_rank_is_lower_than_the_second) {
+    Dsu dsu(8);
+
+    dsu.union_set(7, 1);
+
+    dsu.union_set(4, 6);
+    dsu.union_set(2, 3);
+    dsu.union_set(2, 6);
+
+    dsu.union_set(1, 3);
+    EXPECT_EQ(dsu.find(7), 2);
+    EXPECT_EQ(dsu.find(1), 2);
+    EXPECT_EQ(dsu.find(4), 2);
+    EXPECT_EQ(dsu.find(3), 2);
+    EXPECT_EQ(dsu.find(6), 2);
+}
+TEST(TestDsuLib, check_union_set_when_the_ranks_are_equal) {
+    Dsu dsu(8);
+
+    dsu.union_set(2, 3);
+
+    dsu.union_set(4, 6);
+
+    dsu.union_set(3, 6);
+    EXPECT_EQ(dsu.find(3), 2);
+    EXPECT_EQ(dsu.find(6), 2);
+    EXPECT_EQ(dsu.find(4), 2);
+    EXPECT_EQ(dsu.find(2), 2);
 }
 TEST(TestDsuLib, ñheck_union_with_yourself) {
     Dsu dsu(8);
