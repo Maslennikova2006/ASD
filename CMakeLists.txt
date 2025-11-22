@@ -25,6 +25,7 @@ add_subdirectory(lib_node)
 add_subdirectory(lib_stack)
 add_subdirectory(lib_queue)
 add_subdirectory(lib_expression)
+add_subdirectory(lib_tvector)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 
