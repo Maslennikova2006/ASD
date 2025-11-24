@@ -48,39 +48,43 @@ public:
         }
 
         Iterator& operator++() {
-            if (_current != nullptr) {
-                _current = _current->next;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't increment end iterator!\n");
+            _current = _current->next;
             return *this;
         }
         Iterator operator++(int) {
             Iterator tmp = *this;
-            if (_current != nullptr) {
-                _current = _current->next;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't increment end iterator!\n");
+            _current = _current->next;
             return tmp;
         }
         Iterator& operator+=(int num) {
-            for (int i = 0; i < num && _current != nullptr; i++) {
+            for (int i = 0; i < num; i++) {
+                if (_current == nullptr)
+                    throw std::invalid_argument("You can't increment end iterator!\n");
                 _current = _current->next;
             }
             return *this;
         }
         Iterator& operator--() {
-            if (_current != nullptr && _current->prev != nullptr) {
-                _current = _current->prev;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't decrement begin iterator!\n");
+            _current = _current->prev;
             return *this;
         }
         Iterator operator--(int) {
             Iterator tmp = *this;
-            if (_current != nullptr && _current->prev != nullptr) {
-                _current = _current->prev;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't decrement begin iterator!\n");
+            _current = _current->prev;
             return tmp;
         }
         Iterator& operator-=(int num) {
-            for (int i = 0; i < num && _current->prev != nullptr; i++) {
+            for (int i = 0; i < num; i++) {
+                if (_current == nullptr)
+                    throw std::invalid_argument("You can't decrement begin iterator!\n");
                 _current = _current->prev;
             }
             return *this;
@@ -95,10 +99,10 @@ public:
                 throw std::invalid_argument("You can't dereference an empty pointer!");
             return _current->value;
         }
-        bool operator!=(const Iterator& other) {
+        bool operator!=(const Iterator& other) const noexcept {
             return _current != other._current;
         }
-        bool operator==(const Iterator& other) {
+        bool operator==(const Iterator& other) const noexcept {
             return _current == other._current;
         }
     };
@@ -201,7 +205,6 @@ void DList<T>::push_front(const T& val) noexcept {
         _head = node;
     }
     else {
-        node->next = _head;
         _head->prev = node;
         _head = node;
     }

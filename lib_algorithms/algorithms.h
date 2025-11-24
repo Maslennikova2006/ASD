@@ -31,9 +31,14 @@ bool is_looped(List<T>& list) {
     i = list.begin();
     j = list.begin();
 
-    while (j != list.end() && j.next() != list.end()) {
-        i++;
-        j += 2;
+    while (j != list.end() && i != list.end()) {
+        try {
+            i++;
+            j += 2;
+        } catch (std::exception err) {
+            std::cerr << err.what() << std::endl;
+            return false;
+        }
         if (i == j) 
             return true;
     }
@@ -91,8 +96,8 @@ Node<T>* find_loop(List<T>& list) {
     return i;
 }
 
-bool check_brackets(const std::string str);
+bool check_brackets(const std::string& str);
 
-void read_expression(const std::string expression);
+void read_expression(const std::string& expression);
 
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_
