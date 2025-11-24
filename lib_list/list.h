@@ -81,6 +81,12 @@ public:
     Iterator end() {
         return Iterator(nullptr);
     }
+    const Iterator begin() const {
+        return Iterator(_head);
+    }
+    const Iterator end() const {
+        return Iterator(nullptr);
+    }
 
     inline Node<T>* head() const noexcept;
     inline Node<T>* tail() const noexcept;
