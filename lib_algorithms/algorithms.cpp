@@ -48,31 +48,22 @@ int count_the_number_of_islands(Matrix<int> matr) {
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             if (matr[i][j] == 1) {
-                count++;
                 if (i > 0 && matr[i - 1][j] == -1) {
                     int cur = i * n + j;
                     int neighbour = (i - 1) * n + j;
-                    //dsu.union_set(cur, neighbour);
-                    if (dsu.find(cur) != dsu.find(neighbour)) {
-                        dsu.union_set(cur, neighbour);
-                        count--;
-                    }
+                    dsu.union_set(cur, neighbour);
                 }
                 if (j > 0 && matr[i][j - 1] == -1) {
                     int cur = i * n + j;
                     int neighbour = i * n + (j - 1);
-                    //dsu.union_set(cur, neighbour);
-                    if (dsu.find(cur) != dsu.find(neighbour)) {
-                        dsu.union_set(cur, neighbour);
-                        count--;
-                    }
+                    dsu.union_set(cur, neighbour);
                 }
                 matr[i][j] = -1;
             }
         }
     }
 
-    /*int ind = 0;
+    int ind = 0;
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
             if (matr[i][j] == -1) {
@@ -81,6 +72,6 @@ int count_the_number_of_islands(Matrix<int> matr) {
                     count++;
             }
         }
-    }*/
+    }
     return count;
 }
