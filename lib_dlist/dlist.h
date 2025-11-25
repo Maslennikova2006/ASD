@@ -113,6 +113,12 @@ public:
     Iterator end() {
         return Iterator(nullptr);
     }
+    Iterator rbegin() {
+        return Iterator(_tail);
+    }
+    Iterator rend() {
+        return Iterator(nullptr);
+    }
 
     inline DNode<T>* head() const noexcept;
     inline DNode<T>* tail() const noexcept;

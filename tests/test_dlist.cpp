@@ -227,6 +227,25 @@ TEST(TestDListLib, check_iterator_for_reading) {
     EXPECT_EQ(3, *(it -= 2));
     EXPECT_EQ(2, *(--it));
 }
+TEST(TestDListLib, check_iterator_for_reading_2) {
+    DList<int> list;
+    DList<int>::Iterator it;
+    for (int i = 0; i < 10; i++) {
+        list.push_back(i + 1);
+    }
+    int i = 10;
+    for (it = list.rbegin(); it != list.rend(); it--) {
+        EXPECT_EQ(i, *it);
+        i--;
+    }
+    /*it = list.rbegin();
+    EXPECT_EQ(1, *(it++));
+    EXPECT_EQ(5, *(it += 3));
+    EXPECT_EQ(6, *(++it));
+    EXPECT_EQ(6, *(it--));
+    EXPECT_EQ(3, *(it -= 2));
+    EXPECT_EQ(2, *(--it));*/
+}
 TEST(TestDListLib, check_iterator_for_writting) {
     DList<int> list;
     DList<int>::Iterator it;

@@ -200,7 +200,7 @@ TEST(TestAlgorithmsLib, check_read_expression_when_there_are_different_brackets)
     ASSERT_ANY_THROW(read_expression("3*[15 + (x + y) * (2*x - 7*y^2)}"));
 }
 TEST(TestAlgorithmsLib, check_read_expression_when_the_expression_is_correct_with_a_unary_minus) {
-    ASSERT_NO_THROW(read_expression("-3 * (15 + (x + y) * (2*x - 7*y^2))"));
+    ASSERT_NO_THROW(read_expression("-3 * (15 + (x + y) * (-2*x - 7*y^2))"));
 }
 TEST(TestAlgorithmsLib, check_read_expression_when_the_expression_is_correct_with_a_unary_minus_2) {
     ASSERT_NO_THROW(read_expression("-3 * (15 + (x + (-y)) * (2*x - 7*y^2))"));

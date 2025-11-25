@@ -236,7 +236,7 @@ void List<T>::pop_front()  {
     _count--;
 }
 template <class T>
-void List<T>::erase(Node<T>* node) {
+void List<T>::erase(Node<T>* node) {  // именно тот что передали
     if (node == nullptr || is_empty() || node == _tail)
         throw std::invalid_argument("You can't erase an item based on a pointer!\n");
     Node<T>* node_del = node->next;
