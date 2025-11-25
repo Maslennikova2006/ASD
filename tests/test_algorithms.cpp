@@ -41,3 +41,8 @@ TEST(TestAlgorithmsLib, check_count_the_number_of_islands_4) {
 
     EXPECT_EQ(0, count_the_number_of_islands(matr));
 }
+TEST(TestAlgorithmsLib, check_count_the_number_of_islands_5) {
+    Matrix<int> matr({ {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} });
+
+    EXPECT_EQ(4, count_the_number_of_islands(matr));
+}
