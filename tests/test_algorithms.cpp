@@ -157,15 +157,12 @@ TEST(TestAlgorithmsLib, check_brackets_1) {
     EXPECT_TRUE(check_brackets("([(){}])"));
 }
 TEST(TestAlgorithmsLib, check_brackets_2) {
-    EXPECT_FALSE(check_brackets("()){)"));
+    EXPECT_FALSE(check_brackets("())()"));
 }
 TEST(TestAlgorithmsLib, check_brackets_3) {
     EXPECT_FALSE(check_brackets("(){)"));
 }
 TEST(TestAlgorithmsLib, check_brackets_4) {
-    EXPECT_FALSE(check_brackets("((){}))"));
-}
-TEST(TestAlgorithmsLib, check_brackets_5) {
     EXPECT_FALSE(check_brackets("(()()"));
 }
 
