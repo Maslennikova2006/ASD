@@ -31,10 +31,16 @@ bool is_looped(List<T>& list) {
     i = list.begin();
     j = list.begin();
 
-    while (j != list.end() && j.next() != list.end()) {
-        i++;
-        j += 2;
-        if (i == j) 
+    while (j != list.end() && i != list.end()) {
+        try {
+            i++;
+            j += 2;
+        }
+        catch (std::exception err) {
+            std::cerr << err.what() << std::endl;
+            return false;
+        }
+        if (i == j)
             return true;
     }
     return false;

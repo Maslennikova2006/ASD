@@ -130,6 +130,7 @@ TEST(TestAlgorithmsLib, check_find_loop_2) {
     }
     Node<int>* loopPoint = find_loop(list);
     EXPECT_EQ(nullptr, loopPoint);
+}
 
 TEST(TestAlgorithmsLib, check_brackets_1) {
     EXPECT_TRUE(check_brackets("((){})"));
