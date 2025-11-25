@@ -214,9 +214,7 @@ template <class T>
 void DList<T>::insert(DNode<T>* node, const T& val) {
     if (node == nullptr || is_empty())
         throw std::invalid_argument("You can't insert it by following the pointer!\n");
-    DNode<T>* new_node = new DNode<T>(val);
-    new_node->prev = node;
-    new_node->next = node->next;
+    DNode<T>* new_node = new DNode<T>(val, node->next, node);
     node->next = new_node;
     if (new_node->next != nullptr)
         new_node->next->prev = new_node;
