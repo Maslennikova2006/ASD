@@ -35,7 +35,7 @@ void Dsu::union_set(int x, int y) {
 int Dsu::find(int elem) {
     if (elem < 0 || elem >= _size)
         throw std::invalid_argument("Invalid element value!");
-    return find_rec(_parent[elem]);
+    return elem = find_rec(_parent[elem]);
 }
 
 int Dsu::find_rec(int elem) {
