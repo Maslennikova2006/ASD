@@ -55,19 +55,19 @@ template <class T>
 void ListStack<T>::push(const T& val) {
     if (is_full())
         throw std::invalid_argument("The stack is full!\n");
-    _data.push_back(val);
+    _data.push_front(val);
 }
 template <class T>
 void ListStack<T>::pop() {
     if (is_empty())
         throw std::invalid_argument("The stack is empty!\n");
-    _data.pop_back();
+    _data.pop_front();
 }
 template <class T>
 T ListStack<T>::top() const {
     if (is_empty())
         throw std::invalid_argument("The stack is empty!\n");
-    return _data.tail()->value;
+    return _data.head()->value;
 }
 
 template <class T>
