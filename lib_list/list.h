@@ -239,7 +239,7 @@ template <class T>
 void List<T>::erase(Node<T>* node) {  // именно тот что передали
     if (node == nullptr || is_empty() || node == _tail)
         throw std::invalid_argument("You can't erase an item based on a pointer!\n");
-    Node<T>* node_del = node->next;
+    Node<T>* node_del = node;
     Node<T>* new_node = node_del->next;
     node->next = new_node;
     if (node_del == _tail) {
@@ -261,7 +261,7 @@ void List<T>::erase(size_t pos) {
     Node<T>* cur = _head;
     size_t cur_pos = 0;
     while (cur != nullptr) {
-        if (cur_pos == pos - 1)
+        if (cur_pos == pos)
             break;
         cur_pos++;
         cur = cur->next;

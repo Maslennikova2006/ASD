@@ -32,14 +32,6 @@ bool is_looped(List<T>& list) {
     j = list.begin();
 
     while (j != list.end() && i != list.end()) {
-        /*try {
-            i++;
-            j += 2;
-        } catch (std::exception err) {
-            std::cerr << err.what() << std::endl;
-            return false;
-        }*/
-        
         i++;
         j++;
         if (j == nullptr)
@@ -77,14 +69,14 @@ bool is_looped2(List<T>& list) {
     return isLoop;
 }
 template <class T>
-Node<T>* find_loop(List<T>& list) {  // объ€снить на листочке
+Node<T>* find_loop(List<T>& list) {
     Node<T>* i = list.head();
     Node<T>* j = list.head();
 
     bool isLoop = false;
     while (j != nullptr && j->next != nullptr) {
         i = i->next;
-        j = j->next->next; // может упасть, надо тест
+        j = j->next->next;
 
         if (i == j) {
             isLoop = true;

@@ -148,7 +148,7 @@ TEST(TestListLib, check_erase_by_pointer) {
     list.push_back(54);
     list.erase(list.head()->next->next);
     EXPECT_EQ(list.head()->value, 7);
-    EXPECT_EQ(list.head()->next->next->next->value, 54);
+    EXPECT_EQ(list.head()->next->next->value, 48);
     EXPECT_EQ(list.tail()->value, 54);
     EXPECT_EQ((size_t)4, list.get_count());
 }
@@ -174,11 +174,12 @@ TEST(TestListLib, check_erase_by_pos) {
     List<int> list;
     list.push_back(34);
     list.push_back(72);
-    list.push_back(72);
+    list.push_back(88);
     list.push_front(27);
     list.erase((size_t)1);
     EXPECT_EQ(list.head()->value, 27);
-    EXPECT_EQ(list.tail()->value, 72);
+    EXPECT_EQ(list.head()->next->value, 88);
+    EXPECT_EQ(list.tail()->value, 88);
     EXPECT_EQ((size_t)3, list.get_count());
 }
 TEST(TestListLib, check_erase_by_pos_when_wrong_pos) {
