@@ -162,6 +162,32 @@ TEST(TestDListLib, check_erase_by_pointer) {
     EXPECT_EQ(list.head()->next->next->prev->value, 4);
     EXPECT_EQ((size_t)4, list.get_count());
 }
+TEST(TestDListLib, check_erase_by_pointer_on_head) {
+    DList<int> list;
+    list.push_back(7);
+    list.push_back(4);
+    list.push_back(84);
+    list.push_back(48);
+    list.push_back(54);
+    list.erase(list.head());
+    EXPECT_EQ(list.head()->value, 4);
+    EXPECT_EQ(list.head()->next->next->value, 48);
+    EXPECT_EQ(list.head()->next->next->prev->value, 84);
+    EXPECT_EQ((size_t)4, list.get_count());
+}
+TEST(TestDListLib, check_erase_by_pointer_on_tail) {
+    DList<int> list;
+    list.push_back(7);
+    list.push_back(4);
+    list.push_back(84);
+    list.push_back(48);
+    list.push_back(54);
+    list.erase(list.tail());
+    EXPECT_EQ(list.head()->value, 7);
+    EXPECT_EQ(list.head()->next->next->value, 84);
+    EXPECT_EQ(list.tail()->value, 48);
+    EXPECT_EQ((size_t)4, list.get_count());
+}
 TEST(TestDListLib, check_erase_front_by_pos) {
     DList<int> list;
     list.push_back(7);

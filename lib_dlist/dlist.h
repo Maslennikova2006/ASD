@@ -299,6 +299,7 @@ void DList<T>::erase(DNode<T>* node) {
         node->next->prev = node->prev;
     else
         _tail = node->prev;
+    delete node;
     _count--;
 }
 template <class T>
