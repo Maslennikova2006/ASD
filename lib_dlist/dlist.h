@@ -23,15 +23,6 @@ public:
         next = next_;
         prev = prev_;
     }
-
-    DNode<T>& operator=(const DNode<T>& other) {
-        if (this != &other) {
-            value = other.value;
-            next = other.next;
-            prev = other.prev;
-        }
-        return *this;
-    }
 };
 
 template <class T>
@@ -57,39 +48,43 @@ public:
         }
 
         Iterator& operator++() {
-            if (_current != nullptr) {
-                _current = _current->next;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't increment end iterator!\n");
+            _current = _current->next;
             return *this;
         }
         Iterator operator++(int) {
             Iterator tmp = *this;
-            if (_current != nullptr) {
-                _current = _current->next;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't increment end iterator!\n");
+            _current = _current->next;
             return tmp;
         }
         Iterator& operator+=(int num) {
-            for (int i = 0; i < num && _current != nullptr; i++) {
+            for (int i = 0; i < num; i++) {
+                if (_current == nullptr)
+                    throw std::invalid_argument("You can't increment end iterator!\n");
                 _current = _current->next;
             }
             return *this;
         }
         Iterator& operator--() {
-            if (_current != nullptr && _current->prev != nullptr) {
-                _current = _current->prev;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't decrement begin iterator!\n");
+            _current = _current->prev;
             return *this;
         }
         Iterator operator--(int) {
             Iterator tmp = *this;
-            if (_current != nullptr && _current->prev != nullptr) {
-                _current = _current->prev;
-            }
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't decrement begin iterator!\n");
+            _current = _current->prev;
             return tmp;
         }
         Iterator& operator-=(int num) {
-            for (int i = 0; i < num && _current->prev != nullptr; i++) {
+            for (int i = 0; i < num; i++) {
+                if (_current == nullptr)
+                    throw std::invalid_argument("You can't decrement begin iterator!\n");
                 _current = _current->prev;
             }
             return *this;
@@ -104,8 +99,11 @@ public:
                 throw std::invalid_argument("You can't dereference an empty pointer!");
             return _current->value;
         }
-        bool operator!=(const Iterator& other) {
+        bool operator!=(const Iterator& other) const noexcept {
             return _current != other._current;
+        }
+        bool operator==(const Iterator& other) const noexcept {
+            return _current == other._current;
         }
     };
 
@@ -113,6 +111,12 @@ public:
         return Iterator(_head);
     }
     Iterator end() {
+        return Iterator(nullptr);
+    }
+    Iterator rbegin() {
+        return Iterator(_tail);
+    }
+    Iterator rend() {
         return Iterator(nullptr);
     }
 
@@ -207,7 +211,6 @@ void DList<T>::push_front(const T& val) noexcept {
         _head = node;
     }
     else {
-        node->next = _head;
         _head->prev = node;
         _head = node;
     }
@@ -217,9 +220,7 @@ template <class T>
 void DList<T>::insert(DNode<T>* node, const T& val) {
     if (node == nullptr || is_empty())
         throw std::invalid_argument("You can't insert it by following the pointer!\n");
-    DNode<T>* new_node = new DNode<T>(val);
-    new_node->prev = node;
-    new_node->next = node->next;
+    DNode<T>* new_node = new DNode<T>(val, node->next, node);
     node->next = new_node;
     if (new_node->next != nullptr)
         new_node->next->prev = new_node;
@@ -288,7 +289,7 @@ template <class T>
 void DList<T>::erase(DNode<T>* node) {
     if (node == nullptr || is_empty())
         throw std::invalid_argument("You can't erase an item based on a pointer!\n");
-    
+
     if (node->prev != nullptr)
         node->prev->next = node->next;
     else
@@ -298,6 +299,7 @@ void DList<T>::erase(DNode<T>* node) {
         node->next->prev = node->prev;
     else
         _tail = node->prev;
+    delete node;
     _count--;
 }
 template <class T>

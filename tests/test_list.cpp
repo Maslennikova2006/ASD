@@ -148,8 +148,34 @@ TEST(TestListLib, check_erase_by_pointer) {
     list.push_back(54);
     list.erase(list.head()->next->next);
     EXPECT_EQ(list.head()->value, 7);
+    EXPECT_EQ(list.head()->next->next->value, 48);
+    EXPECT_EQ(list.tail()->value, 54);
+    EXPECT_EQ((size_t)4, list.get_count());
+}
+TEST(TestListLib, check_erase_by_pointer_on_head) {
+    List<int> list;
+    list.push_back(7);
+    list.push_back(4);
+    list.push_back(84);
+    list.push_back(48);
+    list.push_back(54);
+    list.erase(list.head());
+    EXPECT_EQ(list.head()->value, 4);
     EXPECT_EQ(list.head()->next->next->next->value, 54);
     EXPECT_EQ(list.tail()->value, 54);
+    EXPECT_EQ((size_t)4, list.get_count());
+}
+TEST(TestListLib, check_erase_by_pointer_on_tail) {
+    List<int> list;
+    list.push_back(7);
+    list.push_back(4);
+    list.push_back(84);
+    list.push_back(48);
+    list.push_back(54);
+    list.erase(list.tail());
+    EXPECT_EQ(list.head()->value, 7);
+    EXPECT_EQ(list.head()->next->next->next->value, 48);
+    EXPECT_EQ(list.tail()->value, 48);
     EXPECT_EQ((size_t)4, list.get_count());
 }
 TEST(TestListLib, check_erase_front_by_pos) {
@@ -174,11 +200,12 @@ TEST(TestListLib, check_erase_by_pos) {
     List<int> list;
     list.push_back(34);
     list.push_back(72);
-    list.push_back(72);
+    list.push_back(88);
     list.push_front(27);
     list.erase((size_t)1);
     EXPECT_EQ(list.head()->value, 27);
-    EXPECT_EQ(list.tail()->value, 72);
+    EXPECT_EQ(list.head()->next->value, 72);
+    EXPECT_EQ(list.tail()->value, 88);
     EXPECT_EQ((size_t)3, list.get_count());
 }
 TEST(TestListLib, check_erase_by_pos_when_wrong_pos) {
@@ -208,14 +235,25 @@ TEST(TestListLib, check_iterator_for_reading) {
         EXPECT_EQ(i, *it);
         i++;
     }
+    it = list.begin();
+    EXPECT_EQ(1, *(it++));
+    EXPECT_EQ(4, *(it += 2));
+    EXPECT_EQ(5, *(++it));
 }
 TEST(TestListLib, check_iterator_for_writting) {
     List<int> list;
     List<int>::Iterator it;
     int i = 1;
+    for (int i = 0; i < 10; i++) {
+        list.push_back(i + 1);
+    }
     for (it = list.begin(); it != list.end(); it++) {
-        *it = i;
-        EXPECT_EQ(i, *it);
+        *it = i + 2;
+        EXPECT_EQ(i + 2, *it);
         i++;
     }
+    it = list.begin();
+    EXPECT_EQ(3, *(it++));
+    EXPECT_EQ(6, *(it += 2));
+    EXPECT_EQ(7, *(++it));
 }
