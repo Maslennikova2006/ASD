@@ -32,14 +32,15 @@ void Dsu::union_set(int x, int y) {
     if (_rank[parent_x] == _rank[parent_y])
         _rank[parent_x]++;
 }
-int Dsu::find(int elem) { // протаскивать ранг
+int Dsu::find(int elem) {
     if (elem < 0 || elem >= _size)
         throw std::invalid_argument("Invalid element value!");
-    return elem = find_rec(_parent[elem]);
+    _rank[_parent[elem]]--;
+    return _parent[elem] = find_rec(_parent[elem]);
 }
 
 int Dsu::find_rec(int elem) {
     if (_parent[elem] == elem)
         return elem;
-    return elem = find_rec(_parent[elem]);
+    return _parent[elem] = find_rec(_parent[elem]);
 }
