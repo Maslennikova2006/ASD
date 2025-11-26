@@ -152,6 +152,32 @@ TEST(TestListLib, check_erase_by_pointer) {
     EXPECT_EQ(list.tail()->value, 54);
     EXPECT_EQ((size_t)4, list.get_count());
 }
+TEST(TestListLib, check_erase_by_pointer_on_head) {
+    List<int> list;
+    list.push_back(7);
+    list.push_back(4);
+    list.push_back(84);
+    list.push_back(48);
+    list.push_back(54);
+    list.erase(list.head());
+    EXPECT_EQ(list.head()->value, 4);
+    EXPECT_EQ(list.head()->next->next->next->value, 54);
+    EXPECT_EQ(list.tail()->value, 54);
+    EXPECT_EQ((size_t)4, list.get_count());
+}
+TEST(TestListLib, check_erase_by_pointer_on_tail) {
+    List<int> list;
+    list.push_back(7);
+    list.push_back(4);
+    list.push_back(84);
+    list.push_back(48);
+    list.push_back(54);
+    list.erase(list.tail());
+    EXPECT_EQ(list.head()->value, 7);
+    EXPECT_EQ(list.head()->next->next->next->value, 48);
+    EXPECT_EQ(list.tail()->value, 48);
+    EXPECT_EQ((size_t)4, list.get_count());
+}
 TEST(TestListLib, check_erase_front_by_pos) {
     List<int> list;
     list.push_back(7);
@@ -177,7 +203,7 @@ TEST(TestListLib, check_erase_by_pos) {
     list.push_back(72);
     list.push_front(27);
     list.erase((size_t)1);
-    EXPECT_EQ(list.head()->value, 27);
+    EXPECT_EQ(list.head()->value, 27); // 34
     EXPECT_EQ(list.tail()->value, 72);
     EXPECT_EQ((size_t)3, list.get_count());
 }
