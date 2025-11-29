@@ -56,6 +56,7 @@ template <class T>
 Stack<T>::Stack(const Stack& other) {
     if (&other == NULL)
         throw std::invalid_argument("The object was not received!\n");
+    if (this == &other) return;
     _size = other._size;
     _top = other._top;
     _data = new T[_size];
@@ -66,7 +67,10 @@ Stack<T>::Stack(const Stack& other) {
 
 template <class T>
 Stack<T>::~Stack() {
-    delete[] _data;
+    if (_data != nullptr) {
+        delete[] _data;
+        _data = nullptr;
+    }
 }
 
 template <class T>

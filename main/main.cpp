@@ -12,41 +12,42 @@
 
 void main() {
     setlocale(LC_ALL, "rus");
-    Lexem x("x", Variable);
-    Lexem num1("7", Constant, 7);
-    Lexem y("y", Variable);
-    Lexem z("z", Variable);
-    Lexem num2("9", Constant, 9);
-    Lexem num3("-15", Constant, -15);
-    Lexem op1("+", Operator, 0, 1);
-    Lexem op2("*", Operator, 0, 2);
-    Lexem op3("-", Operator, 0, 1);
-    Lexem br1("(", OpenBracket, 0, 5);
-    Lexem br2(")", ClosedBracket, 0, 5);
-    List<Lexem> expr;
-    expr.push_back(br1);
-    expr.push_back(x);
-    expr.push_back(op1);
-    expr.push_back(num1);
-    expr.push_back(br2);
-    expr.push_back(op2);
-    expr.push_back(y);
-    expr.push_back(op3);
-    expr.push_back(z);
-    Expression expression(expr);
-    expression.set_variables("x", 5);
-    expression.set_variables("y", 9);
-    expression.set_variables("z", -15);
-    std::cout << expression.calculate();
-    /*std::string expr;
+    //Lexem x("x", Variable);
+    //Lexem num1("7", Constant, 7);
+    //Lexem y("y", Variable);
+    //Lexem z("z", Variable);
+    //Lexem num2("9", Constant, 9);
+    //Lexem num3("-15", Constant, -15);
+    //Lexem op1("+", Operator, 0, 1);
+    //
+    //Lexem op2("*", Operator, 0, 2);
+    //Lexem op3("-", Operator, 0, 1);
+    //Lexem br1("(", OpenBracket, 0, 5);
+    //Lexem br2(")", ClosedBracket, 0, 5);
+    //List<Lexem> expr;
+    //expr.push_back(br1);
+    //expr.push_back(x);
+    //expr.push_back(op1);
+    //expr.push_back(num1);
+    //expr.push_back(br2);
+    //expr.push_back(op2);
+    //expr.push_back(y);
+    //expr.push_back(op3);
+    //expr.push_back(z);
+    //Expression expression(expr);
+    //expression.set_variables("x", 5);
+    //expression.set_variables("y", 9);
+    //expression.set_variables("z", -15);
+    //std::cout << expression.calculate();
+    std::string expr;
     std::cout << "¬ведите выражение: ";
     std::cin >> expr;
     std::cout << std::endl;
     Expression expression(expr);
-    expression.set_variables("x", 5);
+    /*expression.set_variables("x", 5);
     expression.set_variables("y", 9);
-    expression.set_variables("z", -15);
-    std::cout << expression.calculate();*/
+    expression.set_variables("z", -15);*/
+    std::cout << expression.calculate();
 }
 
 #endif  // EXPRESSION

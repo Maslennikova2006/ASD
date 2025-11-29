@@ -74,6 +74,12 @@ public:
     Iterator end() {
         return Iterator(nullptr);
     }
+    const Iterator begin() const {
+        return Iterator(_head);
+    }
+    const Iterator end() const {
+        return Iterator(nullptr);
+    }
 
     inline Node<T>* head() const noexcept;
     inline Node<T>* tail() const noexcept;
@@ -91,6 +97,8 @@ public:
     void pop_front();  // +
     void erase(Node<T>* node);  // +
     void erase(size_t pos);  // +
+
+    List<T>& operator=(const List<T>& other);
 };
 
 template <class T>
@@ -276,5 +284,30 @@ void List<T>::erase(size_t pos) {
         throw std::invalid_argument("Wrong position!\n");
     erase(cur);
 }
+template <class T>
+List<T>& List<T>::operator=(const List<T>& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    Node<T>* current = _head;
+    while (current != nullptr) {
+        Node<T>* next_node = current->next;
+        delete current;
+        current = next_node;
+    }
+    _head = nullptr;
+    _tail = nullptr;
+    _count = 0;
+
+    current = other._head;
+    while (current != nullptr) {
+        push_back(current->value);
+        current = current->next;
+    }
+
+    return *this;
+}
+
 
 #endif  // LIB_LIST_LIST_H_

@@ -245,3 +245,69 @@ double(*Parser::getFunction(const std::string name))(double) {
     }
     return nullptr;
 }
+List<Lexem> Parser::compilationPolishRecord(const List<Lexem>& lexems) {
+    List<Lexem> polishRecord;
+    Stack<Lexem> operators(lexems.get_count());
+
+    for (const auto& lexem : lexems) {
+        switch (lexem.type) {
+        case Constant:
+        case Variable:
+            polishRecord.push_back(lexem);
+            break;
+
+        case Function:
+            operators.push(lexem);
+            break;
+
+        case Operator:
+        case UnOperator:
+            while (!operators.is_empty() &&
+                operators.top().type != OpenBracket &&
+                operators.top().type != OpenedAbs &&
+                operators.top().priority >= lexem.priority) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            operators.push(lexem);
+            break;
+
+        case OpenBracket:
+        case OpenedAbs:
+            operators.push(lexem);
+            break;
+
+        case ClosedBracket:
+            while (!operators.is_empty() && operators.top().type != OpenBracket) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            if (!operators.is_empty() && operators.top().type == OpenBracket) {
+                operators.pop();
+            }
+            // После закрывающей скобки может идти функция из стека
+            if (!operators.is_empty() && operators.top().type == Function) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            break;
+
+        case ClosedAbs:
+            while (!operators.is_empty() && operators.top().type != OpenedAbs) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            if (!operators.is_empty() && operators.top().type == OpenedAbs) {
+                operators.pop();
+            }
+            break;
+        }
+    }
+
+    while (!operators.is_empty()) {
+        polishRecord.push_back(operators.top());
+        operators.pop();
+    }
+
+    return polishRecord;
+}
