@@ -101,11 +101,11 @@ TEST(TestDsuLib, check_path_compression_and_rank_reductions) {
 
     dsu.union_set(1, 2);
     dsu.union_set(3, 4);
-    dsu.union_set(1, 4);
+    dsu.union_set(2, 3);
 
     dsu.union_set(5, 6);
 
-    dsu.union_set(6, 2);
+    dsu.union_set(6, 4);
 
     EXPECT_EQ(dsu.find(4), 5);
 }

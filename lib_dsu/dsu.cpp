@@ -1,6 +1,7 @@
 // Copyright 2025 Mary Maslennikova
 
 #include "../lib_dsu/dsu.h"
+#include <iostream>
 
 Dsu::Dsu(size_t size) {
     _size = size;
@@ -24,10 +25,16 @@ void Dsu::union_set(int x, int y) {
     int parent_x = find(x);
     int parent_y = find(y);
 
-    if (_rank[parent_x] >= _rank[parent_y])
+    if (_rank[parent_x] >= _rank[parent_y]) {
         _parent[parent_y] = parent_x;
-    else
+        if (_rank[parent_y] > 0)
+            _rank[parent_y]--;
+    }
+    else {
         _parent[parent_x] = parent_y;
+        if (_rank[parent_x] > 0)
+            _rank[parent_x]--;
+    }
 
     if (_rank[parent_x] == _rank[parent_y])
         _rank[parent_x]++;
@@ -35,7 +42,6 @@ void Dsu::union_set(int x, int y) {
 int Dsu::find(int elem) {
     if (elem < 0 || elem >= _size)
         throw std::invalid_argument("Invalid element value!");
-    _rank[_parent[elem]]--;
     return _parent[elem] = find_rec(_parent[elem]);
 }
 
