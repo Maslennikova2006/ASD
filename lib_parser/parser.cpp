@@ -2,312 +2,257 @@
 
 #include "../lib_parser/parser.h"
 #include "../lib_stack/stack.h"
-#include "../lib_sin/sin.h"
-#include "../lib_cos/cos.h"
-#include "../lib_tg/tg.h"
+#include "../lib_functions/functions.h"
+
+int Parser::follow_the_line(size_t ind, const std::string& expr) {
+    while (ind < expr.length() && expr[ind] == ' ') {
+        ind++;
+    }
+    return ind;
+}
+bool Parser::is_opened_bracket(char symbol) {
+    return (symbol == '(' || symbol == '[' || symbol == '{');
+}
+bool Parser::is_closed_bracket(char symbol) {
+    return (symbol == ')' || symbol == ']' || symbol == '}');
+}
+bool Parser::is_operation(char symbol) {
+    return (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^');
+}
+bool Parser::is_letters(char symbol) {
+    return (symbol >= 'a' && symbol <= 'z') || (symbol >= 'A' && symbol <= 'Z');
+}
+bool Parser::is_digit(char symbol) {
+    return (symbol >= '0' && symbol <= '9');
+}
 
 List<Lexem> Parser::parse(const std::string& expression) {
     List<Lexem> lexems;
-    Stack<char> brackets;
+    Stack<char> brackets(expression.length());
     char prev = '\0';
-    for (int i = 0; i < expression.length(); i++) {
-        while (i < expression.length() && expression[i] == ' ') {
-            i++;
-        }
-        if (expression[i] == '|') {
-            if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
-                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^' || prev == '|') {
-                brackets.push('|');
-                lexems.push_back(Lexem("|", OpenedAbs, 0, 5));
-            }
-            else {
-                if (brackets.is_empty() || brackets.top() != '|') {
-                    throw std::invalid_argument("Missing opened modulus bracket!\n");
-                }
-                brackets.pop();
-                lexems.push_back(Lexem("|", ClosedAbs, 0, 5));
+    bool expectOperand = true;
+    size_t i = 0;
+    while (i < expression.length()) {
+        i = follow_the_line(i, expression);
+        if (i >= expression.length()) break;
 
-                if (prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
-                    throw std::invalid_argument("The operation cannot be performed before the closing modulus!\n");
+        if (expectOperand) {
+            if (is_letters(expression[i])) {
+                if (is_digit(prev) || is_letters(prev))
+                    throw std::invalid_argument(print_error_location(i) + "Missing operation between variables or numbers!\n");
+
+                std::string str = extract_variable_or_function(expression, i);
+                int next_index = i + str.length();
+                next_index = follow_the_line(next_index, expression);
+
+                if (next_index < expression.length() && is_opened_bracket(expression[next_index])) {
+                    if (str == "sin" || str == "cos" || str == "tg" ||
+                        str == "Sin" || str == "Cos" || str == "Tg") {
+                        double(*func)(double) = get_function(str);
+                        if (func != nullptr) {
+                            lexems.push_back(Lexem(str, Function, DBL_MAX, function_priority, func));
+                            i = next_index;
+                            if (!is_opened_bracket(expression[i]))
+                                throw std::invalid_argument("Expected opening bracket after function!\n");
+                            brackets.push(expression[i]);
+                            lexems.push_back(Lexem(std::string({ expression[i] }), OpenedBracket));
+
+                            next_index = i + 1;
+                            next_index = follow_the_line(next_index, expression);
+                            if (next_index < expression.length()) {
+                                char symbol = expression[next_index];
+                                if ((is_operation(symbol) && symbol != '-') || is_closed_bracket(symbol))
+                                    throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
+                            }
+                        }
+                        else
+                            throw std::invalid_argument("Unknown function: " + str + "\n");
+                    }
+                    else
+                        throw std::invalid_argument("An operation was skipped between a variable and an opening bracket!\n");  // возможно стоит поменять
+                }
+                else {
+                    lexems.push_back(Lexem(str, Variable));
+                    expectOperand = false;
                 }
             }
-        }
-        else if (expression[i] == '(' || expression[i] == '[' || expression[i] == '{') {
-            if ((prev >= 'a' && prev <= 'z') || (prev >= '0' && prev <= '9') || prev == ')')
-                throw std::invalid_argument("An operation is missing between the opening bracket and the number, variable or closing bracket!\n");
-            brackets.push(expression[i]);
-            lexems.push_back(Lexem(std::string({expression[i]}), OpenBracket, 0, 5));
-            int next_index = i + 1;
-            while (next_index < expression.length() && expression[next_index] == ' ') {
-                next_index++;
-            }
-            if (next_index < expression.length()) {
-                if (expression[next_index] == '+' || expression[next_index] == '*' ||
-                    expression[next_index] == '/' || expression[next_index] == '^' ||
-                    expression[next_index] == ')' || expression[next_index] == ']' || expression[next_index] == '}')
-                    throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
-            }
-        }
-        else if (expression[i] == ')' || expression[i] == ']' || expression[i] == '}') {
-            if (brackets.is_empty())
-                throw std::invalid_argument("Missing opened bracket!\n");
-            switch (expression[i]) {
-            case ')':
-                if (brackets.top() == '(') {
-                    brackets.pop();
-                    lexems.push_back(Lexem(std::string({ expression[i] }), ClosedBracket));
-                }
-                else
-                    throw std::invalid_argument("An incorrect bracket was used, and ')' was expected!");
-                break;
-            case '}':
-                if (brackets.top() == '{') {
-                    brackets.pop();
-                    lexems.push_back(Lexem(std::string({ expression[i] }), ClosedBracket));
-                }
-                else
-                    throw std::invalid_argument("An incorrect bracket was used, and '}' was expected!");
-                break;
-            case ']':
-                if (brackets.top() == '[') {
-                    brackets.pop();
-                    lexems.push_back(Lexem(std::string({ expression[i] }), ClosedBracket));
-                }
-                else
-                    throw std::invalid_argument("An incorrect bracket was used, and ']' was expected!");
-                break;
-            }
-            if (prev == '+' || prev == '-' || prev == '*' ||
-                prev == '/' || prev == '^')
-                throw std::invalid_argument("The operation cannot be performed before the closing bracket!\n");
-        }
-        else if (expression[i] == '+' || expression[i] == '*' || expression[i] == '/' || expression[i] == '^') {
-            if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
-                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
-                throw std::invalid_argument("Missing first operand in operation '" + std::string(1, expression[i]) + "'!\n");
-            }
-            bool isRightOperand = false;
-            int next_index = i + 1;
-            while (next_index < expression.length() && expression[next_index] == ' ') {
-                next_index++;
-            }
-            if (next_index < expression.length()) {
-                if ((expression[next_index] >= '0' && expression[next_index] <= '9') ||
-                    (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
-                    expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{') {
-                    isRightOperand = true;
-                }
-            }
-            if (!isRightOperand)
-                throw std::invalid_argument("Missing second operand in operation '" + std::string(1, expression[i]) + "'!\n");
-            int priority = 0;
-            switch (expression[i]) {
-            case '+':
-                priority = 1;
-                break;
-            case '*': case '/':
-                priority = 2;
-                break;
-            case '^':
-                priority = 3;
-                break;
-            default:
-                break;
-            }
-            lexems.push_back(Lexem(std::string({ expression[i] }), Operator, 0, priority));
-        }
-        else if (expression[i] == '-') {
-            if (prev == '\0' || prev == '(' || prev == '[' || prev == '{' ||
-                prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '^') {
+            else if (is_opened_bracket(expression[i])) {
+                if (is_digit(prev) || is_letters(prev) || is_closed_bracket(prev))
+                    throw std::invalid_argument("An operation is missing between the opening bracket and the number, variable or closing bracket!\n");
+                brackets.push(expression[i]);
+                lexems.push_back(Lexem(std::string({ expression[i] }), OpenedBracket));
+
                 int next_index = i + 1;
-                while (next_index < expression.length() && expression[next_index] == ' ') {
-                    next_index++;
+                next_index = follow_the_line(next_index, expression);
+                if (next_index < expression.length()) {
+                    char symbol = expression[next_index];
+                    if ((is_operation(symbol) && symbol != '-') || is_closed_bracket(symbol))
+                        throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
                 }
+            }
+            else if (expression[i] == '|') {
+                brackets.push('|');
+                lexems.push_back(Lexem("abs", Function, DBL_MAX, function_priority, Functions::abs));
+                lexems.push_back(Lexem("(", OpenedBracket));
+
+                int next_index = i + 1;
+                next_index = follow_the_line(next_index, expression);
+                if (next_index < expression.length()) {
+                    char symbol = expression[next_index];
+                    if ((is_operation(symbol) && symbol != '-') || is_closed_bracket(symbol))
+                        throw std::invalid_argument("An operation or a closing bracket cannot follow an opening bracket!\n");
+                }
+            }
+            else if (expression[i] == '-' && (prev == '\0' || is_opened_bracket(prev) || prev == '|')) {
+                int next_index = i + 1;
+                next_index = follow_the_line(next_index, expression);
                 if (next_index >= expression.length()) {
                     throw std::invalid_argument("Missing operand for unary minus!\n");
                 }
-                if (!((expression[next_index] >= '0' && expression[next_index] <= '9') ||
-                        (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
-                        expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{')) {
+                char symbol = expression[next_index];
+                if (!(is_digit(symbol) || is_letters(symbol) || is_opened_bracket(symbol) || symbol == '|')) {
                     throw std::invalid_argument("Missing operand for unary minus!\n");
                 }
-                lexems.push_back(Lexem("~", UnOperator, 0, 4));
+                lexems.push_back(Lexem("~", UnOperator, DBL_MAX, unary_priority));
+            }
+            else if (is_digit(expression[i])) {
+                if (is_letters(prev))
+                    throw std::invalid_argument(print_error_location(i) + "Missing operation between variable and number!\n");
+                std::string num = extract_number(expression, i);
+                lexems.push_back(Lexem(num, Constant, std::stod(num)));
+                i += num.length() - 1;
+                expectOperand = false;
             }
             else {
+                throw std::invalid_argument(print_error_location(i) + "Missing operand!\n");
+            }
+        }
+        else {
+            if (is_closed_bracket(expression[i])) {
+                if (brackets.is_empty())
+                    throw std::invalid_argument("Missing opened bracket!\n");
+
+                char expectedBracket = '\0';
+                switch (expression[i])
+                {
+                case ')':
+                    expectedBracket = '(';
+                    break;
+                case ']':
+                    expectedBracket = '[';
+                    break;
+                case '}':
+                    expectedBracket = '{';
+                    break;
+                default:
+                    break;
+                }
+
+                if (brackets.top() == expectedBracket) {
+                    brackets.pop();
+                    lexems.push_back(Lexem(std::string({ expression[i] }), ClosedBracket));
+                }
+                else
+                    throw std::invalid_argument("A different type of bracket was expected: '" + std::string(1, expectedBracket) + "'!");
+
+                if (is_operation(prev))
+                    throw std::invalid_argument("The operation cannot be performed before the closing bracket!\n");
+            }
+            else if (expression[i] == '|') {
+                if (brackets.is_empty() || brackets.top() != '|')
+                    throw std::invalid_argument("Missing opened abs bracket!\n");
+
+                brackets.pop();
+                lexems.push_back(Lexem(")", ClosedBracket));
+
+                if (is_operation(prev))
+                    throw std::invalid_argument("The operation cannot be performed before the closing abs!\n");
+            }
+            else if (is_operation(expression[i])) {
                 bool isRightOperand = false;
                 int next_index = i + 1;
-                while (next_index < expression.length() && expression[next_index] == ' ') {
-                    next_index++;
-                }
+                next_index = follow_the_line(next_index, expression);
                 if (next_index < expression.length()) {
-                    if ((expression[next_index] >= '0' && expression[next_index] <= '9') ||
-                        (expression[next_index] >= 'a' && expression[next_index] <= 'z') ||
-                        expression[next_index] == '(' || expression[next_index] == '[' || expression[next_index] == '{') {
+                    char symbol = expression[next_index];
+                    if (is_digit(symbol) || is_letters(symbol) || is_opened_bracket(symbol) || symbol == '|') {
                         isRightOperand = true;
                     }
                 }
                 if (!isRightOperand)
-                    throw std::invalid_argument("Missing second operand in operation '-'\n");
-                lexems.push_back(Lexem("-", Operator, 0, 1));
-            }
-        }
-        else if ((expression[i] >= 'a' && expression[i] <= 'z') || (expression[i] >= 'A' && expression[i] <= 'Z')) {
-            if (prev >= 'a' && prev <= 'z')
-                throw std::invalid_argument("Missing operation between variables!\n");
-            if (prev >= '0' && prev <= '9')
-                throw std::invalid_argument("Missing operation between variable and number!\n");
-            std::string word = extractVariableOrFunction(expression, i);
+                    throw std::invalid_argument("Missing second operand in operation '" + std::string(1, expression[i]) + "'!\n");
 
-            int next_index = i + word.length();
-            while (next_index < expression.length() && expression[next_index] == ' ') {
-                next_index++;
-            }
-            if (next_index < expression.length() && expression[next_index] == '(') {
-                if (word == "sin" || word == "cos" || word == "tg" || word == "Sin" || word == "Cos" || word == "Tg") {
-                    double(*func)(double) = getFunction(word);
-                    if (func != nullptr) {
-                        lexems.push_back(Lexem(word, Function, 0, 5, func));
-                    }
-                    else {
-                        throw std::invalid_argument("Unknown function: " + word + "\n");
-                    }
+                int priority = 0;
+                switch (expression[i]) {
+                case '+': case '-':
+                    priority = addition_priority;
+                    break;
+                case '*': case '/':
+                    priority = multiplication_priority;
+                    break;
+                case '^':
+                    priority = pow_priority;
+                    break;
+                default:
+                    break;
                 }
-                else {
-                    throw std::invalid_argument("Unknown function: " + word + "\n");
-                }
+
+                lexems.push_back(Lexem(std::string({ expression[i] }), Operator, DBL_MAX, priority));
+                expectOperand = true;
             }
             else {
-                lexems.push_back(Lexem(word, Variable));
+                throw std::invalid_argument(print_error_location(i) + "Missing operation!\n");
             }
+        }
 
-            i += word.length() - 1;
-        }
-        else if (expression[i] >= '0' && expression[i] <= '9') {
-            if ((prev >= 'a' && prev <= 'z') || (prev >= 'A' && prev <= 'Z'))
-                throw std::invalid_argument("Missing operation between variable and number!\n");
-            std::string num = extractNumber(expression, i);
-            lexems.push_back(Lexem(num, Constant, std::stod(num)));
-            i += num.length() - 1;
-        }
         prev = expression[i];
+        i++;
     }
     if (!brackets.is_empty())
         throw std::invalid_argument("Missing closed bracket!");
     return lexems;
 }
-std::string Parser::extractNumber(const std::string& expression, int startIndex) {
+std::string Parser::extract_number(const std::string& expression, int startIndex) {
     std::string number;
-    bool hasPoint = false;
     int i = startIndex;
 
     while (i < expression.length()) {
         if (expression[i] >= '0' && expression[i] <= '9') {
             number += expression[i];
         }
-        else if (expression[i] == '.' && !hasPoint) {
-            number += expression[i];
-            hasPoint = true;
-        }
         else {
             break;
         }
         i++;
     }
-
-    if (!number.empty() && number.back() == '.')
-        throw std::invalid_argument("Invalid number format: ends with point!\n");
-
     return number;
 }
 
-std::string Parser::extractVariableOrFunction(const std::string& expression, int index) {
-    std::string word;
+std::string Parser::extract_variable_or_function(const std::string& expression, int index) {
+    std::string str;
     int i = index;
 
-    while (i < expression.length() && ((expression[i] >= 'a' && expression[i] <= 'z') ||
-            (expression[i] >= 'A' && expression[i] <= 'Z') || (expression[i] >= '0' && expression[i] <= '9'))) {
-        word += expression[i];
+    while (i < expression.length() && (is_letters(expression[i]) || is_digit(expression[i]))) {
+        str += expression[i];
         i++;
     }
-
-    return word;
+    return str;
 }
 
-double(*Parser::getFunction(const std::string name))(double) {
+double(*Parser::get_function(const std::string name))(double) {
     if (name == "sin" || name == "Sin") {
-        return [](double x) { return Sin(x).calculate(); };
+        return Functions::sin;
     }
     else if (name == "cos" || name == "Cos") {
-        return [](double x) { return Cos(x).calculate(); };
+        return Functions::cos;
     }
     else if (name == "tg" || name == "Tg") {
-        return [](double x) { return Tg(x).calculate(); };
+        return Functions::tg;
     }
     return nullptr;
 }
-List<Lexem> Parser::compilationPolishRecord(const List<Lexem>& lexems) {
-    List<Lexem> polishRecord;
-    Stack<Lexem> operators(lexems.get_count());
 
-    for (const auto& lexem : lexems) {
-        switch (lexem.type) {
-        case Constant:
-        case Variable:
-            polishRecord.push_back(lexem);
-            break;
-
-        case Function:
-            operators.push(lexem);
-            break;
-
-        case Operator:
-        case UnOperator:
-            while (!operators.is_empty() &&
-                operators.top().type != OpenBracket &&
-                operators.top().type != OpenedAbs &&
-                operators.top().priority >= lexem.priority) {
-                polishRecord.push_back(operators.top());
-                operators.pop();
-            }
-            operators.push(lexem);
-            break;
-
-        case OpenBracket:
-        case OpenedAbs:
-            operators.push(lexem);
-            break;
-
-        case ClosedBracket:
-            while (!operators.is_empty() && operators.top().type != OpenBracket) {
-                polishRecord.push_back(operators.top());
-                operators.pop();
-            }
-            if (!operators.is_empty() && operators.top().type == OpenBracket) {
-                operators.pop();
-            }
-            // После закрывающей скобки может идти функция из стека
-            if (!operators.is_empty() && operators.top().type == Function) {
-                polishRecord.push_back(operators.top());
-                operators.pop();
-            }
-            break;
-
-        case ClosedAbs:
-            while (!operators.is_empty() && operators.top().type != OpenedAbs) {
-                polishRecord.push_back(operators.top());
-                operators.pop();
-            }
-            if (!operators.is_empty() && operators.top().type == OpenedAbs) {
-                operators.pop();
-            }
-            break;
-        }
-    }
-
-    while (!operators.is_empty()) {
-        polishRecord.push_back(operators.top());
-        operators.pop();
-    }
-
-    return polishRecord;
+std::string Parser::print_error_location(size_t ind) {
+    std::string error_location = std::string(19 + ind, ' ') + "^\n";
+    std::string error = "Error in function 'Parser::parse()' at " + std::to_string(ind + 1) + " symbol: ";
+    return error_location + error;
 }

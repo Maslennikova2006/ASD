@@ -28,10 +28,7 @@ add_subdirectory(lib_expression)
 add_subdirectory(lib_tvector)
 add_subdirectory(lib_lexem)
 add_subdirectory(lib_parser)
-add_subdirectory(lib_sin)
-add_subdirectory(lib_cos)
-add_subdirectory(lib_tg)
-
+add_subdirectory(lib_functions)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 

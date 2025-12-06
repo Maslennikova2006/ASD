@@ -41,7 +41,7 @@ void main() {
     //std::cout << expression.calculate();
     std::string expr;
     std::cout << "¬ведите выражение: ";
-    std::cin >> expr;
+    std::getline(std::cin, expr);
     std::cout << std::endl;
     Expression expression(expr);
     /*expression.set_variables("x", 5);

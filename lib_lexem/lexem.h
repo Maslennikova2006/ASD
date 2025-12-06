@@ -5,7 +5,7 @@
 
 #include <string>
 
-enum TypeLexem { Constant, Variable, OpenBracket, ClosedBracket, Function, Operator, UnOperator, OpenedAbs, ClosedAbs };
+enum TypeLexem { Constant, Variable, OpenedBracket, ClosedBracket, Function, Operator, UnOperator };
 
 struct Lexem {
     std::string name;

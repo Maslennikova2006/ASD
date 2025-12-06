@@ -12,15 +12,11 @@ Expression::Expression(std::string& expr) {
     catch (std::exception e) {
         std::cerr << e.what() << std::endl;
     }
-    _polishRecord = Parser::compilationPolishRecord(_lexems);
-    for (auto& l : _lexems) {
-        std::cout << l.name << " ";
-    }
-    std::cout << std::endl;
+    _polishRecord = compilation_polishRecord(_lexems);
 }
 Expression::Expression(List<Lexem>& expr) {
-    _lexems = expr;  // нужны ли проверки на корректность?
-    _polishRecord = Parser::compilationPolishRecord(expr);
+    _lexems = expr;
+    _polishRecord = compilation_polishRecord(expr);
 }
 Expression::Expression(const Expression& other) {
     _lexems = other._lexems;
@@ -42,17 +38,18 @@ void Expression::set_variables(std::string name, double value) {
 }
 
 double Expression::calculate() {
-    Stack<double> values(_lexems.get_count());
-
-    for (auto& lexem : _polishRecord) {
-        switch (lexem.type) {
+    Stack<double> values;
+    auto lexem = _polishRecord.begin();
+    for (lexem; lexem != _polishRecord.end(); lexem++) {
+        switch ((*lexem).type) {
         case Constant:
-        case Variable: {
-            values.push(lexem.value);
+        case Variable:
+            values.push((*lexem).value);
             break;
-        }
 
         case UnOperator: {
+            if (values.is_empty())
+                throw std::invalid_argument("Not enough operands for unary operator!\n");
             double val = values.top();
             values.pop();
             values.push(-val);
@@ -60,35 +57,85 @@ double Expression::calculate() {
         }
 
         case Operator: {
+            if (values.get_size() < 2)
+                throw std::invalid_argument("Not enough operands for binary operator!\n");
             double b = values.top();
             values.pop();
             double a = values.top();
             values.pop();
 
-            if (lexem.name == "+") values.push(a + b);
-            else if (lexem.name == "-") values.push(a - b);
-            else if (lexem.name == "*") values.push(a * b);
-            else if (lexem.name == "/") {
-                if (b == 0) throw std::invalid_argument("Division by zero");
+            if ((*lexem).name == "+") values.push(a + b);
+            else if ((*lexem).name == "-") values.push(a - b);
+            else if ((*lexem).name == "*") values.push(a * b);
+            else if ((*lexem).name == "/") {
+                if (b == 0) throw std::invalid_argument("Division by zero!\n");
                 values.push(a / b);
             }
-            else if (lexem.name == "^") {
-                values.push(pow(a, b));
-            }
+            else if ((*lexem).name == "^") values.push(pow(a, b));
             break;
         }
-
         case Function: {
+            if (values.is_empty())
+                throw std::invalid_argument("Not enough operands for function!\n");
             double arg = values.top();
             values.pop();
-            values.push(lexem.function(arg));
+            values.push((*lexem).function(arg));
             break;
         }
 
         default:
-            throw std::invalid_argument("Unexpected lexem type in polish record: " + lexem.name);
+            throw std::invalid_argument("Unexpected lexem type in polish record: " + (*lexem).name);
         }
     }
-
     return values.top();
+}
+
+List<Lexem> Expression::compilation_polishRecord(const List<Lexem>& lexems) {
+    List<Lexem> polishRecord;
+    Stack<Lexem> operators(lexems.get_count());
+    auto lexem = lexems.begin();
+    for (lexem; lexem != lexems.end(); lexem++) {
+        switch ((*lexem).type) {
+        case Constant:
+        case Variable:
+            polishRecord.push_back(*lexem);
+            break;
+        case Function:
+            operators.push(*lexem);
+            break;
+        case Operator:
+        case UnOperator:
+            while (!operators.is_empty() &&
+                operators.top().type != OpenedBracket &&
+                operators.top().priority >= (*lexem).priority) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            operators.push(*lexem);
+            break;
+        case OpenedBracket:
+            operators.push(*lexem);
+            break;
+        case ClosedBracket:
+            while (!operators.is_empty() && operators.top().type != OpenedBracket) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            if (!operators.is_empty() && operators.top().type == OpenedBracket) {
+                operators.pop();
+            }
+            if (!operators.is_empty() && operators.top().type == Function) {
+                polishRecord.push_back(operators.top());
+                operators.pop();
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    while (!operators.is_empty()) {
+        polishRecord.push_back(operators.top());
+        operators.pop();
+    }
+    return polishRecord;
 }

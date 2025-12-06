@@ -20,6 +20,9 @@ public:
     void set_variables(std::string name, double value);
 
     double calculate();
+
+private:
+    List<Lexem> compilation_polishRecord(const List<Lexem>& lexems);
 };
 #endif  // LIB_EXPRESSION_EXPRESSION_H_
 
