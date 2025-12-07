@@ -15,6 +15,7 @@ struct Lexem {
     double (*function)(double);
 
     Lexem(std::string _name = "", TypeLexem _type = Constant, double _value = DBL_MAX, int _priority = -1, double(*_function)(double) = nullptr);
+    bool operator!=(const Lexem& other) const noexcept;
 };
 
 #endif  // LIB_LEXEM_LEXEM_H_

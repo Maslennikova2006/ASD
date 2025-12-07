@@ -5,7 +5,7 @@
 
 TEST(TestStackLib, can_create_default_stack) {
     Stack<int> stack;
-    EXPECT_EQ(15, stack.get_size());
+    EXPECT_EQ(CAPACITY, stack.get_size());
     EXPECT_EQ(-1, stack.get_top());
 }
 TEST(TestStackLib, can_create_stack) {

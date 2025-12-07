@@ -38,14 +38,9 @@ List<Lexem> Parser::parse(const std::string& expression) {
 
         if (expectOperand) {
             if (is_letters(expression[i])) {
-                if (is_digit(prev) || is_letters(prev))
-                    throw std::invalid_argument(print_error_location(i) + "Missing operation between variables or numbers!\n");
-
                 parse_variable_or_function(i, expression, lexems, brackets, expectOperand);
             }
             else if (is_opened_bracket(expression[i])) {
-                if (is_digit(prev) || is_letters(prev) || is_closed_bracket(prev))
-                    throw std::invalid_argument(print_error_location(i) + "An operation is missing between the opening bracket and the number, variable or closing bracket!\n");
                 brackets.push(expression[i]);
                 lexems.push_back(Lexem(std::string({ expression[i] }), OpenedBracket));
 
@@ -79,20 +74,18 @@ List<Lexem> Parser::parse(const std::string& expression) {
                 lexems.push_back(Lexem("~", UnOperator, DBL_MAX, unary_priority));
             }
             else if (is_digit(expression[i])) {
-                if (is_letters(prev))
-                    throw std::invalid_argument(print_error_location(i) + "Missing operation between variable and number!\n");
                 std::string num = extract_number(expression, i);
                 lexems.push_back(Lexem(num, Constant, std::stod(num)));
                 i += num.length() - 1;
                 expectOperand = false;
             }
             else
-                throw std::invalid_argument(print_error_location(i) + "Missing operand!\n");
+                throw std::invalid_argument(print_error_location(i) + "Missing first operand in operation '" + std::string(1, expression[i]) + "'!\n");
         }
         else {
             if (is_closed_bracket(expression[i])) {
                 if (brackets.is_empty())
-                    throw std::invalid_argument(print_error_location(i) + "Missing opened bracket!\n");
+                    throw std::invalid_argument(print_error_location(0) + "Missing opened bracket!\n");
 
                 char expectedBracket = set_expectedBracket(expression[i]);
                 if (brackets.top() == expectedBracket) {
@@ -107,13 +100,13 @@ List<Lexem> Parser::parse(const std::string& expression) {
             }
             else if (expression[i] == '|') {
                 if (brackets.is_empty() || brackets.top() != '|')
-                    throw std::invalid_argument(print_error_location(i) + "Missing opened abs bracket!\n");
+                    throw std::invalid_argument(print_error_location(i) + "Missing opened bracket!\n");
 
                 brackets.pop();
                 lexems.push_back(Lexem(")", ClosedBracket));
 
                 if (is_operation(prev))
-                    throw std::invalid_argument(print_error_location(i) + "The operation cannot be performed before the closing abs!\n");
+                    throw std::invalid_argument(print_error_location(i) + "The operation cannot be performed before the closing bracket!\n");
             }
             else if (is_operation(expression[i])) {
                 bool isRightOperand = false;
@@ -136,7 +129,6 @@ List<Lexem> Parser::parse(const std::string& expression) {
                 throw std::logic_error(print_error_location(i) + "Missing operation!\n");
             }
         }
-
         prev = expression[i];
         i++;
     }
@@ -241,21 +233,30 @@ void Parser::parse_variable_or_function(size_t& ind, const std::string& expr, Li
             else
                 throw std::invalid_argument(print_error_location(ind) + "Unknown function: " + str + "\n");
         }
+        else 
+            throw std::invalid_argument(print_error_location(next_index) + "Missing operation!\n");
     }
     else {
         bool validVariable = false;
         if (str.length() == 1 && is_letters(str[0]))
             validVariable = true;
         else if (str.length() > 1 && str[1] == '_') {
-            if (is_letters(str[0]) && is_digit(str[2]))
+            if (is_letters(str[0])) {
                 validVariable = true;
+                for (size_t j = 2; j < str.length(); j++) {
+                    if (!is_digit(str[j])) {
+                        validVariable = false;
+                        break;
+                    }
+                }
+            }
         }
         if (!validVariable) {
             for (size_t j = 1; j < str.length(); j++) {
                 if (is_letters(str[j]))
                     throw std::logic_error(print_error_location(ind + j) + "Missing operation!\n");
             }
-            throw std::invalid_argument(print_error_location(ind) + "Invalid variable name!\n");
+            throw std::invalid_argument(print_error_location(ind + 1) + "Missing operation!\n");  // x9
         }
         lexems.push_back(Lexem(str, Variable));
         ind += str.length() - 1;

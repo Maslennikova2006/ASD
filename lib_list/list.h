@@ -99,6 +99,7 @@ public:
     void erase(size_t pos);  // +
 
     List<T>& operator=(const List<T>& other);
+    bool operator==(const List<T>& other) const noexcept;
 };
 
 template <class T>
@@ -307,6 +308,20 @@ List<T>& List<T>::operator=(const List<T>& other) {
     }
 
     return *this;
+}
+template <class T>
+bool List<T>::operator==(const List<T>& other) const noexcept {
+    if (get_count() != other.get_count())
+        return false;
+    auto it1 = begin();
+    auto it2 = other.begin();
+    while (it1 != end() && it2 != other.end()) {
+        if ((*it1) != (*it2))
+            return false;
+        it1++;
+        it2++;
+    }
+    return true;
 }
 
 

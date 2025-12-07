@@ -9,3 +9,6 @@ Lexem::Lexem(std::string _name, TypeLexem _type, double _value, int _priority, d
     priority = _priority;
     function = _function;
 }
+bool Lexem::operator!=(const Lexem& other) const noexcept {
+    return !(name == other.name && type == other.type && value == other.value && priority == other.priority && function == other.function);
+}
