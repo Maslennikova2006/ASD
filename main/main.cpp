@@ -8,46 +8,192 @@
 #ifdef EXPRESSION
 #include <iostream>
 #include <clocale>
+#include <string>
 #include "../lib_expression/expression.h"
+#include "../lib_tvector/tvector.h"
+
+#define ID_WIDTH 5
+#define EXPRESSION_WIDTH 50
+#define VARIABLE_WIDTH 30
+#define DIVIDER_WIDTH 4
+#define TOTAL_WIDTH ID_WIDTH + EXPRESSION_WIDTH + VARIABLE_WIDTH + DIVIDER_WIDTH
+void print_title() {
+    std::cout << "|";
+    std::cout << " ID";
+    for (int i = 0; i < ID_WIDTH - 4; i++) {
+        std::cout << " ";
+    }
+    std::cout << "|";
+
+    std::cout << " EXPRESSION";
+    for (int i = 0; i < EXPRESSION_WIDTH - 12; i++) {
+        std::cout << " ";
+    }
+    std::cout << "|";
+
+    std::cout << " VARAIBLES VALUES";
+    for (int i = 0; i < VARIABLE_WIDTH - 15; i++) {
+        std::cout << " ";
+    }
+    std::cout << "|\n";
+}
+void print_line() {
+    std::cout << "+";
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) {
+        std::cout << "-";
+    }
+    std::cout << "+\n";
+}
+void print_data(std::string str, int width) {
+    std::cout << " " << str;
+    for (int i = 0; i < width - str.length() - 2; i++) {
+        std::cout << " ";
+    }
+    std::cout << "|";
+}
+void print_variables(Expression& expr) {
+    List<Lexem> variables = expr.get_variables();
+    auto var = variables.begin();
+    std::string str = " ";
+    for (var; var != variables.end(); var++) {
+        if ((*var).value == DBL_MAX)
+            str += (*var).name + " = ?";
+        else
+            str += (*var).name + " = " + std::to_string(static_cast<int>((*var).value));
+
+        auto next = var;
+        next++;
+        if (next != variables.end()) {
+            str += ", ";
+        }
+    }
+    std::cout << str;
+    int spaces = VARIABLE_WIDTH - str.length() + 2;
+    if (spaces > 0) {
+        for (int j = 0; j < spaces; j++) {
+            std::cout << " ";
+        }
+    }
+}
+void print_table(TVector<Expression>& expressions) {
+    print_line();
+    print_title();
+    print_line();
+
+    for (int i = 0; i < expressions.size(); i++) {
+        std::cout << "|";
+        print_data(std::to_string(i + 1), ID_WIDTH);
+
+        print_data(expressions[i].to_string(), EXPRESSION_WIDTH);
+
+        print_variables(expressions[i]);
+        std::cout << "|\n";
+    }
+
+    print_line();
+}
+
+void print_menu() {
+    std::cout << "\nМЕНЮ: \n";
+    std::cout << "1. Создать новое выражение\n";
+    std::cout << "2. Удалить выражение\n";
+    std::cout << "3. Задать переменные\n";
+    std::cout << "4. Вычислить значение выражения\n";
+    std::cout << "0. Выход\n";
+}
+
+int input_id(std::string str, int max) {
+    int id;
+    std::cout << str;
+    std::cin >> id;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (id < 1 || id > max)
+        throw std::invalid_argument("Неверный ID, попробуйте ещё раз!\n");
+    return id;
+}
+
+void create_expression(TVector<Expression>& expressions) {
+    std::string str;
+    std::cout << "Введите выражение: ";
+    std::getline(std::cin, str);
+    Expression expr(str);
+    expressions.push_back(expr);
+}
+void delete_expression(TVector<Expression>& expressions) {
+    int id = input_id("Введите номер выражения, которое хотите удалить: ", expressions.size());
+    expressions.erase(id - 1);
+}
+void set_variables(TVector<Expression>& expressions) {
+    int id = input_id("Введите номер выражения, для которого хотите установить значения переменных: ", expressions.size());
+    List<Lexem> variables = expressions[id - 1].get_variables();
+    auto l = variables.begin();
+    for (l; l != variables.end(); l++) {
+        int val;
+        std::cout << (*l).name << " = ";
+        std::cin >> val;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        expressions[id - 1].set_variables((*l).name, val);
+    }
+}
+void calculate_expression(TVector<Expression>& expressions) {
+    int id = input_id("Введите номер выражения для вычисления: ", expressions.size());
+    try {
+        double val = expressions[id - 1].calculate();
+        std::cout << "Результат для выражения " << id << ": " << val << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what();
+    }
+    std::cout << "Нажмите Enter для продолжения...";
+    std::cin.get();
+}
 
 void main() {
     setlocale(LC_ALL, "rus");
-    //Lexem x("x", Variable);
-    //Lexem num1("7", Constant, 7);
-    //Lexem y("y", Variable);
-    //Lexem z("z", Variable);
-    //Lexem num2("9", Constant, 9);
-    //Lexem num3("-15", Constant, -15);
-    //Lexem op1("+", Operator, 0, 1);
-    //
-    //Lexem op2("*", Operator, 0, 2);
-    //Lexem op3("-", Operator, 0, 1);
-    //Lexem br1("(", OpenBracket, 0, 5);
-    //Lexem br2(")", ClosedBracket, 0, 5);
-    //List<Lexem> expr;
-    //expr.push_back(br1);
-    //expr.push_back(x);
-    //expr.push_back(op1);
-    //expr.push_back(num1);
-    //expr.push_back(br2);
-    //expr.push_back(op2);
-    //expr.push_back(y);
-    //expr.push_back(op3);
-    //expr.push_back(z);
-    //Expression expression(expr);
-    //expression.set_variables("x", 5);
-    //expression.set_variables("y", 9);
-    //expression.set_variables("z", -15);
-    //std::cout << expression.calculate();
-    std::string expr;
-    std::cout << "Введите выражение: ";
-    std::getline(std::cin, expr);
-    std::cout << std::endl;
-    Expression expression(expr);
-    /*expression.set_variables("x", 5);
-    expression.set_variables("y", 9);
-    expression.set_variables("z", -15);*/
-    std::cout << expression.calculate();
+    int answer;
+    TVector<Expression> expressions;
+    std::string st1 = "x + y * (x^2 - 16)";
+    Expression expr1(st1);
+    expr1.set_variables("x", 5);
+    expr1.set_variables("y", 8);
+    expressions.push_back(expr1);
+    std::string st2 = "x_1 * sin(y + 7) + y * (-|x_2 - 17| + 23)";
+    Expression expr2(st2);
+    expressions.push_back(expr2);
+    while (1) {
+        try {
+            system("cls");
+            print_table(expressions);
+            print_menu();
+            std::cout << "\nВаш выбор: ";
+            std::cin >> answer;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            switch (answer) {
+            case 1:
+                create_expression(expressions);
+                break;
+            case 2:
+                delete_expression(expressions);
+                break;
+            case 3:
+                set_variables(expressions);
+                break;
+            case 4:
+                calculate_expression(expressions);
+                break;
+            case 0:
+                return;
+            default:
+                throw std::invalid_argument("Неверный выбор!\n");
+                break;
+            }
+        }
+        catch (const std::exception& e) {
+            std::cerr << e.what();
+            std::cout << "Нажмите Enter для продолжения...";
+            std::cin.get();
+        }
+    }
 }
 
 #endif  // EXPRESSION

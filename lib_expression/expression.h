@@ -13,14 +13,17 @@ class Expression {
     List<Lexem> _polishRecord;
 
 public:
+    Expression();
     Expression(std::string& expr);
     Expression(List<Lexem>& expr);
     Expression(const Expression& other);
 
     void set_variables(std::string name, double value);
+    List<Lexem> get_variables();
 
     double calculate();
 
+    std::string to_string();
 private:
     List<Lexem> compilation_polishRecord(const List<Lexem>& lexems);
 };

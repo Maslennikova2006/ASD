@@ -8,7 +8,7 @@
 #ifndef LIB_STACK_STACK_H_
 #define LIB_STACK_STACK_H_
 
-#define CAPACITY 15
+#define CAPACITY 30
 
 template <class T>
 

@@ -5,13 +5,13 @@
 #include "../lib_stack/stack.h"
 #include <iostream>
 
+
+Expression::Expression() {
+    _lexems = List<Lexem>();
+    _polishRecord = List<Lexem>();
+}
 Expression::Expression(std::string& expr) {
-    try {
-        _lexems = Parser::parse(expr);
-    }
-    catch (std::exception e) {
-        std::cerr << e.what() << std::endl;
-    }
+    _lexems = Parser::parse(expr);
     _polishRecord = compilation_polishRecord(_lexems);
 }
 Expression::Expression(List<Lexem>& expr) {
@@ -25,16 +25,38 @@ Expression::Expression(const Expression& other) {
 
 void Expression::set_variables(std::string name, double value) {
     bool found = false;
-    for (auto& lexem : _polishRecord) {
-        if (lexem.name == name) {
-            lexem.value = value;
+    auto lexem = _polishRecord.begin();
+    for (lexem; lexem != _polishRecord.end(); lexem++) {
+        if ((*lexem).name == name) {
+            (*lexem).value = value;
             found = true;
         }
     }
-
     if (!found) {
         throw std::invalid_argument("No matching variables found!\n");
     }
+}
+List<Lexem> Expression::get_variables() {
+    List<Lexem> variables;
+    List<Lexem> unique_var;
+    auto lexem = _polishRecord.begin();
+    for (lexem; lexem != _polishRecord.end(); lexem++) {
+        if ((*lexem).type == Variable) {
+            bool exist = false;
+            auto var = unique_var.begin();
+            for (var; var != unique_var.end(); var++) {
+                if ((*lexem).name == (*var).name) {
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist) {
+                variables.push_back(*lexem);
+                unique_var.push_back(*lexem);
+            }
+        }
+    }
+    return variables;
 }
 
 double Expression::calculate() {
@@ -44,6 +66,8 @@ double Expression::calculate() {
         switch ((*lexem).type) {
         case Constant:
         case Variable:
+            if ((*lexem).value == DBL_MAX)
+                throw std::invalid_argument("The value of the variable '" + (*lexem).name + "' is not set!\n");
             values.push((*lexem).value);
             break;
 
@@ -90,9 +114,18 @@ double Expression::calculate() {
     return values.top();
 }
 
+std::string Expression::to_string() {
+    std::string str;
+    auto lexem = _lexems.begin();
+    for (lexem; lexem != _lexems.end(); lexem++) {
+        str += (*lexem).name;
+    }
+    return str;
+}
+
 List<Lexem> Expression::compilation_polishRecord(const List<Lexem>& lexems) {
     List<Lexem> polishRecord;
-    Stack<Lexem> operators(lexems.get_count());
+    Stack<Lexem> operators;
     auto lexem = lexems.begin();
     for (lexem; lexem != lexems.end(); lexem++) {
         switch ((*lexem).type) {
