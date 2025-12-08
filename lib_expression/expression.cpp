@@ -59,6 +59,10 @@ List<Lexem> Expression::get_variables() {
     return variables;
 }
 
+List<Lexem> Expression::get_polishRecord() {
+    return _polishRecord;
+}
+
 double Expression::calculate() {
     Stack<double> values;
     auto lexem = _polishRecord.begin();
@@ -116,9 +120,35 @@ double Expression::calculate() {
 
 std::string Expression::to_string() {
     std::string str;
-    auto lexem = _lexems.begin();
-    for (lexem; lexem != _lexems.end(); lexem++) {
-        str += (*lexem).name;
+    Stack<std::string> brackets;
+    auto it = _lexems.begin();
+    for (it; it != _lexems.end(); it++) {
+        if ((*it).name == "abs") {
+            str += "|";
+            brackets.push("|");
+            auto next = it;
+            next++;
+            if (next != _lexems.end() && (*next).name == "(")
+                it++;
+            continue;
+        }
+        else if ((*it).type == OpenedBracket) {
+            brackets.push((*it).name);
+        }
+        if ((*it).type == ClosedBracket) {
+            if (brackets.top() == "|")
+                str += "|";
+            else
+                str += (*it).name;
+            brackets.pop();
+            continue;
+        }
+        else if ((*it).type == UnOperator) {
+            str += "-";
+        }
+        else {
+            str += (*it).name;
+        }
     }
     return str;
 }
@@ -155,10 +185,6 @@ List<Lexem> Expression::compilation_polishRecord(const List<Lexem>& lexems) {
                 operators.pop();
             }
             if (!operators.is_empty() && operators.top().type == OpenedBracket) {
-                operators.pop();
-            }
-            if (!operators.is_empty() && operators.top().type == Function) {
-                polishRecord.push_back(operators.top());
                 operators.pop();
             }
             break;

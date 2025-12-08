@@ -14,7 +14,7 @@
 
 #define ID_WIDTH 5
 #define EXPRESSION_WIDTH 50
-#define VARIABLE_WIDTH 30
+#define VARIABLE_WIDTH 50
 #define DIVIDER_WIDTH 4
 #define TOTAL_WIDTH ID_WIDTH + EXPRESSION_WIDTH + VARIABLE_WIDTH + DIVIDER_WIDTH
 void print_title() {
@@ -31,7 +31,7 @@ void print_title() {
     }
     std::cout << "|";
 
-    std::cout << " VARAIBLES VALUES";
+    std::cout << " VARIABLES VALUES";
     for (int i = 0; i < VARIABLE_WIDTH - 15; i++) {
         std::cout << " ";
     }
@@ -59,7 +59,7 @@ void print_variables(Expression& expr) {
         if ((*var).value == DBL_MAX)
             str += (*var).name + " = ?";
         else
-            str += (*var).name + " = " + std::to_string(static_cast<int>((*var).value));
+            str += (*var).name + " = " + std::to_string((*var).value);
 
         auto next = var;
         next++;
@@ -128,7 +128,7 @@ void set_variables(TVector<Expression>& expressions) {
     List<Lexem> variables = expressions[id - 1].get_variables();
     auto l = variables.begin();
     for (l; l != variables.end(); l++) {
-        int val;
+        double val;
         std::cout << (*l).name << " = ";
         std::cin >> val;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

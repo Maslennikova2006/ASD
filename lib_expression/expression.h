@@ -21,6 +21,8 @@ public:
     void set_variables(std::string name, double value);
     List<Lexem> get_variables();
 
+    List<Lexem> get_polishRecord();
+
     double calculate();
 
     std::string to_string();
