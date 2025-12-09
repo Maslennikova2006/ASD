@@ -88,10 +88,12 @@ TEST(TestDsuLib, check_path_compression) {
 
     dsu.union_set(0, 1);
     dsu.union_set(1, 2);
-    dsu.union_set(2, 3);
-    dsu.union_set(3, 4);
 
-    EXPECT_EQ(dsu.find(4), 0);
+    dsu.union_set(5, 3);
+
+    dsu.union_set(2, 5);
+
+    EXPECT_EQ(dsu.find(3), 0);
 }
 TEST(TestDsuLib, check_path_compression_and_rank_reductions) {
     Dsu dsu(8);
