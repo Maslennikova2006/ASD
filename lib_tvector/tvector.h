@@ -147,6 +147,12 @@ public:
     inline Iterator end() noexcept {
         return Iterator(this, _capacity);
     }
+    inline Iterator rbegin() noexcept {
+        return Iterator(this, _capacity - 1);
+    }
+    inline Iterator rend() noexcept {
+        return Iterator(this, _capacity);
+    }
 
     void reserve(size_t new_capacity) noexcept;
     void resize(size_t count) noexcept;

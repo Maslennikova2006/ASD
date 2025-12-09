@@ -683,3 +683,22 @@ TEST(TestTVectorLib, check_iterator_for_writting) {
         i++;
     }
 }
+TEST(TestTVectorLib, check_iterator_for_reading2) {
+    TVector<int> vec;
+    TVector<int>::Iterator it;
+    for (int i = 0; i < 10; i++) {
+        vec.push_back(i + 1);
+    }
+    int i = 10;
+    for (it = vec.rbegin(); it != vec.rend(); it--) {
+        EXPECT_EQ(i, *it);
+        i--;
+    }
+    it = vec.begin();
+    EXPECT_EQ(1, *(it++));
+    EXPECT_EQ(5, *(it += 3));
+    EXPECT_EQ(6, *(++it));
+    EXPECT_EQ(6, *(it--));
+    EXPECT_EQ(3, *(it -= 2));
+    EXPECT_EQ(2, *(--it));
+}
