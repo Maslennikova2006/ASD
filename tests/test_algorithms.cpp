@@ -76,7 +76,7 @@ TEST(TestAlgorithmsLib, check_match_sphere) {
 
 TEST(TestAlgorithmsLib, check_is_looped_1) {
     List<int> list;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         list.push_back(i + 1);
     }
     Node<int>* node = list.head()->next->next;
