@@ -180,7 +180,7 @@ List<Lexem> Expression::compilation_polishRecord(const List<Lexem>& lexems) {
             operators.push(*lexem);
             break;
         case ClosedBracket:
-            while (!operators.is_empty() && operators.top().type != OpenedBracket) {
+            while (/*!operators.is_empty() && */operators.top().type != OpenedBracket) {
                 polishRecord.push_back(operators.top());
                 operators.pop();
             }
