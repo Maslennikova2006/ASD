@@ -27,7 +27,8 @@ public:
     Monom& operator/=(const double scalar);
 
     Monom operator+(const Monom& second) const;
-    Monom operator-(const Monom& second) const;  // + унарный минус
+    Monom operator-(const Monom& second) const;
+    Monom operator-() const;
     Monom operator*(const Monom& second) const;
     Monom operator/(const Monom& second) const;
     Monom operator*(const double scalar);
