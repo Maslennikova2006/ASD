@@ -2,7 +2,7 @@
 
 #include "../lib_monom/monom.h"
 
-Monom::Monom(double coeff = 0.0, const int* powers = nullptr) {
+Monom::Monom(double coeff, const int* powers) {
     _coeff = coeff;
     if (powers) {
         for (int i = 0; i < VAR_COUNT; i++) {
@@ -23,6 +23,13 @@ Monom::Monom(const Monom& other) {
 }
 
 Monom::~Monom() {}
+
+const double Monom::get_coeff() const noexcept {
+    return _coeff;
+}
+const int* Monom::get_powers() const noexcept {
+    return _powers;
+}
 
 Monom& Monom::operator+=(const Monom& second) {  // нужна ли проверка на x, y, z?
     if (*this != second)
@@ -150,5 +157,5 @@ std::ostream& operator<<(std::ostream& os, const Monom& monom) {
     return os;
 }
 std::istream& operator>>(std::istream& is, Monom& monom) {
-
+    return is;
 }

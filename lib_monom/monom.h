@@ -19,27 +19,30 @@ public:
 
     ~Monom();
 
-    Monom& operator+=(const Monom& second);
-    Monom& operator-=(const Monom& second);
-    Monom& operator*=(const Monom& second);
-    Monom& operator/=(const Monom& second);
-    Monom& operator*=(const double scalar);
-    Monom& operator/=(const double scalar);
+    const double get_coeff() const noexcept;
+    const int* get_powers() const noexcept;
 
-    Monom operator+(const Monom& second) const;
-    Monom operator-(const Monom& second) const;
-    Monom operator-() const;
-    Monom operator*(const Monom& second) const;
-    Monom operator/(const Monom& second) const;
-    Monom operator*(const double scalar);
-    Monom operator/(const double scalar);
+    Monom& operator+=(const Monom& second);  // +
+    Monom& operator-=(const Monom& second);  // +
+    Monom& operator*=(const Monom& second);  // +
+    Monom& operator/=(const Monom& second);  // +
+    Monom& operator*=(const double scalar);  // +
+    Monom& operator/=(const double scalar);  // +
 
-    bool operator==(const Monom& second) const noexcept;
-    bool operator!=(const Monom& second) const noexcept;
-    bool operator>(const Monom& second) const noexcept;
-    bool operator<(const Monom& second) const noexcept;
+    Monom operator+(const Monom& second) const;  // +
+    Monom operator-(const Monom& second) const;  // +
+    Monom operator-() const;  // +
+    Monom operator*(const Monom& second) const;  // +
+    Monom operator/(const Monom& second) const;  // +
+    Monom operator*(const double scalar);  // +
+    Monom operator/(const double scalar);  // +
 
-    Monom& operator=(const Monom& second);
+    bool operator==(const Monom& second) const noexcept;  // +
+    bool operator!=(const Monom& second) const noexcept;  // +
+    bool operator>(const Monom& second) const noexcept;  // +
+    bool operator<(const Monom& second) const noexcept;  // +
+
+    Monom& operator=(const Monom& second);  // +
 
     friend std::ostream& operator<<(std::ostream& os, const Monom& monom);
     friend std::istream& operator>>(std::istream& is, Monom& monom);
