@@ -75,6 +75,13 @@ public:
         return Iterator(nullptr);
     }
 
+    const Iterator begin() const {
+        return Iterator(_head);
+    }
+    const Iterator end() const {
+        return Iterator(nullptr);
+    }
+
     inline Node<T>* head() const noexcept;
     inline Node<T>* tail() const noexcept;
 
@@ -85,6 +92,7 @@ public:
     void push_back(const T& val) noexcept;  // +
     void push_front(const T& val) noexcept;  // +
     void insert(Node<T>* node, const T& val);  // +
+    void insert(Iterator it, const T& val);
     void insert(size_t pos, const T& val);  // +
 
     void pop_back();  // +
@@ -173,6 +181,17 @@ void List<T>::insert(Node<T>* node, const T& val) {
     new_node->next = node->next;
     node->next = new_node;
     if (node == _tail)
+        _tail = new_node;
+    _count++;
+}
+template <class T>
+void List<T>::insert(Iterator it, const T& val) {
+    if (it == nullptr || is_empty())
+        throw std::invalid_argument("You can't insert it by following the pointer!\n");
+    Node<T>* new_node = new Node<T>(val);
+    new_node->next = (*it)->next;
+    (*it)->next = new_node;
+    if (it == _tail)
         _tail = new_node;
     _count++;
 }
@@ -276,5 +295,4 @@ void List<T>::erase(size_t pos) {
         throw std::invalid_argument("Wrong position!\n");
     erase(cur);
 }
-
 #endif  // LIB_LIST_LIST_H_

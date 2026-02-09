@@ -1,4 +1,4 @@
-// Copyright 2025 Mary Maslennikova
+// Copyright 2026 Mary Maslennikova
 
 #ifndef LIB_MONOM_MONOM_H_
 #define LIB_MONOM_MONOM_H_
