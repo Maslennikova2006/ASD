@@ -46,3 +46,8 @@ TEST(TestAlgorithmsLib, check_count_the_number_of_islands_5) {
 
     EXPECT_EQ(4, count_the_number_of_islands(matr));
 }
+
+TEST(TestAlgorithmsLib, check_lab) {
+    Matrix<bool> lab = generate_labyrinth(3, 20, 5, 5);
+    std::cout << lab;
+}

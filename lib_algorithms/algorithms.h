@@ -12,4 +12,5 @@ int find_the_local_minimum(Matrix<int>& matrix) noexcept;
 
 int count_the_number_of_islands(Matrix<int> matr);
 
+Matrix<bool> generate_labyrinth(int X, int Y, int N, int M);
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_
