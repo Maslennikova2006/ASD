@@ -519,7 +519,7 @@ template <class T>
 void TVector<T>::erase(size_t index) {
     if (is_empty())
         throw std::invalid_argument("Cannot be deleted from an empty vector\n");
-    if (index > _size)
+    if (index >= _size)
         throw std::invalid_argument("The index goes beyond the boundaries\n");
     size_t new_index = recalculate_the_position(index);
     if (index == _size - 1) {

@@ -28,6 +28,8 @@ add_subdirectory(lib_tvector)
 add_subdirectory(lib_monom)
 add_subdirectory(lib_polynom)
 add_subdirectory(lib_parser)
+add_subdirectory(lib_unsorted_table_m)
+add_subdirectory(lib_itable)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 
