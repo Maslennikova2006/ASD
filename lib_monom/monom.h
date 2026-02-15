@@ -15,11 +15,15 @@ class Monom {
 public:
     Monom(double coeff = 0.0, const int* powers = nullptr);
     Monom(const Monom& other);
+    Monom(const std::string& str);
 
     ~Monom();
 
     const double get_coeff() const noexcept;
     const int* get_powers() const noexcept;
+
+    void set_coeff(double coeff) noexcept;
+    void set_power(int ind, int value) noexcept;
 
     Monom& operator+=(const Monom& second);  // +
     Monom& operator-=(const Monom& second);  // +

@@ -299,7 +299,7 @@ void List<T>::erase(size_t pos) {
 }
 
 template <class T>
-void List<T>::clear() {
+void List<T>::clear() noexcept {
     Node<T>* cur = _head;
     while (cur != nullptr) {
         Node<T>* next_node = cur->next;

@@ -16,6 +16,7 @@ public:
     Polynom();
     Polynom(const Monom& monom);
     Polynom(const Polynom& other);
+    Polynom(const std::string& str);
 
     ~Polynom();
 

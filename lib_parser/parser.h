@@ -7,16 +7,15 @@
 #include "../lib_list/list.h"
 
 namespace Parser {
-    Monom parse_monom(const std::string& str);
+    Monom parse_monom(const std::string& str);  // может лучше возвращать массив?
     List<Monom> parse_polynom(const std::string& str);
 
-    int follow_the_line(size_t ind, const std::string& str);
+    size_t follow_the_line(const std::string& str, size_t ind);
+    bool is_digit(char symbol);
+    std::string read_number(const std::string& str, size_t& ind);
+    int read_power(const std::string& str, size_t& ind);
 
-    /*bool is_letters(char symbol);
-    bool is_digit(char symbol);*/
-
-    std::string extract_number(const std::string& expression, int index);
-
+    std::string read_monom(std::string str, int& ind);
 }
 
 #endif  // LIB_PARSER_PARSER_H_

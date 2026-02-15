@@ -1,6 +1,7 @@
 // Copyright 2026 Mary Maslennikova
 
 #include "../lib_polynom/polynom.h"
+#include "../lib_parser/parser.h"
 
 Polynom::Polynom() {
     Monom zero;
@@ -11,6 +12,9 @@ Polynom::Polynom(const Monom& monom) {
 }
 Polynom::Polynom(const Polynom& other) {
     _polynom = List<Monom>(other._polynom);
+}
+Polynom::Polynom(const std::string& str) {
+    _polynom = Parser::parse_polynom(str);
 }
 
 Polynom::~Polynom() {}

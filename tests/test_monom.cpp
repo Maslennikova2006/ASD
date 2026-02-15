@@ -195,3 +195,19 @@ TEST(TestMonomLib, check_assignment) {
         EXPECT_EQ(m2.get_powers()[i], powers1[i]);
     }
 }
+TEST(TestMonomLib, check_parser) {
+    Monom m("34.65*x^4*y^2*z");
+    int powers[3] = { 4, 2, 1 };
+    EXPECT_NEAR(m.get_coeff(), 34.65, 1e-10);
+    for (int i = 0; i < VAR_COUNT; i++) {
+        EXPECT_EQ(m.get_powers()[i], powers[i]);
+    }
+}
+TEST(TestMonomLib, check_parser2) {
+    Monom m("-34.6765x^4y^2");
+    int powers[3] = { 4, 2, 0 };
+    EXPECT_NEAR(m.get_coeff(), -34.6765, 1e-10);
+    for (int i = 0; i < VAR_COUNT; i++) {
+        EXPECT_EQ(m.get_powers()[i], powers[i]);
+    }
+}

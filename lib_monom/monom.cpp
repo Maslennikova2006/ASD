@@ -1,6 +1,7 @@
 // Copyright 2026 Mary Maslennikova
 
 #include "../lib_monom/monom.h"
+#include "../lib_parser/parser.h"
 
 Monom::Monom(double coeff, const int* powers) {
     _coeff = coeff;
@@ -21,6 +22,13 @@ Monom::Monom(const Monom& other) {
         _powers[i] = other._powers[i];
     }
 }
+Monom::Monom(const std::string& str) {
+    Monom res = Parser::parse_monom(str);
+    _coeff = res.get_coeff();
+    for (int i = 0; i < VAR_COUNT; i++) {
+        _powers[i] = res.get_powers()[i];
+    }
+}
 
 Monom::~Monom() {}
 
@@ -29,6 +37,13 @@ const double Monom::get_coeff() const noexcept {
 }
 const int* Monom::get_powers() const noexcept {
     return _powers;
+}
+
+void Monom::set_coeff(double coeff) noexcept {
+    _coeff = coeff;
+}
+void Monom::set_power(int ind, int value) noexcept {
+    _powers[ind] = value;
 }
 
 Monom& Monom::operator+=(const Monom& second) {  // нужна ли проверка на x, y, z?
@@ -138,7 +153,7 @@ bool Monom::operator<(const Monom& second) const noexcept {
 }
 
 double Monom::calculate(double x, double y, double z) const noexcept {
-
+    return 0;
 }
 
 std::ostream& operator<<(std::ostream& os, const Monom& monom) {
