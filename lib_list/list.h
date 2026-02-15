@@ -99,6 +99,8 @@ public:
     void pop_front();  // +
     void erase(Node<T>* node);  // +
     void erase(size_t pos);  // +
+
+    void clear() noexcept;
 };
 
 template <class T>
@@ -294,5 +296,18 @@ void List<T>::erase(size_t pos) {
     if (cur == nullptr)
         throw std::invalid_argument("Wrong position!\n");
     erase(cur);
+}
+
+template <class T>
+void List<T>::clear() {
+    Node<T>* cur = _head;
+    while (cur != nullptr) {
+        Node<T>* next_node = cur->next;
+        delete cur;
+        cur = next_node;
+    }
+    _head = nullptr;
+    _tail = nullptr;
+    _count = 0;
 }
 #endif  // LIB_LIST_LIST_H_

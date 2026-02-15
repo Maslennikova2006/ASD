@@ -76,7 +76,7 @@ Monom Monom::operator-(const Monom& second) const {
     res -= second;
     return res;
 }
-Monom Monom::operator-() const {  // нужно ли менять сам объект?
+Monom Monom::operator-() const {
     Monom res(*this);
     res._coeff = -_coeff;
     return res;
@@ -103,9 +103,11 @@ Monom Monom::operator/(const double scalar) {
 }
 
 Monom& Monom::operator=(const Monom& second) {
-    _coeff = second._coeff;
-    for (int i = 0; i < VAR_COUNT; i++) {
-        _powers[i] = second._powers[i];
+    if (this != &second) {
+        _coeff = second._coeff;
+        for (int i = 0; i < VAR_COUNT; i++) {
+            _powers[i] = second._powers[i];
+        }
     }
     return *this;
 }
@@ -120,10 +122,12 @@ bool Monom::operator==(const Monom& second) const noexcept {
 bool Monom::operator!=(const Monom& second) const noexcept {
     return !(*this == second);
 }
-bool Monom::operator>(const Monom& second) const noexcept {  // как именно сравнивать?
-    for (int i = 0; i < VAR_COUNT; i++) {
-        if (_powers[i] != second._powers[i]) {
-            return _powers[i] > second._powers[i];
+bool Monom::operator>(const Monom& second) const noexcept {
+    if (*this != second) {
+        for (int i = 0; i < VAR_COUNT; i++) {
+            if (_powers[i] != second._powers[i]) {
+                return _powers[i] > second._powers[i];
+            }
         }
     }
     return _coeff > second._coeff;
@@ -133,6 +137,9 @@ bool Monom::operator<(const Monom& second) const noexcept {
     return !(*this > second);
 }
 
+double Monom::calculate(double x, double y, double z) const noexcept {
+
+}
 
 std::ostream& operator<<(std::ostream& os, const Monom& monom) {
     os << monom._coeff;

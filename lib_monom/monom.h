@@ -11,7 +11,6 @@
 class Monom {
     double _coeff;
     int _powers[VAR_COUNT];
-    // массив переменных для вычисления значения в точке?
 
 public:
     Monom(double coeff = 0.0, const int* powers = nullptr);
@@ -43,6 +42,8 @@ public:
     bool operator<(const Monom& second) const noexcept;  // +
 
     Monom& operator=(const Monom& second);  // +
+
+    double calculate(double x, double y, double z) const noexcept;
 
     friend std::ostream& operator<<(std::ostream& os, const Monom& monom);
     friend std::istream& operator>>(std::istream& is, Monom& monom);
