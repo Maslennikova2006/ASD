@@ -13,7 +13,7 @@ void UnsortedTableM<TKey, TValue>::insert(const TKey& key, const TValue& value) 
     Pair<TKey, TValue> pair(key, value);
     int ind = find_first_elem_by_index(_rows, pair);
     if (ind != -1)
-        throw std::invalid_argument("The key is already in use in the table!")ж
+        throw std::invalid_argument("The key is already in use in the table!");
     _rows.push_back(pair);
 }
 
@@ -27,11 +27,11 @@ void UnsortedTableM<TKey, TValue>::erase(const TKey& key) {
 }
 
 template <class TKey, class TValue>
-TValue& UnsortedTableM<TKey, TValue>::found(const TKey& key) const noexcept {
+const TValue& UnsortedTableM<TKey, TValue>::found(const TKey& key) const noexcept {  // что возвращать при -1? или поменять на указатель?
     Pair<TKey, TValue> pair(key, TValue());
-    int ind = _rows.find_first_elem_by_index(_rows, pair);
+    int ind = find_first_elem_by_index(_rows, pair);
     if (ind == -1)
-        return NULL;
+        return TValue();
     return _rows[ind].second;
 }
 

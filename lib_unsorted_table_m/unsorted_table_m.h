@@ -17,7 +17,7 @@ public:
 
     void insert(const TKey&, const TValue&) override;
     void erase(const TKey&) override;
-    TValue& found(const TKey&) const noexcept override;
+    const TValue& found(const TKey&) const noexcept override;
     bool is_empty() const noexcept override;
 };
 #endif  // LIB_UNSORTEDTABLEM_UNSORTEDTABLEM_H_
