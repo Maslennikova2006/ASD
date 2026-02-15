@@ -76,7 +76,9 @@ int count_the_number_of_islands(Matrix<int> matr) {
     return count;
 }
 
-Matrix<bool> generate_labyrinth(int X, int Y, int N, int M) {
+
+
+void check_input_data(int X, int Y, int N, int M) {
     if (N < 5 || M < 5)
         throw std::invalid_argument("Размер лабиринта должен быть не меньше 5х5!");
 
@@ -87,7 +89,7 @@ Matrix<bool> generate_labyrinth(int X, int Y, int N, int M) {
         throw std::invalid_argument("Некорректный номер ячейки выхода!");
 
     if (X == Y)
-        throw std::invalid_argument("Вход и выход не могут совпадать!");  // ?
+        throw std::invalid_argument("Вход и выход не могут совпадать!");
 
     bool entrance = (X <= M) || (X > M * (N - 1)) ||
         (X % M == 1) || (X % M == 0);
@@ -98,69 +100,122 @@ Matrix<bool> generate_labyrinth(int X, int Y, int N, int M) {
         throw std::invalid_argument("Вход должен быть с краю!");
     if (!exit)
         throw std::invalid_argument("Выход должен быть с краю!");
+}
+void removing_borders(Matrix<bool>& walls, int cell, int N, int M) {
+    int row = (cell - 1) / M;
+    int col = (cell - 1) % M;
+    if (cell <= M)
+        walls[0][col] = false;
+    else if (cell > M * (N - 1))
+        walls[2 * N][col] = false;
+    else if ((cell - 1) % M == 0)
+        walls[2 * row + 1][0] = false;
+    else
+        walls[2 * row + 1][M] = false;
+}
+void creating_path(Dsu& labyrinth, Matrix<bool>& walls, int X, int Y, int M) {
+    int cur = X - 1;
+    int exit = Y - 1;
 
-    Matrix<bool> walls(N + 1, M + 1);
-    for (int i = 0; i < N + 1; i++) {
+    while (labyrinth.find(cur) != labyrinth.find(exit)) {
+        int row = cur / M;
+        int col = cur % M;
+        int exit_row = exit / M;
+        int exit_col = exit % M;
+
+        if (row < exit_row) {
+            int next = cur + M;
+            labyrinth.union_set(cur, next);
+            walls[2 * row + 2][col] = false;
+            cur = next;
+        }
+        else if (row > exit_row) {
+            int next = cur - M;
+            labyrinth.union_set(cur, next);
+            walls[2 * row][col] = false;
+            cur = next;
+        }
+        else if (col < exit_col) {
+            int next = cur + 1;
+            labyrinth.union_set(cur, next);
+            walls[2 * row + 1][col + 1] = false;
+            cur = next;
+        }
+        else if (col > exit_col) {
+            int next = cur - 1;
+            labyrinth.union_set(cur, next);
+            walls[2 * row + 1][col] = false;
+            cur = next;
+        }
+    }
+}
+Matrix<bool> generate_labyrinth(int X, int Y, int N, int M) {
+    check_input_data(X, Y, N, M);
+
+    Matrix<bool> walls(2*N + 1, M + 1);
+    for (int i = 0; i < 2*N + 1; i++) {
         for (int j = 0; j < M + 1; j++) {
             walls[i][j] = true;
         }
     }
 
-    int entrance_row = (X - 1) / M;
-    int entrance_col = (X - 1) % M;
-    int exit_row = (Y - 1) / M;
-    int exit_col = (Y - 1) % M;
+    removing_borders(walls, X, N, M);
+    removing_borders(walls, Y, N, M);
 
-    if (X <= M)
-        walls[0][entrance_col + 1] = false;
-    else if (X > M * (N - 1))
-        walls[N][entrance_col + 1] = false;
-    else if (X % M == 1)
-        walls[entrance_row + 1][0] = false;
-    else
-        walls[entrance_row + 1][M] = false;
+    Dsu labyrinth(N*M);
+    for (int i = 1; i < 2 * N; i++) {
+        for (int j = 1; j < M; j++) {
+            int gen = rand_generation(0, 100);
+            if (gen < 50) {
+                if (i % 2 == 1) {
+                    int left_cell = (i / 2) * M + (j - 1);
+                    int right_cell = (i / 2) * M + j;
 
-    if (Y <= M)
-        walls[0][exit_col + 1] = false;
-    else if (Y > M * (N - 1))
-        walls[N][exit_col + 1] = false;
-    else if (Y % M == 1)
-        walls[exit_row + 1][0] = false;
-    else
-        walls[exit_row + 1][M] = false;
+                    if (labyrinth.find(left_cell) != labyrinth.find(right_cell)) {
+                        labyrinth.union_set(left_cell, right_cell);
+                        walls[i][j] = false;
+                    }
+                }
+                else {
+                    int left_cell = (i / 2 - 1) * M + j;
+                    int right_cell = (i / 2) * M + j;
 
-    Dsu labyrinth(size);
-    for (int i = 0; i < size; i++) {
-        int gen = rand_generation(0, 100);
-        int row = i / M;
-        int col = i % M;
-
-        if (gen < 25 && col < M - 1) {
-            labyrinth.union_set(i, i + 1);
-            walls[row + 1][col + 1] = false;
-        }
-        else if (gen < 50 && row < N - 1) {
-            labyrinth.union_set(i, i + M);
-            walls[row + 1][col + 1] = false;
+                    if (labyrinth.find(left_cell) != labyrinth.find(right_cell)) {
+                        labyrinth.union_set(left_cell, right_cell);
+                        walls[i][j] = false;
+                    }
+                }
+            }
         }
     }
 
     if (labyrinth.find(X - 1) != labyrinth.find(Y - 1)) {
-        labyrinth.union_set(X - 1, Y - 1);
+        creating_path(labyrinth, walls, X, Y, M);
     }
-
     return walls;
 }
 
-
-// __________________
-// 1 | 2 | 3 | 4 | 5 |
-// __________________
-//|6 | 7 | 8 | 9 | 10|
-// __________________
-//|11| 12| 13| 14| 15
-// __________________
-//|16| 17| 18| 19| 20|
-// __________________
-//|21| 22| 23| 24| 25
-// __________________
+void print_labyrinth(const Matrix<bool>& walls, int N, int M) {
+    for (int i = 0; i < 2 * N + 1; i++) {
+        for (int j = 0; j < M + 1; j++) {
+            if (i % 2 == 0) {
+                if (j < M) {
+                    if (walls[i][j])
+                        std::cout << "+---";
+                    else
+                        std::cout << "+   ";
+                }
+                else {
+                    std::cout << "+";
+                }
+            }
+            else {
+                if (walls[i][j])
+                    std::cout << "|   ";
+                else
+                    std::cout << "    ";
+            }
+        }
+        std::cout << "\n";
+    }
+}

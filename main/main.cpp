@@ -1,7 +1,8 @@
 // Copyright 2025 Mary Maslennikova
 
 //#define EASY_EXAMPLE
-#define INTERFACE
+//#define INTERFACE
+#define LABYRINTH
 
 #ifdef EASY_EXAMPLE
 
@@ -389,3 +390,15 @@ int main() {
     return 0;
 }
 #endif  // INTERFACE
+
+
+#ifdef LABYRINTH
+#include "../lib_matrix/matrix.h"
+#include "../lib_algorithms/algorithms.h"
+void main() {
+    Matrix<bool> lab = generate_labyrinth(13, 118, 10, 12);
+    //std::cout << lab << std::endl;
+    print_labyrinth(lab, 10, 12);
+}
+
+#endif  // LABYRINTH
