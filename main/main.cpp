@@ -1,8 +1,12 @@
 // Copyright 2025 Mary Maslennikova
 
 //#define EASY_EXAMPLE
-#define CIRCLE
+//#define CIRCLE
 //#define SPHERE
+//#define SKIP_LIST
+//#define UNSORTED_TABLE_M
+//#define UNSORTED_TABLE_L
+#define SORTED_TABLE_M
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -96,3 +100,83 @@ int main() {
     return 0;
 }
 #endif  // SPHERE
+
+#ifdef SKIP_LIST
+#include <clocale>
+#include "../lib_skip_list/skip_list.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    SkipList<int, std::string> list(5);
+    list.insert(2, "ְּ״ְ");
+    list.insert(8, "Olya");
+    list.insert(4, "Vika");
+    list.insert(7, "Olesya");
+    list.print();
+    return 0;
+}
+#endif  // SKIP_LIST
+
+
+#ifdef UNSORTED_TABLE_M
+#include <clocale>
+#include <string>
+#include "../lib_unsorted_table_m/unsorted_table_m.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    UnsortedTableM<int, std::string> table;
+    table.insert(2, "ְּ״ְ");
+    table.insert(8, "Olya");
+    table.insert(4, "Vika");
+    table.insert(7, "Olesya");
+    table.print();
+    table.erase(8);
+    std::cout << table;
+    const std::string* found = table.found(7);
+    std::cout << *found;
+    return 0;
+}
+#endif  // UNSORTED_TABLE_M
+
+
+#ifdef UNSORTED_TABLE_L
+#include <clocale>
+#include <string>
+#include "../lib_unsorted_table_l/unsorted_table_l.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    UnsortedTableL<int, std::string> table;
+    table.insert(22, "ּארא");
+    table.insert(10, "Olya");
+    table.insert(5, "Vika");
+    table.insert(28, "Olesya");
+    table.insert(24, "Margo");
+    table.print();
+    table.erase(22);
+    std::cout << table;
+    const std::string* found = table.found(28);
+    std::cout << *found;
+    return 0;
+}
+#endif  // UNSORTED_TABLE_L
+
+
+#ifdef SORTED_TABLE_M
+#include <clocale>
+#include <string>
+#include "../lib_sorted_table_m/sorted_table_m.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    SortedTableM<int, std::string> table;
+    table.insert(22, "ּארא");
+    table.insert(10, "Olya");
+    table.insert(5, "Vika");
+    table.insert(28, "Olesya");
+    table.insert(24, "Margo");
+    table.print();
+    table.erase(22);
+    std::cout << table;
+    const std::string* found = table.found(28);
+    std::cout << *found;
+    return 0;
+}
+#endif  // SORTED_TABLE_M
