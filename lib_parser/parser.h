@@ -7,11 +7,12 @@
 #include "../lib_list/list.h"
 
 namespace Parser {
-    Monom parse_monom(const std::string& str);  // может лучше возвращать массив?
+    Monom parse_monom(const std::string& str);
     List<Monom> parse_polynom(const std::string& str);
 
     size_t follow_the_line(const std::string& str, size_t ind);
     bool is_digit(char symbol);
+    bool is_variable(char symbol);
     std::string read_number(const std::string& str, size_t& ind);
     int read_power(const std::string& str, size_t& ind);
 

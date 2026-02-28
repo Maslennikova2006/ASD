@@ -1,8 +1,9 @@
 // Copyright 2025 Mary Maslennikova
 
 //#define EASY_EXAMPLE
-#define CIRCLE
+//#define CIRCLE
 //#define SPHERE
+#define POLYNOM
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -96,3 +97,21 @@ int main() {
     return 0;
 }
 #endif  // SPHERE
+
+
+#ifdef POLYNOM
+#include "../lib_polynom/polynom.h"
+#include <clocale>
+#include <iostream>
+
+int main() {
+    setlocale(LC_ALL, "rus");
+    Polynom p1("5.8x^2+8y^3z^4-6.8z^2");
+    Polynom p2("2.3x^2-4y^3z^4+8.3y^3z");
+    p1 += p2;
+    std::cout << "result" << std::endl;
+    std::cout << p1;
+    return 0;
+}
+
+#endif  // POLYNOM

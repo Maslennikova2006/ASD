@@ -7,53 +7,61 @@
 #include "../lib_list/list.h"
 #include "../lib_monom/monom.h"
 
-// + вычисление полинома в точке
 
 class Polynom {
     List<Monom> _polynom;
 
 public:
-    Polynom();
-    Polynom(const Monom& monom);
-    Polynom(const Polynom& other);
-    Polynom(const std::string& str);
+    Polynom();  // +
+    explicit Polynom(const Monom& monom);  // +
+    Polynom(const Polynom& other);  // +
+    explicit Polynom(const std::string& str);  // +
 
     ~Polynom();
 
-    Polynom& operator+=(const Polynom& second);
-    Polynom& operator-=(const Polynom& second);
-    Polynom& operator*=(const Polynom& second);
-    Polynom& operator*=(const double scalar);
-    Polynom& operator/=(const double scalar);
+    List<Monom> get_monoms() const noexcept;
 
-    Polynom operator+(const Polynom& second) const;
-    Polynom operator-(const Polynom& second) const;
-    Polynom operator-() const;
-    Polynom operator*(const Polynom& second) const;
-    Polynom operator*(const double scalar) const;
-    Polynom operator/(const double scalar) const;
+    Polynom& operator+=(const Polynom& second);  // +
+    Polynom& operator-=(const Polynom& second);  // +
+    Polynom& operator*=(const Polynom& second);  // +
+    Polynom& operator*=(const double scalar);  // +
+    Polynom& operator/=(const double scalar);  // +
 
-    Polynom& operator+=(const Monom& monom);
-    Polynom& operator-=(const Monom& monom);
-    Polynom& operator*=(const Monom& monom);
-    Polynom& operator/=(const Monom& monom);
+    Polynom operator+(const Polynom& second) const;  // +
+    Polynom operator-(const Polynom& second) const;  // +
+    Polynom operator-() const;  // +
+    Polynom operator*(const Polynom& second) const;  // +
+    Polynom operator*(const double scalar) const;  // +
+    Polynom operator/(const double scalar) const;  // +
 
-    Polynom operator+(const Monom& monom) const;
-    Polynom operator-(const Monom& monom) const;
-    Polynom operator*(const Monom& monom) const;
-    Polynom operator/(const Monom& monom) const;
+    Polynom& operator+=(const Monom& monom);  // +
+    Polynom& operator-=(const Monom& monom);  // +
+    Polynom& operator*=(const Monom& monom);  // +
+    Polynom& operator/=(const Monom& monom);  // +
 
-    bool operator==(const Polynom& second) const noexcept;
-    bool operator!=(const Polynom& second) const noexcept;
-    bool operator>(const Polynom& second) const noexcept;
-    bool operator<(const Polynom& second) const noexcept;
+    Polynom operator+(const Monom& monom) const;  // +
+    Polynom operator-(const Monom& monom) const;  // +
+    Polynom operator*(const Monom& monom) const;  // +
+    Polynom operator/(const Monom& monom) const;  // +
 
-    Polynom& operator=(const Polynom& second);
+    bool operator==(const Polynom& second) const noexcept;  // +
+    bool operator!=(const Polynom& second) const noexcept;  // +
+    bool operator>(const Polynom& second) const noexcept;  // +
+    bool operator<(const Polynom& second) const noexcept;  // +
 
-    double calculate(double x, double y, double z) const noexcept;
+    Polynom& operator=(const Polynom& second);  // +
 
-    friend std::ostream& operator<<(std::ostream& os, const Polynom& monom);
-    friend std::istream& operator>>(std::istream& is, Polynom& monom);
+    double calculate(double x, double y, double z) const noexcept;  // +
+    std::string toString() const noexcept;
+
+    friend std::ostream& operator<<(std::ostream& os, const Polynom& polynom);
+    friend std::istream& operator>>(std::istream& is, Polynom& polynom);
+
+    friend Polynom operator+(const Monom& monom, const Polynom& polynom);  // +
+    friend Polynom operator-(const Monom& monom, const Polynom& polynom);  // +
+    friend Polynom operator*(const Monom& monom, const Polynom& polynom);  // +
+
+    friend Polynom operator*(const double scalar, const Polynom& polynom);  // +
 };
 
 #endif  // LIB_POLYNOM_POLYNOM_H_

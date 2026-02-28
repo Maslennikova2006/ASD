@@ -12,17 +12,26 @@ size_t Parser::follow_the_line(const std::string& str, size_t ind) {
 bool Parser::is_digit(char symbol) {
     return (symbol >= '0' && symbol <= '9');
 }
+bool Parser::is_variable(char symbol) {
+    return symbol == 'x' || symbol == 'y' || symbol == 'z';
+}
 std::string Parser::read_number(const std::string& str, size_t& ind) {
     std::string number = "";
     bool hasDecimal = false;
 
-    if (ind < str.length() && str[ind] == '-') {
+    if (ind >= str.length())
+        throw std::invalid_argument("Unexpected end of string while reading number!");
+
+    if (str[ind] == '-') {
         number += str[ind];
         ind++;
     }
 
+    if (!is_digit(str[ind]))
+        throw std::invalid_argument("Expected digit after sign!");
+
     while (ind < str.length()) {
-        if (str[ind] >= '0' && str[ind] <= '9') {
+        if (is_digit(str[ind])) {
             number += str[ind];
             ind++;
         }
@@ -31,9 +40,7 @@ std::string Parser::read_number(const std::string& str, size_t& ind) {
             hasDecimal = true;
             ind++;
         }
-        else {
-            break;
-        }
+        else break;
     }
     return number;
 }
@@ -43,9 +50,14 @@ int Parser::read_power(const std::string& str, size_t& ind) {
     if (ind < str.length() && str[ind] == '^') {
         ind++;
         ind = follow_the_line(str, ind);
+        if (ind >= str.length() || !is_digit(str[ind]))
+            throw std::invalid_argument("Expected number after '^'!");
         std::string num = read_number(str, ind);
         if (!num.empty()) {
-            return std::stoi(num);
+            int power = std::stoi(num);
+            if (power < 0)
+                throw std::invalid_argument("Power cannot be negative!");
+            return power;
         }
     }
     return 1;
@@ -57,23 +69,22 @@ Monom Parser::parse_monom(const std::string& str) {
 
     ind = follow_the_line(str, ind);
 
-    if (ind < str.length()) {
-        if (str[ind] == '-' || is_digit(str[ind])) {
-            std::string numStr = read_number(str, ind);
-            if (numStr == "-") {
-                result.set_coeff(-1.0);
-            }
-            else {
-                result.set_coeff(std::stod(numStr));
-            }
-        }
-        else if (str[ind] == 'x' || str[ind] == 'y' || str[ind] == 'z') {
-            result.set_coeff(1.0);
-        }
-        else {
-            throw std::invalid_argument("Unexpected symbol at beginning");
-        }
+    if (ind >= str.length())
+        throw std::invalid_argument("Unexpected end of monom!");
+    if (str[ind] == '+' || str[ind] == '/')
+        throw std::invalid_argument(std::string("Unexpected symbol '") + str[ind] + "' at beginning!");
+
+    if (str[ind] == '-' || is_digit(str[ind])) {
+        std::string num = read_number(str, ind);
+        if (num == "-")
+            throw std::invalid_argument("Expected number after '-'!");
+        result.set_coeff(std::stod(num));
     }
+    else if (is_variable(str[ind])) {
+        result.set_coeff(1.0);
+    }
+    else
+        throw std::invalid_argument("Unexpected symbol at beginning!");
 
     while (ind < str.length()) {
         ind = follow_the_line(str, ind);
@@ -89,25 +100,29 @@ Monom Parser::parse_monom(const std::string& str) {
 
         int power = read_power(str, ind);
         if (varIndex >= 0) {
+            if (power < 0)
+                throw std::invalid_argument("The power cannot be negative!");
             result.set_power(varIndex, power);
         }
-    }
 
+        ind = follow_the_line(str, ind);
+        if (ind < str.length() && str[ind] == '^')
+            throw std::invalid_argument("Invalid power syntax!");
+    }
     return result;
 }
 std::string Parser::read_monom(std::string str, int& ind) {
     std::string monom = "";
 
     for (int i = ind; i < str.length(); i++) {
-        if (str[i] >= '0' && str[i] <= '9' || str[i] == ' ' || str[i] == '.' ||
-            str[i] == 'x' || str[i] == 'y' || str[i] == 'z' || str[i] == '^')
+        if (is_digit(str[i]) || is_variable(str[i]) ||
+            str[i] == ' ' || str[i] == '.' || str[i] == '^')
             monom += str[i];
         else if ((str[i] == '+' || str[i] == '-') && monom != "")
             break;
-        else if (str[i] != '+' && str[i] != '-')
-            throw std::logic_error("There is no monome!");
+        else
+            throw std::logic_error("Invalid symbol!");
     }
-
     return monom;
 }
 List<Monom> Parser::parse_polynom(const std::string& str) {

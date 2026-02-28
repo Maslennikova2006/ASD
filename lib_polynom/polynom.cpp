@@ -2,102 +2,115 @@
 
 #include "../lib_polynom/polynom.h"
 #include "../lib_parser/parser.h"
+#include <iostream>
 
 Polynom::Polynom() {
     Monom zero;
     _polynom.push_back(zero);
 }
-Polynom::Polynom(const Monom& monom) {
+Polynom::Polynom(const Monom& monom) : _polynom() {
     _polynom.push_back(monom);
 }
 Polynom::Polynom(const Polynom& other) {
     _polynom = List<Monom>(other._polynom);
 }
-Polynom::Polynom(const std::string& str) {
+Polynom::Polynom(const std::string& str) : _polynom() {
     _polynom = Parser::parse_polynom(str);
 }
 
 Polynom::~Polynom() {}
 
+List<Monom> Polynom::get_monoms() const noexcept {
+    return _polynom;
+}
+
 Polynom& Polynom::operator+=(const Polynom& second) {
     List<Monom> res;
-    Node<Monom>* i = _polynom.head();
-    Node<Monom>* j = second._polynom.head();
-    while (i != nullptr && j != nullptr) {
-        if (i->value > j->value) {
-            res.push_back(i->value);
-            i = i->next;
+    auto it1 = _polynom.begin();
+    auto it2 = second._polynom.begin();
+
+    while (it1 != nullptr && it2 != nullptr) {
+        if (*it1 > *it2) {
+            res.push_back(*it1);
+            it1++;
         }
-        else if (i->value < j->value) {
-            res.push_back(j->value);
-            j = j->next;
+        else if (*it1 < *it2) {
+            res.push_back(*it2);
+            it2++;
         }
         else {
-            Monom sum = i->value + j->value;
+            Monom sum = *it1 + *it2;
             if (sum.get_coeff() != 0) {
                 res.push_back(sum);
             }
-            i = i->next;
-            j = j->next;
+            it1++;
+            it2++;
         }
     }
-    while (i != nullptr) {
-        res.push_back(i->value);
-        i = i->next;
+
+    while (it1 != nullptr) {
+        res.push_back(*it1);
+        it1++;
     }
-    while (j != nullptr) {
-        res.push_back(j->value);
-        j = j->next;
+
+    while (it2 != nullptr) {
+        res.push_back(*it2);
+        it2++;
     }
+
     _polynom = res;
     return *this;
 }
 Polynom& Polynom::operator-=(const Polynom& second) {
     List<Monom> res;
-    Node<Monom>* i = _polynom.head();
-    Node<Monom>* j = second._polynom.head();
-    while (i != nullptr && j != nullptr) {
-        if (i->value > j->value) {
-            res.push_back(i->value);
-            i = i->next;
+    auto it1 = _polynom.begin();
+    auto it2 = second._polynom.begin();
+
+    while (it1 != nullptr && it2 != nullptr) {
+        if (*it1 > *it2) {
+            res.push_back(*it1);
+            it1++;
         }
-        else if (i->value < j->value) {
-            res.push_back(j->value);
-            j = j->next;
+        else if (*it1 < *it2) {
+            res.push_back(-(*it2));
+            it2++;
         }
         else {
-            Monom sub = i->value - j->value;
+            Monom sub = *it1 - *it2;
             if (sub.get_coeff() != 0) {
                 res.push_back(sub);
             }
-            i = i->next;
-            j = j->next;
+            it1++;
+            it2++;
         }
     }
-    while (i != nullptr) {
-        res.push_back(i->value);
-        i = i->next;
+
+    while (it1 != nullptr) {
+        res.push_back(*it1);
+        it1++;
     }
-    while (j != nullptr) {
-        res.push_back(j->value);
-        j = j->next;
+
+    while (it2 != nullptr) {
+        res.push_back(-(*it2));
+        it2++;
     }
+
     _polynom = res;
     return *this;
 }
-Polynom& Polynom::operator*=(const Polynom& second) {  // если после умножение появились подобные?
-    List<Monom> res;
-    Node<Monom>* i = _polynom.head();
-    while (i != nullptr) {
-        Node<Monom>* j = second._polynom.head();
-        while (j != nullptr) {
-            Monom mul = i->value * j->value;
-            res.push_back(mul);
-            j = j->next;
+Polynom& Polynom::operator*=(const Polynom& second) {
+    Polynom res;
+    res._polynom.pop_back();
+    auto it1 = _polynom.begin();
+    while (it1 != nullptr) {
+        auto it2 = second._polynom.begin();
+        while (it2 != nullptr) {
+            res += (*it1) * (*it2);
+            it2++;
         }
-        i = i->next;
+        it1++;
     }
-    _polynom = res;
+    *this = res;
     return *this;
 }
 Polynom& Polynom::operator*=(const double scalar) {
@@ -105,12 +118,12 @@ Polynom& Polynom::operator*=(const double scalar) {
         _polynom.clear();
         return *this;
     }
+
     List<Monom> res;
-    Node<Monom>* i = _polynom.head();
-    while (i != nullptr) {
-        Monom mul = i->value * scalar;
-        res.push_back(mul);
-        i = i->next;
+    auto it = _polynom.begin();
+    while (it != nullptr) {
+        res.push_back((*it) * scalar);
+        it++;
     }
     _polynom = res;
     return *this;
@@ -118,12 +131,12 @@ Polynom& Polynom::operator*=(const double scalar) {
 Polynom& Polynom::operator/=(const double scalar) {
     if (scalar == 0)
         throw std::invalid_argument("You can't divide by zero!");
+
     List<Monom> res;
-    Node<Monom>* i = _polynom.head();
-    while (i != nullptr) {
-        Monom mul = i->value / scalar;
-        res.push_back(mul);
-        i = i->next;
+    auto it = _polynom.begin();
+    while (it != nullptr) {
+        res.push_back((*it) / scalar);
+        it++;
     }
     _polynom = res;
     return *this;
@@ -141,10 +154,11 @@ Polynom Polynom::operator-(const Polynom& second) const {
 }
 Polynom Polynom::operator-() const {
     Polynom res;
-    Node<Monom>* i = _polynom.head();
-    while (i != nullptr) {
-        res._polynom.push_back(-(i->value));
-        i = i->next;
+    res._polynom.pop_back();
+    auto it = _polynom.begin();
+    while (it != nullptr) {
+        res._polynom.push_back(-(*it));
+        it++;
     }
     return res;
 }
@@ -166,71 +180,83 @@ Polynom Polynom::operator/(const double scalar) const {
 
 Polynom& Polynom::operator+=(const Monom& monom) {
     List<Monom> res;
-    Node<Monom>* i = _polynom.head();
+    auto it = _polynom.begin();
     bool isInserted = false;
-    while (i != nullptr) {
-        if (i->value == monom) {
-            Monom sum = i->value + monom;
+
+    while (it != nullptr) {
+        if (*it == monom) {
+            Monom sum = *it + monom;
             res.push_back(sum);
             isInserted = true;
-            i = i->next;
+            it++;
         }
-        else if (i->value < monom && !isInserted) {
+        else if (*it < monom && !isInserted) {
             res.push_back(monom);
-            res.push_back(i->value);
+            res.push_back(*it);
             isInserted = true;
-            i = i->next;
+            it++;
         }
         else {
-            res.push_back(i->value);
-            i = i->next;
+            res.push_back(*it);
+            it++;
         }
     }
-    if (!isInserted)
+
+    if (!isInserted) {
         res.push_back(monom);
+    }
+
     _polynom = res;
     return *this;
 }
-Polynom& Polynom::operator-=(const Monom& monom) {  // ?
+Polynom& Polynom::operator-=(const Monom& monom) {
     List<Monom> res;
-    Node<Monom>* i = _polynom.head();
+    auto it = _polynom.begin();
     bool isInserted = false;
-    while (i != nullptr) {
-        if (i->value == monom) {
-            Monom sub = i->value - monom;  // не добавлять если коэфф стал 0
-            res.push_back(sub);
-            isInserted = true;
-            i = i->next;
+
+    while (it != nullptr) {
+        if (*it == monom) {
+            Monom sub = *it - monom;
+            if (sub.get_coeff() != 0) {
+                res.push_back(sub);
+                isInserted = true;
+            }
+            it++;
         }
-        else if (i->value < monom && !isInserted) {
+        else if (*it < monom && !isInserted) {
             res.push_back(-monom);
-            res.push_back(i->value);
+            res.push_back(*it);
             isInserted = true;
-            i = i->next;
+            it++;
         }
         else {
-            res.push_back(i->value);
-            i = i->next;
+            res.push_back(*it);
+            it++;
         }
     }
-    if (!isInserted)
-        res.push_back(-monom);
+
+    if (!isInserted) {
+        res.push_back(monom);
+    }
+
     _polynom = res;
     return *this;
 }
 Polynom& Polynom::operator*=(const Monom& monom) {
-    Node<Monom>* i = _polynom.head();
-    while (i != nullptr) {
-        i->value = i->value * monom;
-        i = i->next;
+    auto it = _polynom.begin();
+    while (it != nullptr) {
+        (*it) *= monom;
+        it++;
     }
     return *this;
 }
-Polynom& Polynom::operator/=(const Monom& monom) {  // проверить на 0
-    Node<Monom>* i = _polynom.head();
-    while (i != nullptr) {
-        i->value = i->value / monom;
-        i = i->next;
+Polynom& Polynom::operator/=(const Monom& monom) {
+    if (monom.get_coeff() == 0)
+        throw std::invalid_argument("You can't divide by zero!");
+    auto it = _polynom.begin();
+    while (it != nullptr) {
+        (*it) /= monom;
+        it++;
     }
     return *this;
 }
@@ -257,15 +283,16 @@ Polynom Polynom::operator/(const Monom& monom) const {
 }
 
 bool Polynom::operator==(const Polynom& second) const noexcept {
-    Node<Monom>* i = _polynom.head();
-    Node<Monom>* j = second._polynom.head();
+    auto it1 = _polynom.begin();
+    auto it2 = second._polynom.begin();
     if (_polynom.get_count() != second._polynom.get_count())
         return false;
-    while (i != nullptr && j != nullptr) {
-        if (i->value != j->value)
+    while (it1 != nullptr && it2 != nullptr) {
+        if ((*it1) != (*it2) || (((*it1) == (*it2)) &&
+            ((*it1).get_coeff() != (*it2).get_coeff())))
             return false;
-        i = i->next;
-        j = j->next;
+        it1++;
+        it2++;
     }
     return true;
 }
@@ -273,23 +300,23 @@ bool Polynom::operator!=(const Polynom& second) const noexcept {
     return !(*this == second);
 }
 bool Polynom::operator>(const Polynom& second) const noexcept {
-    Node<Monom>* i = _polynom.head();
-    Node<Monom>* j = second._polynom.head();
-    while (i != nullptr && j != nullptr) {
-        if (i->value < j->value)
+    auto it1 = _polynom.begin();
+    auto it2 = second._polynom.begin();
+    while (it1 != nullptr && it2 != nullptr) {
+        if ((*it1) < (*it2))
             return false;
-        else if (i->value == j->value) {
-            if (i->value.get_coeff() > j->value.get_coeff())
+        else if ((*it1) == (*it2)) {
+            if ((*it1).get_coeff() > (*it2).get_coeff())
                 return true;
-            else if (i->value.get_coeff() < j->value.get_coeff())
+            else if ((*it1).get_coeff() < (*it2).get_coeff())
                 return false;
-            i = i->next;
-            j = j->next;
+            it1++;
+            it2++;
         }
         else
             return true;
     }
-    if (i == nullptr)
+    if (it1 == nullptr)
         return false;
     return true;
 }
@@ -302,4 +329,52 @@ Polynom& Polynom::operator=(const Polynom& second) {
         _polynom = second._polynom;
     }
     return *this;
+}
+
+double Polynom::calculate(double x, double y, double z) const noexcept {
+    double res = 0.0;
+    auto it = _polynom.begin();
+    while (it != nullptr) {
+        res += (*it).calculate(x, y, z);
+        it++;
+    }
+    return res;
+}
+std::string Polynom::toString() const noexcept {
+    std::string str = "";
+    auto it = _polynom.begin();
+    bool isFirst = true;
+    while (it != nullptr) {
+        if (!isFirst && (*it).get_coeff() > 0)
+            str += "+";
+        str += (*it).toString();
+        it++;
+        isFirst = false;
+    }
+    return str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Polynom& polynom) {
+    os << polynom.toString();
+    return os;
+}
+std::istream& operator>>(std::istream& is, Polynom& polynom) {
+    std::string str;
+    is >> str;
+    polynom._polynom = Parser::parse_polynom(str);
+    return is;
+}
+
+Polynom operator+(const Monom& monom, const Polynom& polynom) {
+    return polynom + monom;
+}
+Polynom operator-(const Monom& monom, const Polynom& polynom) {
+    return monom + (-polynom);
+}
+Polynom operator*(const Monom& monom, const Polynom& polynom) {
+    return polynom * monom;
+}
+
+Polynom operator*(const double scalar, const Polynom& polynom) {
+    return polynom * scalar;
 }

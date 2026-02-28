@@ -101,6 +101,8 @@ public:
     void erase(size_t pos);  // +
 
     void clear() noexcept;
+
+    List<T>& operator=(const List<T>& second);
 };
 
 template <class T>
@@ -309,5 +311,19 @@ void List<T>::clear() noexcept {
     _head = nullptr;
     _tail = nullptr;
     _count = 0;
+}
+
+template <class T>
+List<T>& List<T>::operator=(const List<T>& second) {
+    _head = nullptr;
+    _tail = nullptr;
+    _count = 0;
+
+    Node<T>* cur = second._head;
+    for (int i = 0; i < second._count; i++) {
+        push_back(cur->value);
+        cur = cur->next;
+    }
+    return *this;
 }
 #endif  // LIB_LIST_LIST_H_
