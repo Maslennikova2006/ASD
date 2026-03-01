@@ -11,14 +11,14 @@ template <class TKey, class TValue>
 class UnsortedTableL : public Table<TKey, TValue> {
     List<Pair<TKey, TValue>> _rows;
 public:
-    UnsortedTableL();
+    UnsortedTableL();  // +
 
     ~UnsortedTableL();
 
-    void insert(const TKey&, const TValue&) override;
-    void erase(const TKey&) override;
-    const TValue* found(const TKey&) const noexcept override;
-    bool is_empty() const noexcept override;
+    void insert(const TKey&, const TValue&) override;  // +
+    void erase(const TKey&) override;  // +
+    const TValue* found(const TKey&) const noexcept override;  // +
+    bool is_empty() const noexcept override;  // +
     void print(std::ostream& os = std::cout) const noexcept override;
 };
 

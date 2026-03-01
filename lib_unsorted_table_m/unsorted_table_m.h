@@ -14,9 +14,9 @@ public:
 
     ~UnsortedTableM();
 
-    void insert(const TKey&, const TValue&) override;
-    void erase(const TKey&) override;
-    const TValue* found(const TKey&) const noexcept override;
+    void insert(const TKey&, const TValue&) override;  // +
+    void erase(const TKey&) override;  // +
+    const TValue* found(const TKey&) const noexcept override;  // +
     bool is_empty() const noexcept override;
     void print(std::ostream& os = std::cout) const noexcept override;
 };
@@ -46,7 +46,7 @@ void UnsortedTableM<TKey, TValue>::erase(const TKey& key) {
 }
 
 template <class TKey, class TValue>
-const TValue* UnsortedTableM<TKey, TValue>::found(const TKey& key) const noexcept {  // что возвращать при -1? или поменять на указатель?
+const TValue* UnsortedTableM<TKey, TValue>::found(const TKey& key) const noexcept {
     Pair<TKey, TValue> pair(key, TValue());
     int ind = find_first_elem_by_index(_rows, pair);
     if (ind == -1)
