@@ -166,7 +166,7 @@ Matrix<bool> generate_labyrinth(int X, int Y, int N, int M) {
     for (int i = 1; i < 2 * N; i++) {
         for (int j = 1; j < M; j++) {
             int gen = rand_generation(0, 100);
-            if (gen < 50) {
+            if (gen < 60) {
                 if (i % 2 == 1) {
                     int left_cell = (i / 2) * M + (j - 1);
                     int right_cell = (i / 2) * M + j;
