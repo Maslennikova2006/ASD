@@ -24,6 +24,9 @@ public:
     Polynom& operator+=(const Polynom& second);  // +
     Polynom& operator-=(const Polynom& second);  // +
     Polynom& operator*=(const Polynom& second);  // +
+
+    Polynom& operator+=(const double scalar);  // +
+    Polynom& operator-=(const double scalar);  // +
     Polynom& operator*=(const double scalar);  // +
     Polynom& operator/=(const double scalar);  // +
 
@@ -31,6 +34,9 @@ public:
     Polynom operator-(const Polynom& second) const;  // +
     Polynom operator-() const;  // +
     Polynom operator*(const Polynom& second) const;  // +
+
+    Polynom operator+(const double scalar) const;  // +
+    Polynom operator-(const double scalar) const;  // +
     Polynom operator*(const double scalar) const;  // +
     Polynom operator/(const double scalar) const;  // +
 

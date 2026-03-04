@@ -113,12 +113,28 @@ Polynom& Polynom::operator*=(const Polynom& second) {
     *this = res;
     return *this;
 }
+
+Polynom& Polynom::operator+=(const double scalar) {
+    if (scalar == 0.0)
+        return *this;
+    Monom monom(scalar);
+    *this += monom;
+    return *this;
+}
+Polynom& Polynom::operator-=(const double scalar) {
+    if (scalar == 0.0)
+        return *this;
+    Monom monom(scalar);
+    *this -= monom;
+    return *this;
+}
 Polynom& Polynom::operator*=(const double scalar) {
-    if (scalar == 0) {
+    if (scalar == 0.0) {
         _polynom.clear();
+        Monom zero;
+        _polynom.push_back(zero);
         return *this;
     }
-
     List<Monom> res;
     auto it = _polynom.begin();
     while (it != nullptr) {
@@ -129,7 +145,7 @@ Polynom& Polynom::operator*=(const double scalar) {
     return *this;
 }
 Polynom& Polynom::operator/=(const double scalar) {
-    if (scalar == 0)
+    if (scalar == 0.0)
         throw std::invalid_argument("You can't divide by zero!");
 
     List<Monom> res;
@@ -167,6 +183,17 @@ Polynom Polynom::operator*(const Polynom& second) const {
     res *= second;
     return res;
 }
+
+Polynom Polynom::operator+(const double scalar) const {
+    Polynom res(*this);
+    res += scalar;
+    return res;
+}
+Polynom Polynom::operator-(const double scalar) const {
+    Polynom res(*this);
+    res -= scalar;
+    return res;
+}
 Polynom Polynom::operator*(const double scalar) const {
     Polynom res(*this);
     res *= scalar;
@@ -179,6 +206,8 @@ Polynom Polynom::operator/(const double scalar) const {
 }
 
 Polynom& Polynom::operator+=(const Monom& monom) {
+    if (monom.get_coeff() == 0.0)
+        return *this;
     List<Monom> res;
     auto it = _polynom.begin();
     bool isInserted = false;
@@ -210,6 +239,8 @@ Polynom& Polynom::operator+=(const Monom& monom) {
     return *this;
 }
 Polynom& Polynom::operator-=(const Monom& monom) {
+    if (monom.get_coeff() == 0.0)
+        return *this;
     List<Monom> res;
     auto it = _polynom.begin();
     bool isInserted = false;
@@ -236,13 +267,19 @@ Polynom& Polynom::operator-=(const Monom& monom) {
     }
 
     if (!isInserted) {
-        res.push_back(monom);
+        res.push_back(-monom);
     }
 
     _polynom = res;
     return *this;
 }
 Polynom& Polynom::operator*=(const Monom& monom) {
+    if (monom.get_coeff() == 0.0) {
+        _polynom.clear();
+        Monom zero;
+        _polynom.push_back(zero);
+        return *this;
+    }
     auto it = _polynom.begin();
     while (it != nullptr) {
         (*it) *= monom;
@@ -321,7 +358,7 @@ bool Polynom::operator>(const Polynom& second) const noexcept {
     return true;
 }
 bool Polynom::operator<(const Polynom& second) const noexcept {
-    return !(*this > second) && (*this != second);
+    return second > *this;
 }
 
 Polynom& Polynom::operator=(const Polynom& second) {

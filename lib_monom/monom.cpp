@@ -147,8 +147,7 @@ bool Monom::operator>(const Monom& second) const noexcept {
     return false;
 }
 bool Monom::operator<(const Monom& second) const noexcept {
-    if (*this == second) return false;
-    return !(*this > second);
+    return second > *this;
 }
 
 double Monom::calculate(double x, double y, double z) const noexcept {

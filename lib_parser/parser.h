@@ -16,7 +16,7 @@ namespace Parser {
     std::string read_number(const std::string& str, size_t& ind);
     int read_power(const std::string& str, size_t& ind);
 
-    std::string read_monom(std::string str, int& ind);
+    std::string read_monom(std::string str, int ind);
 }
 
 #endif  // LIB_PARSER_PARSER_H_

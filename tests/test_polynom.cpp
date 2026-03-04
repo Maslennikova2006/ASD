@@ -91,6 +91,30 @@ TEST(TestPolynomLib, check_multiplication_with_assignment) {
     std::string expected = "8.640000x^6y^5+4.800000x^4y^2+26.280000x^3y^3z^2+14.600000xz^2";
     EXPECT_EQ(p1.toString(), expected);
 }
+TEST(TestPolynomLib, check_addition_polynoms_by_scalar) {
+    Polynom p1("3.1x^2y+7.3x^2z^2");
+    Polynom pol = p1 + 8.76;
+    std::string expected = "3.100000x^2y+7.300000x^2z^2+8.760000";
+    EXPECT_EQ(pol.toString(), expected);
+}
+TEST(TestPolynomLib, check_addition_with_assignment_polynoms_by_scalar) {
+    Polynom p1("3.1x^2y+7.3x^2z^2-70.6");
+    p1 += 67.6;
+    std::string expected = "3.100000x^2y+7.300000x^2z^2-3.000000";
+    EXPECT_EQ(p1.toString(), expected);
+}
+TEST(TestPolynomLib, check_subtraction_polynoms_by_scalar) {
+    Polynom p1("3.1x^2y+7.3x^2z^2");
+    Polynom pol = p1 - 8.76;
+    std::string expected = "3.100000x^2y+7.300000x^2z^2-8.760000";
+    EXPECT_EQ(pol.toString(), expected);
+}
+TEST(TestPolynomLib, check_subtraction_with_assignment_polynoms_by_scalar) {
+    Polynom p1("3.1x^2y+7.3x^2z^2+70.6");
+    p1 -= 67.6;
+    std::string expected = "3.100000x^2y+7.300000x^2z^2+3.000000";
+    EXPECT_EQ(p1.toString(), expected);
+}
 TEST(TestPolynomLib, check_multiplication_polynoms_by_scalar) {
     Polynom p1("3.1x^2y+7.3x^2z^2");
     Polynom pol = p1 * 8.76;
@@ -102,6 +126,12 @@ TEST(TestPolynomLib, check_multiplication_polynoms_by_scalar2) {
     Polynom pol = 8.76 * p1;
     std::string expected = "27.156000x^2y+63.948000x^2z^2";
     EXPECT_EQ(pol.toString(), expected);
+}
+TEST(TestPolynomLib, check_multiplication_polynoms_by_scalar3) {
+    Polynom p1("3.1x^2y+7.3x^2z^2");
+    Polynom pol = 0.0 * p1;
+    Monom zero;
+    EXPECT_EQ(pol.get_monoms().head()->value, zero);
 }
 TEST(TestPolynomLib, check_multiplication_by_scalar_with_assignment) {
     Polynom p1("3.1x^2y+7.3x^2z^2");
@@ -186,6 +216,12 @@ TEST(TestPolynomLib, check_multiplication_with_a_monom2) {
     Polynom pol = m * p1;
     std::string expected = "15.246000x^3y+36.729000x^3z^2-22.308000xz";
     EXPECT_EQ(pol.toString(), expected);
+}
+TEST(TestPolynomLib, check_multiplication_with_a_monom3) {
+    Polynom p1("4.62x^2y+11.13x^2z^2-6.76z");
+    Monom zero;
+    Polynom pol = zero * p1;
+    EXPECT_EQ(pol.get_monoms().head()->value, zero);
 }
 TEST(TestPolynomLib, check_multiplication_with_assignment_with_a_monom) {
     Polynom p1("4.62x^2y^2+11.13x^2z^2-6.76z");

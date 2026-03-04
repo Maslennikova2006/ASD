@@ -27,9 +27,6 @@ std::string Parser::read_number(const std::string& str, size_t& ind) {
         ind++;
     }
 
-    if (!is_digit(str[ind]))
-        throw std::invalid_argument("Expected digit after sign!");
-
     while (ind < str.length()) {
         if (is_digit(str[ind])) {
             number += str[ind];
@@ -71,14 +68,17 @@ Monom Parser::parse_monom(const std::string& str) {
 
     if (ind >= str.length())
         throw std::invalid_argument("Unexpected end of monom!");
-    if (str[ind] == '+' || str[ind] == '/')
+    if (str[ind] == '+' || str[ind] == '/' || str[ind] == '*')
         throw std::invalid_argument(std::string("Unexpected symbol '") + str[ind] + "' at beginning!");
 
     if (str[ind] == '-' || is_digit(str[ind])) {
+        bool isMinus = (str[ind] == '-');
         std::string num = read_number(str, ind);
+
         if (num == "-")
-            throw std::invalid_argument("Expected number after '-'!");
-        result.set_coeff(std::stod(num));
+            result.set_coeff(isMinus ? -1.0 : 1.0);
+        else
+            result.set_coeff(std::stod(num));
     }
     else if (is_variable(str[ind])) {
         result.set_coeff(1.0);
@@ -111,7 +111,7 @@ Monom Parser::parse_monom(const std::string& str) {
     }
     return result;
 }
-std::string Parser::read_monom(std::string str, int& ind) {
+std::string Parser::read_monom(std::string str, int ind) {
     std::string monom = "";
 
     for (int i = ind; i < str.length(); i++) {
