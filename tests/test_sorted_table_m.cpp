@@ -45,3 +45,16 @@ TEST(TestSortedTableMLib, check_found) {
     EXPECT_EQ(*table.found(52), "Нижний Новгород");
     EXPECT_EQ(table.found(25), nullptr);
 }
+TEST(TestSortedTableMLib, check_the_sorting) {
+    SortedTableM<int, std::string> table;
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
+    TVector<int> expected_keys({ 16, 18, 52, 55, 78, 97 });
+    for (int i = 0; i < 6; i++) {
+        EXPECT_EQ(expected_keys[i], table.get_rows()[i].first);
+    }
+}

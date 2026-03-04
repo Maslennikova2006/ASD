@@ -106,11 +106,11 @@ int main() {
 #include "../lib_skip_list/skip_list.h"
 int main() {
     setlocale(LC_ALL, "rus");
-    SkipList<int, std::string> list(5);
-    list.insert(2, "МАША");
-    list.insert(8, "Olya");
-    list.insert(4, "Vika");
-    list.insert(7, "Olesya");
+    SkipList<int, std::string> list(8);
+    list.insert(2, "22");
+    list.insert(8, "88");
+    list.insert(4, "44");
+    list.insert(7, "77");
     list.print();
     return 0;
 }
@@ -124,14 +124,16 @@ int main() {
 int main() {
     setlocale(LC_ALL, "rus");
     UnsortedTableM<int, std::string> table;
-    table.insert(2, "МАША");
-    table.insert(8, "Olya");
-    table.insert(4, "Vika");
-    table.insert(7, "Olesya");
-    table.print();
-    table.erase(8);
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
     std::cout << table;
-    const std::string* found = table.found(7);
+    table.erase(97);
+    std::cout << table;
+    const std::string* found = table.found(52);
     std::cout << *found;
     return 0;
 }
@@ -145,15 +147,16 @@ int main() {
 int main() {
     setlocale(LC_ALL, "rus");
     UnsortedTableL<int, std::string> table;
-    table.insert(22, "Маша");
-    table.insert(10, "Olya");
-    table.insert(5, "Vika");
-    table.insert(28, "Olesya");
-    table.insert(24, "Margo");
-    table.print();
-    table.erase(22);
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
     std::cout << table;
-    const std::string* found = table.found(28);
+    table.erase(97);
+    std::cout << table;
+    const std::string* found = table.found(52);
     std::cout << *found;
     return 0;
 }
@@ -167,15 +170,16 @@ int main() {
 int main() {
     setlocale(LC_ALL, "rus");
     SortedTableM<int, std::string> table;
-    table.insert(22, "Маша");
-    table.insert(10, "Olya");
-    table.insert(5, "Vika");
-    table.insert(28, "Olesya");
-    table.insert(24, "Margo");
-    table.print();
-    table.erase(22);
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
     std::cout << table;
-    const std::string* found = table.found(28);
+    table.erase(97);
+    std::cout << table;
+    const std::string* found = table.found(52);
     std::cout << *found;
     return 0;
 }

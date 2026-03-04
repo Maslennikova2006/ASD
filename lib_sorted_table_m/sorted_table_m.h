@@ -14,6 +14,8 @@ public:
 
     ~SortedTableM();
 
+    TVector<Pair<TKey, TValue>> get_rows() const noexcept;
+
     void insert(const TKey&, const TValue&) override;  // +
     void erase(const TKey&) override;  // +
     const TValue* found(const TKey&) const noexcept override;  // +
@@ -29,6 +31,11 @@ SortedTableM<TKey, TValue>::SortedTableM() : _rows() {}
 
 template <class TKey, class TValue>
 SortedTableM<TKey, TValue>::~SortedTableM() {}
+
+template <class TKey, class TValue>
+TVector<Pair<TKey, TValue>> SortedTableM<TKey, TValue>::get_rows() const noexcept {
+    return _rows;
+}
 
 template <class TKey, class TValue>
 void SortedTableM<TKey, TValue>::insert(const TKey& key, const TValue& value) {
@@ -70,8 +77,8 @@ void SortedTableM<TKey, TValue>::print(std::ostream& os) const noexcept {
 
     for (int i = 0; i < _rows.size(); i++) {
         std::cout << "|";
-        print_data(std::to_string(_rows[i].first), KEY_WIDTH);
-        print_data(_rows[i].second, VALUE_WIDTH);
+        print_key(_rows[i].first, KEY_WIDTH);
+        print_value(_rows[i].second, VALUE_WIDTH);
         std::cout << std::endl;
     }
 
@@ -80,8 +87,6 @@ void SortedTableM<TKey, TValue>::print(std::ostream& os) const noexcept {
 
 template <class TKey, class TValue>
 int SortedTableM<TKey, TValue>::binary_search(const Pair<TKey, TValue>& pair) const noexcept {
-    if (_rows.is_empty())
-        return -1;
     int left = 0;
     int right = _rows.size() - 1;
     int middle = (left + right) / 2;

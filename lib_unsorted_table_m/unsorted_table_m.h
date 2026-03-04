@@ -17,7 +17,7 @@ public:
     void insert(const TKey&, const TValue&) override;  // +
     void erase(const TKey&) override;  // +
     const TValue* found(const TKey&) const noexcept override;  // +
-    bool is_empty() const noexcept override;
+    bool is_empty() const noexcept override;  // +
     void print(std::ostream& os = std::cout) const noexcept override;
 };
 
@@ -67,8 +67,8 @@ void UnsortedTableM<TKey, TValue>::print(std::ostream& os) const noexcept {
 
     for (int i = 0; i < _rows.size(); i++) {
         std::cout << "|";
-        print_data(std::to_string(_rows[i].first), KEY_WIDTH);
-        print_data(_rows[i].second, VALUE_WIDTH);
+        print_key(_rows[i].first, KEY_WIDTH);
+        print_value(_rows[i].second, VALUE_WIDTH);
         std::cout << std::endl;
     }
 

@@ -43,7 +43,6 @@ void UnsortedTableL<TKey, TValue>::insert(const TKey& key, const TValue& value) 
 template <class TKey, class TValue>
 void UnsortedTableL<TKey, TValue>::erase(const TKey& key) {
     Pair<TKey, TValue> pair(key, TValue());
-    bool isFound = false;
     Node<Pair<TKey, TValue>>* cur = _rows.head();
     while (cur != nullptr) {
         if (cur->value == pair) {
@@ -81,8 +80,8 @@ void UnsortedTableL<TKey, TValue>::print(std::ostream& os) const noexcept {
     Node<Pair<TKey, TValue>>* cur = _rows.head();
     while (cur != nullptr) {
         std::cout << "|";
-        print_data(std::to_string(cur->value.first), KEY_WIDTH);
-        print_data(cur->value.second, VALUE_WIDTH);
+        print_key(cur->value.first, KEY_WIDTH);
+        print_value(cur->value.second, VALUE_WIDTH);
         std::cout << std::endl;
         cur = cur->next;
     }

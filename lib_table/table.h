@@ -5,6 +5,8 @@
 
 #include "../lib_itable/itable.h"
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #define KEY_WIDTH 10
 #define VALUE_WIDTH 40
@@ -30,7 +32,8 @@ public:
 protected:
     void print_title() const noexcept;
     void print_line() const noexcept;
-    void print_data(std::string str, int width) const noexcept;
+    void print_key(TKey key, int width) const noexcept;
+    void print_value(TValue val, int width) const noexcept;
 };
 
 template <class TKey, class TValue>
@@ -57,7 +60,21 @@ void Table<TKey, TValue>::print_line() const noexcept {
     std::cout << "+\n";
 }
 template <class TKey, class TValue>
-void Table<TKey, TValue>::print_data(std::string str, int width) const noexcept {
+void Table<TKey, TValue>::print_key(TKey key, int width) const noexcept {
+    std::ostringstream out;
+    out << key;
+    std::string str = out.str();
+    std::cout << " " << str;
+    for (int i = 0; i < width - str.length() - 1; i++) {
+        std::cout << " ";
+    }
+    std::cout << "|";
+}
+template <class TKey, class TValue>
+void Table<TKey, TValue>::print_value(TValue val, int width) const noexcept {
+    std::ostringstream out;
+    out << val;
+    std::string str = out.str();
     std::cout << " " << str;
     for (int i = 0; i < width - str.length() - 1; i++) {
         std::cout << " ";

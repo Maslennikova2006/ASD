@@ -30,7 +30,7 @@ struct Pair {
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Pair<TFirst, TSecond>& pair) {
-        os << pair.first << " : " << pair.second << '\n';
+        os << pair.first << ":" << pair.second;
         return os;
     }
 };

@@ -183,17 +183,6 @@ void List<T>::insert(Node<T>* node, const T& val) {
         _tail = new_node;
     _count++;
 }
-//template <class T>
-//void List<T>::insert(Iterator it, const T& val) {
-//    if (it == nullptr || is_empty())
-//        throw std::invalid_argument("You can't insert it by following the pointer!\n");
-//    Node<T>* new_node = new Node<T>(val);
-//    new_node->next = (*it)->next;
-//    (*it)->next = new_node;
-//    if (it == _tail)
-//        _tail = new_node;
-//    _count++;
-//}
 template <class T>
 void List<T>::insert(size_t pos, const T& val) {
     if (pos == 0) {
