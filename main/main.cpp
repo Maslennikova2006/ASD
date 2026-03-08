@@ -3,10 +3,10 @@
 //#define EASY_EXAMPLE
 //#define CIRCLE
 //#define SPHERE
-//#define SKIP_LIST
+#define SKIP_LIST
 //#define UNSORTED_TABLE_M
 //#define UNSORTED_TABLE_L
-#define SORTED_TABLE_M
+//#define SORTED_TABLE_M
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -106,7 +106,7 @@ int main() {
 #include "../lib_skip_list/skip_list.h"
 int main() {
     setlocale(LC_ALL, "rus");
-    SkipList<int, std::string> list(8);
+    SkipList<int, std::string> list;
     list.insert(2, "22");
     list.insert(8, "88");
     list.insert(4, "44");
