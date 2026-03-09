@@ -3,10 +3,11 @@
 //#define EASY_EXAMPLE
 //#define CIRCLE
 //#define SPHERE
-#define SKIP_LIST
+//#define SKIP_LIST
 //#define UNSORTED_TABLE_M
 //#define UNSORTED_TABLE_L
 //#define SORTED_TABLE_M
+#define TREE
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -184,3 +185,21 @@ int main() {
     return 0;
 }
 #endif  // SORTED_TABLE_M
+
+#ifdef TREE
+#include <clocale>
+#include <string>
+#include "../lib_tree/tree.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    Tree<int, std::string> tree;
+    tree.insert(52, "Нижний Новгород");
+    tree.insert(97, "Москва");
+    tree.insert(16, "Казань");
+    tree.insert(78, "Санкт-Петербург");
+    tree.insert(55, "Омск");
+    tree.insert(18, "Ижевск");
+    tree.print_clr();
+    return 0;
+}
+#endif  // TREE

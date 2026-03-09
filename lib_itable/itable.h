@@ -19,6 +19,12 @@ struct Pair {
         second = s;
     }
 
+    Pair& operator=(const Pair& other) noexcept {
+        first = other.first;
+        second = other.second;
+        return *this;
+    }
+
     bool operator==(const Pair<TFirst, TSecond>& other) const {
         return first == other.first;
     }

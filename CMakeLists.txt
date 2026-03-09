@@ -34,6 +34,7 @@ add_subdirectory(lib_skip_list)
 add_subdirectory(lib_table)
 add_subdirectory(lib_unsorted_table_l)
 add_subdirectory(lib_sorted_table_m)
+add_subdirectory(lib_tree)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 
