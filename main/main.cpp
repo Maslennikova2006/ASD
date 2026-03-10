@@ -3,11 +3,11 @@
 //#define EASY_EXAMPLE
 //#define CIRCLE
 //#define SPHERE
-//#define SKIP_LIST
+#define SKIP_LIST
 //#define UNSORTED_TABLE_M
 //#define UNSORTED_TABLE_L
 //#define SORTED_TABLE_M
-#define TREE
+//#define TREE
 
 #ifdef EASY_EXAMPLE
 #include <iostream>

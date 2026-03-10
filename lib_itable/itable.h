@@ -19,7 +19,10 @@ struct Pair {
     bool operator<(const Pair<TFirst, TSecond>& other) const;
     bool operator>(const Pair<TFirst, TSecond>& other) const;
 
-    friend std::ostream& operator<<(std::ostream& os, const Pair<TFirst, TSecond>& pair);
+    friend std::ostream& operator<<(std::ostream& os, const Pair<TFirst, TSecond>& pair) {
+        os << pair.first << ":" << pair.second;
+        return os;
+    }
 };
 template <class TFirst, class TSecond>
 Pair<TFirst, TSecond>::Pair() {
@@ -52,11 +55,11 @@ template <class TFirst, class TSecond>
 bool Pair<TFirst, TSecond>::operator>(const Pair<TFirst, TSecond>& other) const {
     return first > other.first;
 }
-template <class TFirst, class TSecond>
-std::ostream& operator<<(std::ostream& os, const Pair<TFirst, TSecond>& pair) {
-    os << pair.first << ":" << pair.second;
-    return os;
-}
+//template <class TFirst, class TSecond>
+//std::ostream& operator<<(std::ostream& os, const Pair<TFirst, TSecond>& pair) {
+//    os << pair.first << ":" << pair.second;
+//    return os;
+//}
 
 template <class TKey, class TValue>
 class ITable {
