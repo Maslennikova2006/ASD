@@ -20,8 +20,10 @@ struct Pair {
     }
 
     Pair& operator=(const Pair& other) noexcept {
-        first = other.first;
-        second = other.second;
+        if (this != &other) {
+            first = other.first;
+            second = other.second;
+        }
         return *this;
     }
 
