@@ -20,6 +20,9 @@ public:
     const TValue* found(const TKey&) const noexcept override;  // +
     bool is_empty() const noexcept override;  // +
     void print(std::ostream& os = std::cout) const noexcept override;
+
+private:
+    Node<Pair<TKey, TValue>>* find_node(const Pair<TKey, TValue>& pair) const noexcept;
 };
 
 template <class TKey, class TValue>
@@ -31,25 +34,19 @@ UnsortedTableL<TKey, TValue>::~UnsortedTableL() {}
 template <class TKey, class TValue>
 void UnsortedTableL<TKey, TValue>::insert(const TKey& key, const TValue& value) {
     Pair<TKey, TValue> pair(key, value);
-    Node<Pair<TKey, TValue>>* cur = _rows.head();
-    while (cur != nullptr) {
-        if (cur->value == pair)
-            throw std::invalid_argument("The key is already in use in the table!");
-        cur = cur->next;
-    }
+    auto node = find_node(pair);
+    if (node)
+        throw std::invalid_argument("The key is already in use in the table!");
     _rows.push_back(pair);
 }
 
 template <class TKey, class TValue>
 void UnsortedTableL<TKey, TValue>::erase(const TKey& key) {
     Pair<TKey, TValue> pair(key, TValue());
-    Node<Pair<TKey, TValue>>* cur = _rows.head();
-    while (cur != nullptr) {
-        if (cur->value == pair) {
-            _rows.erase(cur);
-            return;
-        }
-        cur = cur->next;
+    auto node = find_node(pair);
+    if (node) {
+        _rows.erase(node);
+        return;
     }
     throw std::invalid_argument("The required key was not found!");
 }
@@ -57,12 +54,9 @@ void UnsortedTableL<TKey, TValue>::erase(const TKey& key) {
 template <class TKey, class TValue>
 const TValue* UnsortedTableL<TKey, TValue>::found(const TKey& key) const noexcept {
     Pair<TKey, TValue> pair(key, TValue());
-    Node<Pair<TKey, TValue>>* cur = _rows.head();
-    while (cur != nullptr) {
-        if (cur->value == pair)
-            return &cur->value.second;
-        cur = cur->next;
-    }
+    auto node = find_node(pair);
+    if (node)
+        return &node->value.second;
     return nullptr;
 }
 
@@ -86,5 +80,16 @@ void UnsortedTableL<TKey, TValue>::print(std::ostream& os) const noexcept {
         cur = cur->next;
     }
     print_line();
+}
+
+template <class TKey, class TValue>
+Node<Pair<TKey, TValue>>* UnsortedTableL<TKey, TValue>::find_node(const Pair<TKey, TValue>& pair) const noexcept {
+    auto cur = _rows.head();
+    while (cur != nullptr) {
+        if (cur->value == pair)
+            return cur;
+        cur = cur->next;
+    }
+    return nullptr;
 }
 #endif  // LIB_UNSORTEDTABLEL_UNSORTEDTABLEL_H_
