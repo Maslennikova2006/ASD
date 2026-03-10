@@ -71,7 +71,7 @@ void UnsortedTableL<TKey, TValue>::print(std::ostream& os) const noexcept {
     print_title();
     print_line();
 
-    Node<Pair<TKey, TValue>>* cur = _rows.head();
+    auto cur = _rows.head();
     while (cur != nullptr) {
         std::cout << "|";
         print_key(cur->value.first, KEY_WIDTH);
