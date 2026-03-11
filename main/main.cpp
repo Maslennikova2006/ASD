@@ -7,7 +7,8 @@
 //#define UNSORTED_TABLE_M
 //#define UNSORTED_TABLE_L
 //#define SORTED_TABLE_M
-#define TREE
+//#define TREE
+#define UNSORTED_TABLE_BT
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -212,3 +213,25 @@ int main() {
     return 0;
 }
 #endif  // TREE
+
+#ifdef UNSORTED_TABLE_BT
+#include <clocale>
+#include <string>
+#include "../lib_unsorted_table_bt/unsorted_table_bt.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    UnsortedTableBT<int, std::string> table;
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
+    std::cout << table;
+    table.erase(97);
+    std::cout << table;
+    const std::string* found = table.found(52);
+    std::cout << *found;
+    return 0;
+}
+#endif  // UNSORTED_TABLE_BT

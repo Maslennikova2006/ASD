@@ -30,6 +30,8 @@ public:
     Tree();  // +
     ~Tree();
 
+    TreeNode<TKey, TValue>* root() const noexcept;
+
     void insert(const TKey& key, const TValue& val) noexcept;  // +
     TValue* find(const TKey& key) const noexcept;  // +
     void erase(const TKey& key);  // +
@@ -60,6 +62,11 @@ Tree<TKey, TValue>::Tree() {
 template <class TKey, class TValue>
 Tree<TKey, TValue>::~Tree() {
     clear_rec(_root);
+}
+
+template <class TKey, class TValue>
+TreeNode<TKey, TValue>* Tree<TKey, TValue>::root() const noexcept {
+    return _root;
 }
 
 template <class TKey, class TValue>
