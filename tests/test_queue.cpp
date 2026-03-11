@@ -6,7 +6,7 @@
 
 TEST(TestQueueLib, can_create_default_queue) {
     Queue<int> queue;
-    EXPECT_EQ(15, queue.get_size());
+    EXPECT_EQ(CAPACITY, queue.get_size());
     EXPECT_EQ(0, queue.get_count());
     EXPECT_EQ(0, queue.get_head());
 }

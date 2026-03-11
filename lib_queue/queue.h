@@ -8,7 +8,7 @@
 #ifndef LIB_QUEUE_QUEUE_H_
 #define LIB_QUEUE_QUEUE_H_
 
-#define CAPACITY 15
+#define CAPACITY 30
 
 template <class T>
 class Queue {

@@ -3,11 +3,11 @@
 //#define EASY_EXAMPLE
 //#define CIRCLE
 //#define SPHERE
-#define SKIP_LIST
+//#define SKIP_LIST
 //#define UNSORTED_TABLE_M
 //#define UNSORTED_TABLE_L
 //#define SORTED_TABLE_M
-//#define TREE
+#define TREE
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -200,6 +200,15 @@ int main() {
     tree.insert(55, "ќмск");
     tree.insert(18, "»жевск");
     tree.print_clr();
+    const std::string* found = tree.find(78);
+    if (!found)
+        std::cout << "\nnullptr";
+    else
+        std::cout << "\n" << * found;
+    std::cout << std::endl;
+    tree.erase(78);
+    tree.print_w();
+
     return 0;
 }
 #endif  // TREE
