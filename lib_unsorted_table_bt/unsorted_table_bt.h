@@ -44,8 +44,7 @@ void UnsortedTableBT<TKey, TValue>::erase(const TKey& key) {
 }
 template <class TKey, class TValue>
 const TValue* UnsortedTableBT<TKey, TValue>::found(const TKey& key) const noexcept {
-    auto node = _rows.find(key);
-    return node;
+    return _rows.find(key);
 }
 template <class TKey, class TValue>
 bool UnsortedTableBT<TKey, TValue>::is_empty() const noexcept {

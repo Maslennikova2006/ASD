@@ -6,6 +6,8 @@
 #include <sstream>
 #include "../lib_algorithms/algorithms.h"
 #include "../lib_stack/stack.h"
+#include "../lib_tvector/tvector.h"
+#include "../lib_bstree/bstree.h"
 
 void show_position(Position pos) {
     switch (pos)
@@ -195,4 +197,23 @@ void read_expression(const std::string& expression) {
     }
     if (!brackets.is_empty())
         throw std::invalid_argument("Missing closed bracket!");
+}
+
+
+void sort_vector() {
+    BSTree<int, int> tree;
+    TVector<Pair<int, int>> vec(15);
+    for (int i = 0; i < 15; i++) {
+        Pair<int, int> pair(i, i * 10);
+        vec[i] = pair;
+    }
+    shuffle(vec);
+    std::cout << "vec: ";
+    vec.print();
+    std::cout << std::endl;
+    for (int i = 0; i < 15; i++) {
+        tree.insert(vec[i].first, vec[i].second);
+    }
+    std::cout << "sort vec: ";
+    tree.print_lcr();
 }

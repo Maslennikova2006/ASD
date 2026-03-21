@@ -98,4 +98,6 @@ bool check_brackets(const std::string& str);
 
 void read_expression(const std::string& expression);
 
+void sort_vector();
+
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_

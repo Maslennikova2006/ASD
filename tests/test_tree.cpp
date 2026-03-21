@@ -32,6 +32,46 @@ TEST(TestTreeLib, check_find) {
     auto expected2 = tree.find(88);
     EXPECT_EQ(*expected2, "88");
 }
+TEST(TestTreeLib, check_the_erase_of_the_sheet) {
+    Tree<int, std::string> tree;
+    tree.insert(52, "52");
+    tree.insert(22, "22");
+    tree.insert(23, "23");
+    tree.insert(88, "88");
+    tree.insert(55, "55");
+    tree.insert(67, "67");
+    tree.insert(75, "75");
+    tree.erase(75);
+    auto expected = tree.find(75);
+    EXPECT_EQ(expected, nullptr);
+}
+TEST(TestTreeLib, check_the_erase_from_the_middle) {
+    Tree<int, std::string> tree;
+    tree.insert(52, "52");
+    tree.insert(22, "22");
+    tree.insert(23, "23");
+    tree.insert(88, "88");
+    tree.insert(55, "55");
+    tree.insert(67, "67");
+    tree.erase(22);
+    auto expected2 = tree.find(22);
+    EXPECT_EQ(expected2, nullptr);
+    EXPECT_EQ(tree.root()->left->data.first, 67);
+}
+TEST(TestTreeLib, check_root_erase) {  // добавить еще
+    Tree<int, std::string> tree;
+    tree.insert(52, "52");
+    tree.insert(22, "22");
+    tree.insert(23, "23");
+    tree.insert(88, "88");
+    tree.insert(55, "55");
+    tree.insert(67, "67");
+    tree.insert(75, "75");
+    tree.erase(52);
+    auto expected3 = tree.find(52);
+    EXPECT_EQ(expected3, nullptr);
+    EXPECT_EQ(tree.root()->data.first, 75);
+}
 TEST(TestTreeLib, check_the_exception_when_erase_from_an_empty_tree) {
     Tree<int, std::string> tree;
     ASSERT_ANY_THROW(tree.erase(6));

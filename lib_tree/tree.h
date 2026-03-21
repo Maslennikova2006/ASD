@@ -5,6 +5,8 @@
 
 #include "../lib_itable/itable.h"
 #include "../lib_queue/queue.h"
+#include "../lib_tvector/tvector.h"
+#include <iomanip>
 
 template <class TKey, class TValue>
 struct TreeNode {
@@ -43,6 +45,7 @@ public:
     void print_lcr() const noexcept;
     void print_lrc() const noexcept;
     void print_clr() const noexcept;
+    void print() const noexcept;
 
 private:
     void print_lcr_rec(TreeNode<TKey, TValue>* node) const noexcept;
@@ -139,10 +142,10 @@ void Tree<TKey, TValue>::erase(const TKey& key) {
     if (!deleted_node)
         throw std::invalid_argument("The required key was not found!");
 
-    TreeNode<TKey, TValue>* parent = find_parent(cur);
     if (deleted_node != cur)
         deleted_node->data = cur->data;
 
+    TreeNode<TKey, TValue>* parent = find_parent(cur);
     if (parent == nullptr) {
         delete _root;
         _root = nullptr;
@@ -195,6 +198,65 @@ template <class TKey, class TValue>
 void Tree<TKey, TValue>::print_clr() const noexcept {
     print_clr_rec(_root);
 }
+template <class TKey, class TValue>
+void Tree<TKey, TValue>::print() const noexcept {
+    if (is_empty()) return;
+    Queue<TreeNode<TKey, TValue>*> q;
+    TreeNode<TKey, TValue>* cur = nullptr;
+    q.push(_root);
+
+    TVector<TVector<TreeNode<TKey, TValue>*>> levels;
+
+    while (!q.is_empty()) {
+        int size = q.get_count();
+        TVector<TreeNode<TKey, TValue>*> cur_lvl;
+        for (int i = 0; i < size; i++) {
+            cur = q.head();
+            cur_lvl.push_back(cur);
+            q.pop();
+            if (cur->left)
+                q.push(cur->left);
+            if (cur->right)
+                q.push(cur->right);
+        }
+        levels.push_back(cur_lvl);
+    }
+
+    int height = levels.size();
+
+    for (int i = 0; i < height; i++) {
+        int whitespace = pow(2, height - i - 1) - 1;
+        int between = pow(2, height - i) - 1;
+        std::cout << std::string(whitespace, ' ');
+        for (int j = 0; j < levels[i].size(); j++) {
+            std::cout << levels[i][j]->data.second;
+            if (j < levels[i].size() - 1) {
+                std::cout << std::string(between, ' ');
+            }
+        }
+        std::cout << std::endl;
+
+        if (i < height - 1) {
+            std::cout << std::string(whitespace, ' ');
+            for (int j = 0; j < levels[i].size(); j++) {
+                if (levels[i][j]->left)
+                    std::cout << "/";
+                else
+                    std::cout << " ";
+                std::cout << std::string(between, ' ');
+                if (levels[i][j]->right)
+                    std::cout << "\\";
+                else
+                    std::cout << " ";
+
+                if (j < levels[i].size() - 1) {
+                    std::cout << std::string(between, ' ');
+                }
+            }
+            std::cout << std::endl;
+        }
+    }
+}
 
 template <class TKey, class TValue>
 void Tree<TKey, TValue>::print_clr_rec(TreeNode<TKey, TValue>* node) const noexcept {
@@ -225,7 +287,7 @@ void Tree<TKey, TValue>::print_lrc_rec(TreeNode<TKey, TValue>* node) const noexc
 
 template <class TKey, class TValue>
 TreeNode<TKey, TValue>* Tree<TKey, TValue>::find_parent(TreeNode<TKey, TValue>* node) const noexcept {
-    if (_root == nullptr || node == _root) 
+    if (is_empty() || node == _root) 
         return nullptr;
     TreeNode<TKey, TValue>* cur = nullptr;
     Queue<TreeNode<TKey, TValue>*> q;
@@ -238,10 +300,11 @@ TreeNode<TKey, TValue>* Tree<TKey, TValue>::find_parent(TreeNode<TKey, TValue>* 
         if (cur->left == node || cur->right == node)
             return cur;
 
-        if (cur->left) q.push(cur->left);
-        if (cur->right) q.push(cur->right);
+        if (cur->left) 
+            q.push(cur->left);
+        if (cur->right) 
+            q.push(cur->right);
     }
-
     return nullptr;
 }
 

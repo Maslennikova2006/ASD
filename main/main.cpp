@@ -8,7 +8,9 @@
 //#define UNSORTED_TABLE_L
 //#define SORTED_TABLE_M
 //#define TREE
-#define UNSORTED_TABLE_BT
+//#define UNSORTED_TABLE_BT
+#define BSTREE
+//#define SORTED_TABLE_BST
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -197,9 +199,16 @@ int main() {
     tree.insert(52, "Нижний Новгород");
     tree.insert(97, "Москва");
     tree.insert(16, "Казань");
-    tree.insert(78, "Санкт-Петербург");
+    tree.insert(23, "Сочи");
     tree.insert(55, "Омск");
     tree.insert(18, "Ижевск");
+    tree.insert(76, "Ярославль");
+    tree.insert(64, "Саратов");
+    tree.insert(34, "Волгоград");
+    tree.insert(12, "Йошкар-Ола");
+    tree.insert(33, "Муром");
+    tree.insert(7, "Нальчик");
+    tree.insert(37, "Иваново");
     tree.print_clr();
     const std::string* found = tree.find(78);
     if (!found)
@@ -207,9 +216,10 @@ int main() {
     else
         std::cout << "\n" << * found;
     std::cout << std::endl;
-    tree.erase(78);
+    //tree.erase(78);
     tree.print_w();
-
+    std::cout << std::endl;
+    tree.print();
     return 0;
 }
 #endif  // TREE
@@ -235,3 +245,55 @@ int main() {
     return 0;
 }
 #endif  // UNSORTED_TABLE_BT
+
+#ifdef BSTREE
+#include <clocale>
+#include <string>
+#include "../lib_algorithms/algorithms.h"
+#include "../lib_bstree/bstree.h"
+#include "../lib_tvector/tvector.h"
+#include "../lib_itable/itable.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    //sort_vector();
+    BSTree<int, int> tree;
+    tree.insert(9, 9);
+    tree.insert(5, 5);
+    tree.insert(18, 18);
+    tree.insert(3, 3);
+    tree.insert(8, 8);
+    tree.insert(16, 16);
+    tree.insert(20, 20);
+    tree.insert(7, 7);
+    tree.print_lcr();
+    std::cout << std::endl;
+    tree.erase(5);
+    tree.print_lcr();
+    return 0;
+}
+#endif  // BSTREE
+
+#ifdef SORTED_TABLE_BST
+#include <clocale>
+#include <string>
+#include "../lib_algorithms/algorithms.h"
+#include "../lib_sorted_table_bst/sorted_table_bst.h"
+#include "../lib_tvector/tvector.h"
+#include "../lib_itable/itable.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    SortedTableBST<int, std::string> table;
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
+    std::cout << table;
+    table.erase(97);
+    std::cout << table;
+    const std::string* found = table.found(16);
+    std::cout << *found;
+    return 0;
+}
+#endif  // SORTED_TABLE_BST

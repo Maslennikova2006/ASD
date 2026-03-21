@@ -36,7 +36,7 @@ void UnsortedTableL<TKey, TValue>::insert(const TKey& key, const TValue& value) 
     Pair<TKey, TValue> pair(key, value);
     auto node = find_node(pair);
     if (node)
-        throw std::invalid_argument("The key is already in use in the table!");
+        throw std::invalid_argument("The key is already use in the table!");
     _rows.push_back(pair);
 }
 
