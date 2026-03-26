@@ -9,8 +9,9 @@
 //#define SORTED_TABLE_M
 //#define TREE
 //#define UNSORTED_TABLE_BT
-#define BSTREE
+//#define BSTREE
 //#define SORTED_TABLE_BST
+#define HEAP
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -297,3 +298,42 @@ int main() {
     return 0;
 }
 #endif  // SORTED_TABLE_BST
+
+#ifdef HEAP
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_heap/heap.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    Heap<Pair<int, int>> heap;
+    int count = 15;
+    TVector<Pair<int, int>> vec(count);
+    for (int i = 0; i < count; i++) {
+        Pair<int, int> pair(i, i * 10);
+        vec[i] = pair;
+    }
+    shuffle(vec);
+    std::cout << "vec: ";
+    vec.print();
+
+    for (int i = 0; i < count; i++) {
+        heap.insert(vec[i]);
+        std::cout << "heap: ";
+        heap.print();
+    }
+
+    /*std::cout << "heap: ";
+    heap.print();*/
+
+    std::cout << "vec sort: ";
+    for (int i = 0; i < count; i++) {
+        std::cout << heap.pop() << " ";
+        /*std::cout << "heap: ";
+        heap.print();*/
+    }
+
+    return 0;
+}
+
+#endif  // HEAP
