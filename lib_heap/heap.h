@@ -15,8 +15,10 @@ public:
     Heap();
     ~Heap();
 
-    void insert(const T& elem);
-    T pop();
+    const T& root() const;
+
+    void insert(const T& elem) noexcept;
+    void pop();
 
     bool is_empty() const noexcept;
 
@@ -33,22 +35,26 @@ template <class T>
 Heap<T>::~Heap() {}
 
 template <class T>
-void Heap<T>::insert(const T& elem) {
+const T& Heap<T>::root() const {
+    if (is_empty())
+        throw std::runtime_error("The heap is empty!");
+    return _data[0];
+}
+
+template <class T>
+void Heap<T>::insert(const T& elem) noexcept {
     _data.push_back(elem);
     ascent();
 }
 
 template <class T>
-T Heap<T>::pop() {
+void Heap<T>::pop() {
     if (is_empty())
         throw std::runtime_error("Cannot be deleted from an empty heap!");
 
-    auto root = _data[0];
     _data[0] = _data[_data.size() - 1];
     _data.pop_back();
-    if (!is_empty())
-        dive();
-    return root;
+    dive();
 }
 
 template <class T>
@@ -74,10 +80,12 @@ void Heap<T>::ascent() noexcept {
 
 template <class T>
 void Heap<T>::dive() noexcept {
+    if (is_empty()) return;
+
     int i = 0;
     int size = _data.size();
 
-    while (true) {
+    while (1) {
         int left = 2 * i + 1;
         int right = 2 * i + 2;
         int small = i;

@@ -7,6 +7,7 @@
 #include "../lib_queue/queue.h"
 #include "../lib_tvector/tvector.h"
 #include <iomanip>
+#include <sstream>
 
 template <class TKey, class TValue>
 struct TreeNode {
@@ -55,6 +56,10 @@ private:
     TreeNode<TKey, TValue>* find_parent(TreeNode<TKey, TValue>* node) const noexcept;
 
     void clear_rec(TreeNode<TKey, TValue>* node);
+
+    int get_height(TreeNode<TKey, TValue>* node) const noexcept;
+    void Tree<TKey, TValue>::fill_matrix(TreeNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
+        int level, int left, int right) const noexcept;
 };
 
 template <class TKey, class TValue>
@@ -201,60 +206,25 @@ void Tree<TKey, TValue>::print_clr() const noexcept {
 template <class TKey, class TValue>
 void Tree<TKey, TValue>::print() const noexcept {
     if (is_empty()) return;
-    Queue<TreeNode<TKey, TValue>*> q;
-    TreeNode<TKey, TValue>* cur = nullptr;
-    q.push(_root);
 
-    TVector<TVector<TreeNode<TKey, TValue>*>> levels;
+    int height = get_height(_root);
+    int width = pow(2, height) - 1;
 
-    while (!q.is_empty()) {
-        int size = q.get_count();
-        TVector<TreeNode<TKey, TValue>*> cur_lvl;
-        for (int i = 0; i < size; i++) {
-            cur = q.head();
-            cur_lvl.push_back(cur);
-            q.pop();
-            if (cur->left)
-                q.push(cur->left);
-            if (cur->right)
-                q.push(cur->right);
+    TVector<TVector<std::string>> matrix;
+    for (int i = 0; i < height * 2 - 1; i++) {
+        TVector<std::string> row;
+        for (int j = 0; j < width; j++) {
+            row.push_back("   ");
         }
-        levels.push_back(cur_lvl);
+        matrix.push_back(row);
     }
 
-    int height = levels.size();
-
-    for (int i = 0; i < height; i++) {
-        int whitespace = pow(2, height - i - 1) - 1;
-        int between = pow(2, height - i) - 1;
-        std::cout << std::string(whitespace, ' ');
-        for (int j = 0; j < levels[i].size(); j++) {
-            std::cout << levels[i][j]->data.second;
-            if (j < levels[i].size() - 1) {
-                std::cout << std::string(between, ' ');
-            }
+    fill_matrix(_root, matrix, 0, 0, width - 1);
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[i].size(); ++j) {
+            std::cout << matrix[i][j];
         }
         std::cout << std::endl;
-
-        if (i < height - 1) {
-            std::cout << std::string(whitespace, ' ');
-            for (int j = 0; j < levels[i].size(); j++) {
-                if (levels[i][j]->left)
-                    std::cout << "/";
-                else
-                    std::cout << " ";
-                std::cout << std::string(between, ' ');
-                if (levels[i][j]->right)
-                    std::cout << "\\";
-                else
-                    std::cout << " ";
-
-                if (j < levels[i].size() - 1) {
-                    std::cout << std::string(between, ' ');
-                }
-            }
-            std::cout << std::endl;
-        }
     }
 }
 
@@ -315,5 +285,46 @@ void Tree<TKey, TValue>::clear_rec(TreeNode<TKey, TValue>* node) {
     clear_rec(node->left);
     clear_rec(node->right);
     delete node;
+}
+
+template <class TKey, class TValue>
+int Tree<TKey, TValue>::get_height(TreeNode<TKey, TValue>* node) const noexcept {
+    if (node == nullptr) return 0;
+    return 1 + std::max(get_height(node->left), get_height(node->right));
+}
+
+template <class TKey, class TValue>
+void Tree<TKey, TValue>::fill_matrix(TreeNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
+    int level, int left, int right) const noexcept {
+
+    if (node == nullptr || level >= matrix.size()) return;
+
+    int mid = (left + right) / 2;
+    int row = level * 2;
+
+    matrix[row][mid] = " " + std::to_string(node->data.first);
+
+    if (node->left) {
+        int left_mid = (left + mid - 1) / 2;
+        for (int i = left_mid + 1; i < mid; ++i) {
+            matrix[row][i] = "___";
+        }
+        if (row + 1 < matrix.size()) {
+            matrix[row + 1][left_mid] = " / ";
+        }
+    }
+
+    if (node->right) {
+        int right_mid = (mid + 1 + right) / 2;
+        for (int i = mid + 1; i < right_mid; ++i) {
+            matrix[row][i] = "___";
+        }
+        if (row + 1 < matrix.size()) {
+            matrix[row + 1][right_mid] = " \\ ";
+        }
+    }
+
+    fill_matrix(node->left, matrix, level + 1, left, mid - 1);
+    fill_matrix(node->right, matrix, level + 1, mid + 1, right);
 }
 #endif  // LIB_TREE_TREE_H_

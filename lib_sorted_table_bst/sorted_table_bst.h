@@ -14,7 +14,7 @@ public:
 
     ~SortedTableBST();
 
-    const BSTree<TKey, TValue>& get_rows() const noexcept;
+    const BSTree<TKey, TValue>& rows() const noexcept;
 
     void insert(const TKey&, const TValue&) override;  // +
     void erase(const TKey&) override;  // +
@@ -34,7 +34,7 @@ template <class TKey, class TValue>
 SortedTableBST<TKey, TValue>::~SortedTableBST() {}
 
 template <class TKey, class TValue>
-const BSTree<TKey, TValue>& SortedTableBST<TKey, TValue>::get_rows() const noexcept {
+const BSTree<TKey, TValue>& SortedTableBST<TKey, TValue>::rows() const noexcept {
     return _rows;
 }
 

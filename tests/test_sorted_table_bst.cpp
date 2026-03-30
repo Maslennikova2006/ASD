@@ -53,7 +53,7 @@ TEST(TestSortedTableBSTLib, check_the_sorting) {
     table.insert(78, "Санкт-Петербург");
     table.insert(55, "Омск");
     table.insert(18, "Ижевск");
-    auto root = table.get_rows().root();
+    auto root = table.rows().root();
     EXPECT_EQ(root->data.first, 52);
     EXPECT_EQ(root->left->data.first, 16);
     EXPECT_EQ(root->left->right->data.first, 18);

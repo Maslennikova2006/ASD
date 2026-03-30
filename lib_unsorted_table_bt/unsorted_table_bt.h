@@ -9,6 +9,7 @@
 template <class TKey, class TValue>
 class UnsortedTableBT : public Table<TKey, TValue> {
     Tree<TKey, TValue> _rows;
+
 public:
     UnsortedTableBT();  // +
 

@@ -11,7 +11,8 @@
 //#define UNSORTED_TABLE_BT
 //#define BSTREE
 //#define SORTED_TABLE_BST
-#define HEAP
+//#define HEAP
+#define QUEUEPRIORITY
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -210,6 +211,31 @@ int main() {
     tree.insert(33, "Муром");
     tree.insert(7, "Нальчик");
     tree.insert(37, "Иваново");
+
+    tree.insert(64, "Саратов");
+    tree.insert(34, "Волгоград");
+    tree.insert(12, "Йошкар-Ола");
+    tree.insert(33, "Муром");
+    tree.insert(7, "Нальчик");
+    tree.insert(37, "Иваново");
+    tree.insert(64, "Саратов");
+    tree.insert(34, "Волгоград");
+    tree.insert(12, "Йошкар-Ола");
+    tree.insert(33, "Муром");
+    tree.insert(7, "Нальчик");
+    tree.insert(37, "Иваново");
+    tree.insert(64, "Саратов");
+    tree.insert(34, "Волгоград");
+    tree.insert(12, "Йошкар-Ола");
+    tree.insert(33, "Муром");
+    tree.insert(7, "Нальчик");
+    tree.insert(37, "Иваново");
+    tree.insert(64, "Саратов");
+    tree.insert(34, "Волгоград");
+    tree.insert(12, "Йошкар-Ола");
+    tree.insert(33, "Муром");
+    tree.insert(7, "Нальчик");
+    tree.insert(37, "Иваново");
     tree.print_clr();
     const std::string* found = tree.find(78);
     if (!found)
@@ -319,21 +345,67 @@ int main() {
 
     for (int i = 0; i < count; i++) {
         heap.insert(vec[i]);
-        std::cout << "heap: ";
-        heap.print();
     }
-
-    /*std::cout << "heap: ";
-    heap.print();*/
 
     std::cout << "vec sort: ";
     for (int i = 0; i < count; i++) {
-        std::cout << heap.pop() << " ";
-        /*std::cout << "heap: ";
-        heap.print();*/
+        std::cout << heap.root() << " ";
+        heap.pop();
     }
 
     return 0;
 }
 
 #endif  // HEAP
+
+#ifdef QUEUEPRIORITY
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_queue_priority/queue_priority.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    QueuePriority<PairPriority<std::string>> queue;
+    int count = 16;
+    TVector<PairPriority<std::string>> vec;
+    /*for (int i = 0; i < count; i++) {
+        PairPriority<std::string> pair(i, std::to_string((i + 4) * 10), i);
+        vec[i] = pair;
+    }
+    shuffle(vec);*/
+    vec.push_back(PairPriority <std::string>(1, "100", 1));
+    vec.push_back(PairPriority <std::string>(3, "300", 2));
+    vec.push_back(PairPriority <std::string>(4, "4400", 3));
+    vec.push_back(PairPriority <std::string>(1, "1000", 4));
+    vec.push_back(PairPriority <std::string>(1, "50", 5));
+    vec.push_back(PairPriority <std::string>(3, "330", 6));
+    vec.push_back(PairPriority <std::string>(4, "400", 7));
+    vec.push_back(PairPriority <std::string>(7, "70", 8));
+    vec.push_back(PairPriority <std::string>(5, "330", 9));
+    vec.push_back(PairPriority <std::string>(9, "400", 10));
+    vec.push_back(PairPriority <std::string>(10, "800", 11));
+    vec.push_back(PairPriority <std::string>(4, "404", 12));
+    vec.push_back(PairPriority <std::string>(7, "707", 13));
+    vec.push_back(PairPriority <std::string>(3, "3303", 14));
+    vec.push_back(PairPriority <std::string>(9, "900", 15));
+    vec.push_back(PairPriority <std::string>(10, "900", 16));
+    int k;
+    std::cout << "Введите число k (k до " << count << "): ";
+    std::cin >> k;
+    std::cout << "vec: ";
+    vec.print();
+
+    for (int i = 0; i < count; i++) {
+        queue.insert(vec[i]);
+    }
+
+    std::cout << "Самые важные k элементов: ";
+    for (int i = 0; i < k; i++) {
+        std::cout << queue.top() << " ";
+        queue.pop();
+    }
+
+    return 0;
+}
+
+#endif  // QUEUEPRIORITY
