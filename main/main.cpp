@@ -12,7 +12,13 @@
 //#define BSTREE
 //#define SORTED_TABLE_BST
 //#define HEAP
-#define QUEUEPRIORITY
+//#define QUEUEPRIORITY
+#define HASHTABLEC
+//#define HASHTABLEOA
+//#define ADJACENCY_LIST_GRAPH
+//#define EDGES_LIST_GRAPH
+//#define ALG_DEX
+//#define SORTED_TABLE_AVL
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -221,21 +227,6 @@ int main() {
     tree.insert(64, "Саратов");
     tree.insert(34, "Волгоград");
     tree.insert(12, "Йошкар-Ола");
-    tree.insert(33, "Муром");
-    tree.insert(7, "Нальчик");
-    tree.insert(37, "Иваново");
-    tree.insert(64, "Саратов");
-    tree.insert(34, "Волгоград");
-    tree.insert(12, "Йошкар-Ола");
-    tree.insert(33, "Муром");
-    tree.insert(7, "Нальчик");
-    tree.insert(37, "Иваново");
-    tree.insert(64, "Саратов");
-    tree.insert(34, "Волгоград");
-    tree.insert(12, "Йошкар-Ола");
-    tree.insert(33, "Муром");
-    tree.insert(7, "Нальчик");
-    tree.insert(37, "Иваново");
     tree.print_clr();
     const std::string* found = tree.find(78);
     if (!found)
@@ -409,3 +400,180 @@ int main() {
 }
 
 #endif  // QUEUEPRIORITY
+
+#ifdef HASHTABLEC
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_hash_table_c/hashtablec.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    HashTableC<std::string> table(20);
+
+    TVector<Pair<std::string, std::string>> s1;
+    s1.push_back(Pair<std::string, std::string>("one", "1"));
+    s1.push_back(Pair<std::string, std::string>("two", "2"));  //
+    s1.push_back(Pair<std::string, std::string>("five", "5"));  //
+    s1.push_back(Pair<std::string, std::string>("four", "4"));
+    s1.push_back(Pair<std::string, std::string>("seven", "7"));
+
+    TVector<Pair<std::string, std::string>> s2;
+    s2.push_back(Pair<std::string, std::string>("zero", "0"));
+    s2.push_back(Pair<std::string, std::string>("two", "2"));  //
+    s2.push_back(Pair<std::string, std::string>("five", "5"));  //
+    s2.push_back(Pair<std::string, std::string>("six", "6"));
+
+    for (int i = 0; i < s1.size(); i++) {
+        try {
+            table.insert(s1[i].first, s1[i].second);
+        }
+        catch (...) {
+
+        }
+    }
+    for (int i = 0; i < s2.size(); i++) {
+        try {
+            table.insert(s2[i].first, s2[i].second);
+        }
+        catch (...) {
+
+        }
+    }
+
+    std::cout << table;
+
+    return 0;
+}
+#endif  // HASHTABLEC
+
+#ifdef HASHTABLEOA
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_hash_table_oa/hashtableoa.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    HashTableOA<std::string> table(20);
+
+    TVector<Pair<std::string, std::string>> s1;
+    s1.push_back(Pair<std::string, std::string>("one", "1"));
+    s1.push_back(Pair<std::string, std::string>("two", "2"));
+    s1.push_back(Pair<std::string, std::string>("five", "5"));
+    s1.push_back(Pair<std::string, std::string>("four", "4"));
+    s1.push_back(Pair<std::string, std::string>("seven", "7"));
+    s1.push_back(Pair<std::string, std::string>("zero", "0"));
+    s1.push_back(Pair<std::string, std::string>("six", "6"));
+
+    for (int i = 0; i < s1.size(); i++) {
+        table.insert(s1[i].first, s1[i].second);
+    }
+
+    std::cout << table;
+
+    return 0;
+}
+#endif  // HASHTABLEOA
+
+#ifdef ADJACENCY_LIST_GRAPH
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_adjacency_list_graph/adjacency_list_graph.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    AdjacencyListGraph<int> graph(true, true);
+
+    graph.add_edge(1, 7, 2);
+    graph.add_edge(2, 7);
+    graph.add_edge(1, 4, 5);
+    graph.add_edge(4, 5, 2);
+    graph.add_edge(2, 3, 3);
+    graph.add_edge(4, 3, 5);
+
+    graph.print();
+
+    graph.delete_vertex(4);
+
+    graph.print();
+
+    return 0;
+}
+#endif  // ADJACENCY_LIST_GRAPH
+
+#ifdef EDGES_LIST_GRAPH
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_edges_list_graph/edges_list_graph.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    EdgesListGraph<int> graph({ {{1, 7}, 1}, {{2, 7}, 5}, {{1, 4}, 2}}, true, true);
+
+    graph.add_edge(4, 5, 2);
+    graph.add_edge(2, 3, 3);
+    graph.add_edge(4, 3, 5);
+
+    graph.print();
+
+    graph.delete_vertex(4);
+
+    graph.print();
+
+    graph.delete_edge(2, 3);
+
+    graph.print();
+
+    return 0;
+}
+
+#endif  // EDGES_LIST_GRAPH
+
+#ifdef ALG_DEX
+#include <clocale>
+#include <string>
+#include "../lib_tvector/tvector.h"
+#include "../lib_adjacency_list_graph/adjacency_list_graph.h"
+#include "../lib_algorithms/algorithms.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    AdjacencyListGraph<int> graph({ {{0, 1}, 6}, {{1, 4}, 30} }, false, true);
+
+    graph.add_edge(1, 2, 22);
+    graph.add_edge(2, 4, 5);
+    graph.add_edge(0, 3, 1);
+    graph.add_edge(3, 2, 4);
+
+    graph.print();
+
+    TVector<int> res = algorithm_Dijkstra_Q(graph, 1, 4);
+    //TVector<int> res = algorithm_Dijkstra(graph, 1, 4);
+    res.print();
+
+    return 0;
+}
+#endif  // ALG_DEX
+
+#ifdef SORTED_TABLE_AVL
+#include <clocale>
+#include <string>
+#include "../lib_algorithms/algorithms.h"
+#include "../lib_sorted_table_avl/sorted_table_avl.h"
+#include "../lib_tvector/tvector.h"
+#include "../lib_itable/itable.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    SortedTableAVL<int, std::string> table;
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
+    std::cout << table;
+    table.erase(97);
+    std::cout << table;
+    const std::string* found = table.found(16);
+    std::cout << *found;
+    return 0;
+}
+#endif  // SORTED_TABLE_AVL
