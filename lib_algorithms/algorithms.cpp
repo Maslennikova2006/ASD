@@ -4,10 +4,13 @@
 #include <clocale>
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include "../lib_algorithms/algorithms.h"
 #include "../lib_stack/stack.h"
 #include "../lib_tvector/tvector.h"
 #include "../lib_bstree/bstree.h"
+#include "../lib_queue/queue.h"
+#include "../lib_queue_priority/queue_priority.h"
 
 void show_position(Position pos) {
     switch (pos)
