@@ -15,9 +15,9 @@ struct Pair {
 
     Pair& operator=(const Pair& other) noexcept;
 
-    bool operator==(const Pair<TFirst, TSecond>& other) const;
-    bool operator<(const Pair<TFirst, TSecond>& other) const;
-    bool operator>(const Pair<TFirst, TSecond>& other) const;
+    bool operator==(const Pair<TFirst, TSecond>& other) const noexcept;
+    bool operator<(const Pair<TFirst, TSecond>& other) const noexcept;
+    bool operator>(const Pair<TFirst, TSecond>& other) const noexcept;
 
     friend std::ostream& operator<<(std::ostream& os, const Pair<TFirst, TSecond>& pair) {
         os << pair.first << ":" << pair.second;
@@ -44,15 +44,15 @@ Pair<TFirst, TSecond>& Pair<TFirst, TSecond>::operator=(const Pair& other) noexc
     return *this;
 }
 template <class TFirst, class TSecond>
-bool Pair<TFirst, TSecond>::operator==(const Pair<TFirst, TSecond>& other) const {
+bool Pair<TFirst, TSecond>::operator==(const Pair<TFirst, TSecond>& other) const noexcept {
     return first == other.first;
 }
 template <class TFirst, class TSecond>
-bool Pair<TFirst, TSecond>::operator<(const Pair<TFirst, TSecond>& other) const {
+bool Pair<TFirst, TSecond>::operator<(const Pair<TFirst, TSecond>& other) const noexcept {
     return first < other.first;
 }
 template <class TFirst, class TSecond>
-bool Pair<TFirst, TSecond>::operator>(const Pair<TFirst, TSecond>& other) const {
+bool Pair<TFirst, TSecond>::operator>(const Pair<TFirst, TSecond>& other) const noexcept {
     return first > other.first;
 }
 //template <class TFirst, class TSecond>
