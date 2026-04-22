@@ -22,7 +22,7 @@ public:
     void print(std::ostream& os = std::cout) const noexcept override;
 
 private:
-    Node<Pair<TKey, TValue>>* find_node(const Pair<TKey, TValue>& pair) const noexcept;
+    Node<Pair<TKey, TValue>>* find_prev_node(const Pair<TKey, TValue>& pair) const noexcept;
 };
 
 template <class TKey, class TValue>
@@ -34,8 +34,8 @@ UnsortedTableL<TKey, TValue>::~UnsortedTableL() {}
 template <class TKey, class TValue>
 void UnsortedTableL<TKey, TValue>::insert(const TKey& key, const TValue& value) {
     Pair<TKey, TValue> pair(key, value);
-    auto node = find_node(pair);
-    if (node)
+    auto node = find_prev_node(pair);
+    if ((node && node->next) || (_rows.head() && _rows.head()->value.first == key))
         throw std::invalid_argument("The key is already use in the table!");
     _rows.push_back(pair);
 }
@@ -43,8 +43,12 @@ void UnsortedTableL<TKey, TValue>::insert(const TKey& key, const TValue& value) 
 template <class TKey, class TValue>
 void UnsortedTableL<TKey, TValue>::erase(const TKey& key) {
     Pair<TKey, TValue> pair(key, TValue());
-    auto node = find_node(pair);
-    if (node) {
+    if (_rows.head()->value.first == key) {
+        _rows.pop_front();
+        return;
+    }
+    auto node = find_prev_node(pair);
+    if (node && node->next) {
         _rows.erase(node);
         return;
     }
@@ -53,10 +57,14 @@ void UnsortedTableL<TKey, TValue>::erase(const TKey& key) {
 
 template <class TKey, class TValue>
 const TValue* UnsortedTableL<TKey, TValue>::found(const TKey& key) const noexcept {
+    if (_rows.is_empty())
+        return nullptr;
+    if (_rows.head()->value.first == key)
+        return &_rows.head()->value.second;
     Pair<TKey, TValue> pair(key, TValue());
-    auto node = find_node(pair);
-    if (node)
-        return &node->value.second;
+    auto node = find_prev_node(pair);
+    if (node && node->next)
+        return &node->next->value.second;
     return nullptr;
 }
 
@@ -83,10 +91,10 @@ void UnsortedTableL<TKey, TValue>::print(std::ostream& os) const noexcept {
 }
 
 template <class TKey, class TValue>
-Node<Pair<TKey, TValue>>* UnsortedTableL<TKey, TValue>::find_node(const Pair<TKey, TValue>& pair) const noexcept {
+Node<Pair<TKey, TValue>>* UnsortedTableL<TKey, TValue>::find_prev_node(const Pair<TKey, TValue>& pair) const noexcept {
     auto cur = _rows.head();
-    while (cur != nullptr) {
-        if (cur->value == pair)
+    while (cur != nullptr && cur->next != nullptr) {
+        if (cur->next->value == pair)
             return cur;
         cur = cur->next;
     }
