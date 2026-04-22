@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 #include "../lib_node/node.h"
+#include "../lib_itable/itable.h"
 
 template <class T>
 class List {
@@ -60,6 +61,16 @@ public:
                 throw std::invalid_argument("You can't dereference an empty pointer!");
             return _current->value;
         }
+        T* operator->() {
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't dereference an empty pointer!");
+            return &(_current->value);
+        }
+        const T* operator->() const {
+            if (_current == nullptr)
+                throw std::invalid_argument("You can't dereference an empty pointer!");
+            return &(_current->value);
+        }
         bool operator!=(const Iterator& other) const noexcept {
             return _current != other._current;
         }
@@ -94,10 +105,23 @@ public:
     void insert(Node<T>* node, const T& val);  // +
     void insert(size_t pos, const T& val);  // +
 
+    const Node<T>* find(const T& val) const noexcept;
+
     void pop_back();  // +
     void pop_front();  // +
     void erase(Node<T>* node);  // +
     void erase(size_t pos);  // +
+
+    List<T>& operator=(const List<T>& other);
+
+    friend std::ostream& operator<<(std::ostream& os, const List<T>& list) {
+        Node<T>* cur = list._head;
+        while (cur) {
+            os << cur->value << " ";
+            cur = cur->next;
+        }
+        return os;
+    }
 };
 
 template <class T>
@@ -207,6 +231,19 @@ void List<T>::insert(size_t pos, const T& val) {
 }
 
 template <class T>
+const Node<T>* List<T>::find(const T& val) const noexcept {
+    if (is_empty())
+        return nullptr;
+    Node<T>* cur = _head;
+    while (cur) {
+        if (cur->value == val)
+            return cur;
+        cur = cur->next;
+    }
+    return nullptr;
+}
+
+template <class T>
 void List<T>::pop_back() {
     if (is_empty())
         throw std::invalid_argument("You can't delete it from an empty list!\n");
@@ -246,19 +283,26 @@ template <class T>
 void List<T>::erase(Node<T>* node) {
     if (node == nullptr || is_empty())
         throw std::invalid_argument("You can't erase an item based on a pointer!\n");
-    if (node == _head) {
+    /*if (node == _head) {
         pop_front();
         return;
-    }
-    Node<T>* cur = _head;
+    }*/
+    /*Node<T>* cur = _head;
     while (cur->next != node) {
         cur = cur->next;
     }
     cur->next = node->next;
     if (node == _tail) {
         _tail = cur;
+    }*/
+    if (node->next == nullptr) {
+        throw std::invalid_argument("Cannot erase: no next node to delete!\n");
     }
-    delete node;
+    auto tmp = node->next;
+    node->next = node->next->next;
+    if (tmp == _tail)
+        _tail = node;
+    delete tmp;
     _count--;
 }
 template <class T>
@@ -274,7 +318,7 @@ void List<T>::erase(size_t pos) {
     Node<T>* cur = _head;
     size_t cur_pos = 0;
     while (cur != nullptr) {
-        if (cur_pos == pos)
+        if (cur_pos == pos - 1)
             break;
         cur_pos++;
         cur = cur->next;
@@ -282,5 +326,21 @@ void List<T>::erase(size_t pos) {
     if (cur == nullptr)
         throw std::invalid_argument("Wrong position!\n");
     erase(cur);
+}
+
+template <class T>
+List<T>& List<T>::operator=(const List<T>& other) {
+    if (this != &other) {
+        while (!is_empty()) {
+            pop_front();
+        }
+
+        Node<T>* cur = other._head;
+        while (cur != nullptr) {
+            push_back(cur->value);
+            cur = cur->next;
+        }
+    }
+    return *this;
 }
 #endif  // LIB_LIST_LIST_H_
