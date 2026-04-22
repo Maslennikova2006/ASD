@@ -25,7 +25,6 @@ public:
     bool is_empty() const noexcept;  // +
 
     void print_lcr() const noexcept;
-    void print() const noexcept;
 
 private:
     void print_lcr_rec(TreeNode<TKey, TValue>* node) const noexcept;
