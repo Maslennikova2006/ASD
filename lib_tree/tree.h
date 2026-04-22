@@ -131,12 +131,15 @@ void Tree<TKey, TValue>::erase(const TKey& key) {
     Queue<TreeNode<TKey, TValue>*> q;
     TreeNode<TKey, TValue>* cur = nullptr;
     TreeNode<TKey, TValue>* deleted_node = nullptr;
+    bool isFound = false;
 
     q.push(_root);
     while (!q.is_empty()) {
         cur = q.head();
-        if (cur->data.first == key)
+        if (!isFound && cur->data.first == key) {
             deleted_node = cur;
+            isFound = true;
+        }
         q.pop();
         if (cur->left)
             q.push(cur->left);
@@ -203,30 +206,6 @@ template <class TKey, class TValue>
 void Tree<TKey, TValue>::print_clr() const noexcept {
     print_clr_rec(_root);
 }
-template <class TKey, class TValue>
-void Tree<TKey, TValue>::print() const noexcept {
-    if (is_empty()) return;
-
-    int height = get_height(_root);
-    int width = pow(2, height) - 1;
-
-    TVector<TVector<std::string>> matrix;
-    for (int i = 0; i < height * 2 - 1; i++) {
-        TVector<std::string> row;
-        for (int j = 0; j < width; j++) {
-            row.push_back("   ");
-        }
-        matrix.push_back(row);
-    }
-
-    fill_matrix(_root, matrix, 0, 0, width - 1);
-    for (int i = 0; i < matrix.size(); ++i) {
-        for (int j = 0; j < matrix[i].size(); ++j) {
-            std::cout << matrix[i][j];
-        }
-        std::cout << std::endl;
-    }
-}
 
 template <class TKey, class TValue>
 void Tree<TKey, TValue>::print_clr_rec(TreeNode<TKey, TValue>* node) const noexcept {
@@ -292,7 +271,6 @@ int Tree<TKey, TValue>::get_height(TreeNode<TKey, TValue>* node) const noexcept 
     if (node == nullptr) return 0;
     return 1 + std::max(get_height(node->left), get_height(node->right));
 }
-
 template <class TKey, class TValue>
 void Tree<TKey, TValue>::fill_matrix(TreeNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
     int level, int left, int right) const noexcept {
@@ -326,5 +304,29 @@ void Tree<TKey, TValue>::fill_matrix(TreeNode<TKey, TValue>* node, TVector<TVect
 
     fill_matrix(node->left, matrix, level + 1, left, mid - 1);
     fill_matrix(node->right, matrix, level + 1, mid + 1, right);
+}
+template <class TKey, class TValue>
+void Tree<TKey, TValue>::print() const noexcept {
+    if (is_empty()) return;
+
+    int height = get_height(_root);
+    int width = pow(2, height) - 1;
+
+    TVector<TVector<std::string>> matrix;
+    for (int i = 0; i < height * 2 - 1; i++) {
+        TVector<std::string> row;
+        for (int j = 0; j < width; j++) {
+            row.push_back("   ");
+        }
+        matrix.push_back(row);
+    }
+
+    fill_matrix(_root, matrix, 0, 0, width - 1);
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[i].size(); ++j) {
+            std::cout << matrix[i][j];
+        }
+        std::cout << std::endl;
+    }
 }
 #endif  // LIB_TREE_TREE_H_
