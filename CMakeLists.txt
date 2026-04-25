@@ -46,6 +46,7 @@ add_subdirectory(lib_hash_table_oa)
 add_subdirectory(lib_adjacency_list_graph)
 add_subdirectory(lib_edges_list_graph)
 add_subdirectory(lib_sorted_table_avl)
+add_subdirectory(lib_rbtree)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 

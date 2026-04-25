@@ -13,11 +13,11 @@
 //#define SORTED_TABLE_BST
 //#define HEAP
 //#define QUEUEPRIORITY
-#define HASHTABLEC
+//#define HASHTABLEC
 //#define HASHTABLEOA
 //#define ADJACENCY_LIST_GRAPH
 //#define EDGES_LIST_GRAPH
-//#define ALG_DEX
+#define ALG_DEX
 //#define SORTED_TABLE_AVL
 
 #ifdef EASY_EXAMPLE
