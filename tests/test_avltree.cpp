@@ -118,6 +118,14 @@ TEST(TestAVLTreeLib, check_erase) {
     EXPECT_EQ(tree.root()->right->data.first, 83);
     EXPECT_EQ(tree.root()->left->left->data.first, 10);
 }
+TEST(TestAVLTreeLib, check_erase_root) {
+    AVLTree<int, std::string> tree;
+    tree.insert(52, "52");
+    tree.erase(52);
+    auto expected = tree.find(52);
+    EXPECT_EQ(expected, nullptr);
+    EXPECT_TRUE(tree.is_empty());
+}
 TEST(TestAVLTreeLib, check_the_exception_when_erase_from_an_empty_tree) {
     AVLTree<int, std::string> tree;
     ASSERT_ANY_THROW(tree.erase(6));

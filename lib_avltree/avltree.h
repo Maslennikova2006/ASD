@@ -5,6 +5,7 @@
 
 #include "../lib_itable/itable.h"
 #include "../lib_tree/tree.h"
+#include "../lib_bstree/bstree.h"
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -30,28 +31,15 @@ AVLNode<TKey, TValue>::AVLNode(const TKey& key, const TValue& val, AVLNode<TKey,
     data(key, val), left(l), right(r), parent(p), height(h) {}
 
 template <class TKey, class TValue>
-class AVLTree {
-    AVLNode<TKey, TValue>* _root;
-
+class AVLTree : public BSTree<TKey, TValue, AVLNode<TKey, TValue>> {
 public:
     AVLTree();
     ~AVLTree();
 
-    AVLNode<TKey, TValue>* root() const noexcept;
-
     void insert(const TKey& key, const TValue& val);  // +
-    TValue* find(const TKey& key) const noexcept;  // +
     void erase(const TKey& key);  // +
-    void clear() noexcept;  // +
-
-    bool is_empty() const noexcept;  // +
-
-    void print_lcr() const noexcept;
-    void print() const noexcept;
 
 private:
-    void print_lcr_rec(AVLNode<TKey, TValue>* node) const noexcept;
-
     void left_rotate(AVLNode<TKey, TValue>* node);
     void right_rotate(AVLNode<TKey, TValue>* node);
 
@@ -60,20 +48,9 @@ private:
     void RL(AVLNode<TKey, TValue>* node);
     void LR(AVLNode<TKey, TValue>* node);
 
-    AVLNode<TKey, TValue>* BSTree_insert(const TKey& key, const TValue& val);
-    AVLNode<TKey, TValue>* BSTree_erase(const TKey& key);
-    AVLNode<TKey, TValue>* erase_node(AVLNode<TKey, TValue>*& node) noexcept;
-    AVLNode<TKey, TValue>* find_max_left(AVLNode<TKey, TValue>* node) const noexcept;
-
     int recalculate_balance(const AVLNode<TKey, TValue>* node) const noexcept;
     void recalculate_height(AVLNode<TKey, TValue>* node) noexcept;
     void restore_balance(AVLNode<TKey, TValue>* node) noexcept;
-
-    void clear_rec(AVLNode<TKey, TValue>* node) noexcept;
-
-    int get_height(AVLNode<TKey, TValue>* node) const noexcept;
-    void fill_matrix(AVLNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
-        int level, int left, int right) const noexcept;
 };
 
 template <class TKey, class TValue>
@@ -82,38 +59,41 @@ AVLTree<TKey, TValue>::AVLTree() {
 }
 template <class TKey, class TValue>
 AVLTree<TKey, TValue>::~AVLTree() {
-    clear_rec(_root);
-}
-
-template <class TKey, class TValue>
-AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::root() const noexcept {
-    return _root;
+    clear();
 }
 
 template <class TKey, class TValue>
 void AVLTree<TKey, TValue>::insert(const TKey& key, const TValue& val) {
-    auto node = BSTree_insert(key, val);
+    AVLNode<TKey, TValue>* parent = BSTree<TKey, TValue, AVLNode<TKey, TValue>>::insert(key, val);
+    if (!parent) 
+        return;
 
-    if (node == _root) return;
+    AVLNode<TKey, TValue>* node = nullptr;
+    if (parent->left && parent->left->data.first == key)
+        node = parent->left;
+    if (parent->right && parent->right->data.first == key)
+        node = parent->right;
+
+    if (!node) return;
+    node->parent = parent;
 
     auto P = node->parent;
-    auto G = P->parent;
     recalculate_height(P);
+    auto G = P->parent;
     if (!G)
         return;
-
     int balance = recalculate_balance(G);
     if (abs(balance) > 1) {
-        restore_balance(G);  // внутри изменять высоты
+        restore_balance(G);
         return;
     }
-
     auto cur = G;
+    size_t prev_height;
     while (cur) {
-        int prev_height = cur->height;
+        prev_height = cur->height;
         recalculate_height(cur);
-
-        if (abs(recalculate_balance(cur)) > 1) {
+        int balance = recalculate_balance(cur);
+        if (abs(balance) > 1) {
             restore_balance(cur);
             recalculate_height(cur);
         }
@@ -123,27 +103,14 @@ void AVLTree<TKey, TValue>::insert(const TKey& key, const TValue& val) {
     }
 }
 template <class TKey, class TValue>
-TValue* AVLTree<TKey, TValue>::find(const TKey& key) const noexcept {
-    auto cur = _root;
-    while (cur) {
-        if (cur->data.first == key)
-            return &cur->data.second;
-        else if (cur->data.first > key)
-            cur = cur->left;
-        else
-            cur = cur->right;
-    }
-    return nullptr;
-}
-template <class TKey, class TValue>
 void AVLTree<TKey, TValue>::erase(const TKey& key) {
-    auto node = BSTree_erase(key);
-    if (!node)
-        return;
-    auto cur = node;
+    AVLNode<TKey, TValue>* parent = BSTree<TKey, TValue, AVLNode<TKey, TValue>>::erase(key);
+    AVLNode<TKey, TValue>* cur = parent;
+    if (!parent)
+        cur = _root;
     while (cur) {
         auto parent = cur->parent;
-        int old_height = cur->height;
+        int prev_height = cur->height;
         recalculate_height(cur);
         int balance = recalculate_balance(cur);
         if (abs(balance) > 1) {
@@ -151,59 +118,11 @@ void AVLTree<TKey, TValue>::erase(const TKey& key) {
             cur = parent;
         }
         else {
-            if (old_height == cur->height)
+            if (prev_height == cur->height)
                 break;
             cur = parent;
         }
     }
-}
-template <class TKey, class TValue>
-void AVLTree<TKey, TValue>::clear() noexcept {
-    clear_rec(_root);
-    _root = nullptr;
-}
-
-template <class TKey, class TValue>
-bool AVLTree<TKey, TValue>::is_empty() const noexcept {
-    return _root == nullptr;
-}
-
-template <class TKey, class TValue>
-void AVLTree<TKey, TValue>::print_lcr() const noexcept {
-    print_lcr_rec(_root);
-}
-template <class TKey, class TValue>
-void AVLTree<TKey, TValue>::print() const noexcept {
-    if (is_empty()) return;
-
-    int height = get_height(_root);
-    int width = pow(2, height) - 1;
-
-    TVector<TVector<std::string>> matrix;
-    for (int i = 0; i < height * 2 - 1; i++) {
-        TVector<std::string> row;
-        for (int j = 0; j < width; j++) {
-            row.push_back("   ");
-        }
-        matrix.push_back(row);
-    }
-
-    fill_matrix(_root, matrix, 0, 0, width - 1);
-    for (int i = 0; i < matrix.size(); ++i) {
-        for (int j = 0; j < matrix[i].size(); ++j) {
-            std::cout << matrix[i][j];
-        }
-        std::cout << std::endl;
-    }
-}
-
-template <class TKey, class TValue>
-void AVLTree<TKey, TValue>::print_lcr_rec(AVLNode<TKey, TValue>* node) const noexcept {
-    if (node == nullptr) return;
-
-    print_lcr_rec(node->left);
-    std::cout << node->data.second << " ";
-    print_lcr_rec(node->right);
 }
 
 template <class TKey, class TValue>
@@ -214,7 +133,6 @@ void AVLTree<TKey, TValue>::left_rotate(AVLNode<TKey, TValue>* node) {
     *     / \                           \
     *    T   C                           T
     */
-
 
     auto G = node;
     auto P = G->right;
@@ -321,121 +239,6 @@ void AVLTree<TKey, TValue>::LR(AVLNode<TKey, TValue>* node) {
 }
 
 template <class TKey, class TValue>
-AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::BSTree_insert(const TKey& key, const TValue& val) {
-    if (!_root) {
-        _root = new AVLNode<TKey, TValue>(key, val);
-        return _root;
-    }
-    auto cur = _root;
-    while (cur) {
-        if (key < cur->data.first) {
-            if (!cur->left) {
-                cur->left = new AVLNode<TKey, TValue>(key, val, nullptr, nullptr, cur);
-                return cur->left;
-            }
-            cur = cur->left;
-        }
-        else if (key > cur->data.first) {
-            if (!cur->right) {
-                cur->right = new AVLNode<TKey, TValue>(key, val, nullptr, nullptr, cur);
-                return cur->right;
-            }
-            cur = cur->right;
-        }
-        else {
-            throw std::invalid_argument("The key is already in use in the tree!");
-        }
-    }
-    return nullptr;
-}
-template <class TKey, class TValue>
-AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::BSTree_erase(const TKey& key) {
-    if (!_root)
-        throw std::invalid_argument("You can't delete it from an empty tree!");
-
-    auto node_to_delete = _root;
-    while (node_to_delete) {
-        if (key < node_to_delete->data.first) {
-            node_to_delete = node_to_delete->left;
-        }
-        else if (key > node_to_delete->data.first) {
-            node_to_delete = node_to_delete->right;
-        }
-        else {
-            break;
-        }
-    }
-
-    if (!node_to_delete)
-        throw std::invalid_argument("The key was not found!");
-
-    AVLNode<TKey, TValue>* parent_real_deleted = nullptr;
-
-    if (node_to_delete == _root)
-        parent_real_deleted = erase_node(_root);
-
-    else {
-        auto parent = node_to_delete->parent;
-        if (parent->left == node_to_delete)
-            parent_real_deleted = erase_node(parent->left);
-        else
-            parent_real_deleted = erase_node(parent->right);
-    }
-
-    return parent_real_deleted;
-}
-template <class TKey, class TValue>
-AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::erase_node(AVLNode<TKey, TValue>*& node) noexcept {
-    AVLNode<TKey, TValue>* parent_real_deleted = nullptr;
-    if (!node->left && !node->right) {
-        parent_real_deleted = node->parent;
-        delete node;
-        node = nullptr;
-    }
-    else if (!node->left) {
-        parent_real_deleted = node->parent;
-        auto right_child = node->right;
-        right_child->parent = node->parent;
-        delete node;
-        node = right_child;
-    }
-    else if (!node->right) {
-        parent_real_deleted = node->parent;
-        auto left_child = node->left;
-        left_child->parent = node->parent;
-        delete node;
-        node = left_child;
-    }
-    else {
-        auto replacer = find_max_left(node);
-        node->data = replacer->data;
-
-        parent_real_deleted = replacer->parent;
-
-        if (replacer->parent->left == replacer)
-            replacer->parent->left = replacer->left;
-        else
-            replacer->parent->right = replacer->left;
-
-        if (replacer->left)
-            replacer->left->parent = replacer->parent;
-
-        delete replacer;
-    }
-    return parent_real_deleted;
-}
-template <class TKey, class TValue>
-AVLNode<TKey, TValue>* AVLTree<TKey, TValue>::find_max_left(AVLNode<TKey, TValue>* node) const noexcept {
-    if (!node || !node->left)
-        return nullptr;
-    auto cur = node->left;
-    while (cur->right != nullptr) {
-        cur = cur->right;
-    }
-    return cur;
-}
-
-template <class TKey, class TValue>
 int AVLTree<TKey, TValue>::recalculate_balance(const AVLNode<TKey, TValue>* node) const noexcept {
     if (!node || (!node->right && !node->left))
         return 0;
@@ -457,7 +260,7 @@ void AVLTree<TKey, TValue>::recalculate_height(AVLNode<TKey, TValue>* node) noex
     else if (!node->right)
         node->height = 1 + node->left->height;
     else
-        node->height = 1 + std::max(node->left->height, node->right->height);
+        node->height = 1 + std::max<size_t>(node->left->height, node->right->height);
 }
 template <class TKey, class TValue>
 void AVLTree<TKey, TValue>::restore_balance(AVLNode<TKey, TValue>* node) noexcept {
@@ -477,55 +280,5 @@ void AVLTree<TKey, TValue>::restore_balance(AVLNode<TKey, TValue>* node) noexcep
             LR(node);
     }
     recalculate_height(node);
-}
-
-template <class TKey, class TValue>
-void AVLTree<TKey, TValue>::clear_rec(AVLNode<TKey, TValue>* node) noexcept {
-    if (node == nullptr) return;
-
-    clear_rec(node->left);
-    clear_rec(node->right);
-    delete node;
-}
-
-template <class TKey, class TValue>
-int AVLTree<TKey, TValue>::get_height(AVLNode<TKey, TValue>* node) const noexcept {
-    if (node == nullptr) return 0;
-    return 1 + std::max(get_height(node->left), get_height(node->right));
-}
-
-template <class TKey, class TValue>
-void AVLTree<TKey, TValue>::fill_matrix(AVLNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
-    int level, int left, int right) const noexcept {
-
-    if (node == nullptr || level >= matrix.size()) return;
-
-    int mid = (left + right) / 2;
-    int row = level * 2;
-
-    matrix[row][mid] = " " + std::to_string(node->data.first);
-
-    if (node->left) {
-        int left_mid = (left + mid - 1) / 2;
-        for (int i = left_mid + 1; i < mid; ++i) {
-            matrix[row][i] = "___";
-        }
-        if (row + 1 < matrix.size()) {
-            matrix[row + 1][left_mid] = " / ";
-        }
-    }
-
-    if (node->right) {
-        int right_mid = (mid + 1 + right) / 2;
-        for (int i = mid + 1; i < right_mid; ++i) {
-            matrix[row][i] = "___";
-        }
-        if (row + 1 < matrix.size()) {
-            matrix[row + 1][right_mid] = " \\ ";
-        }
-    }
-
-    fill_matrix(node->left, matrix, level + 1, left, mid - 1);
-    fill_matrix(node->right, matrix, level + 1, mid + 1, right);
 }
 #endif  // LIB_AVLTREE_AVLTREE_H_
