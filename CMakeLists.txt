@@ -18,6 +18,7 @@ add_subdirectory(lib_point)
 add_subdirectory(lib_circle)
 add_subdirectory(lib_point3D)
 add_subdirectory(lib_sphere)
+
 add_subdirectory(lib_algorithms)
 add_subdirectory(lib_list)
 add_subdirectory(lib_dlist)
@@ -47,6 +48,13 @@ add_subdirectory(lib_adjacency_list_graph)
 add_subdirectory(lib_edges_list_graph)
 add_subdirectory(lib_sorted_table_avl)
 add_subdirectory(lib_rbtree)
+
+add_subdirectory(lib_tvector)
+add_subdirectory(lib_mathvector)
+add_subdirectory(lib_matrix)
+add_subdirectory(lib_trianglematrix)
+add_subdirectory(lib_algorithms)
+add_subdirectory(lib_dsu)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main
 

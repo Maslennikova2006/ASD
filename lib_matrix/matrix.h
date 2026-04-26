@@ -1,0 +1,316 @@
+// Copyright 2025 Mary Maslennikova
+
+#include <cstdlib>
+#include <stdexcept>
+#include <initializer_list>
+#include <iostream>
+
+#ifndef LIB_MATRIX_MATRIX_H_
+#define LIB_MATRIX_MATRIX_H_
+
+#include "../lib_mathvector/mathvector.h"
+
+template <class T>
+class Matrix;
+template <class T>
+class MathVector;
+
+template <class T> MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix);
+template <class T> std::ostream& operator<<(std::ostream& os, const Matrix<T>& vec);
+template <class T> std::istream& operator>>(std::istream& is, Matrix<T>& vec);
+
+template <class T>
+class Matrix : public MathVector<MathVector<T>> {
+protected:
+    size_t _m;
+    size_t _n;
+
+public:
+    Matrix();  // +
+    Matrix(const size_t m, const size_t n);  // +
+    Matrix(std::initializer_list<std::initializer_list<T>> lists);  // +
+    Matrix(const MathVector<MathVector<T>>& matrix);  // +
+    Matrix(const Matrix<T>& other);  // +
+
+    ~Matrix();
+
+    inline void set_m(const size_t m) noexcept;
+    inline void set_n(const size_t n) noexcept;
+
+    inline const size_t get_m() const noexcept;
+    inline const size_t get_n() const noexcept;
+
+    inline bool is_empty() const noexcept;
+
+    Matrix<T> Trans() const noexcept;
+
+    Matrix<T> operator+(const Matrix<T>& other) const;  // +
+    Matrix<T> operator-(const Matrix<T>& other) const;  // +
+    Matrix<T> operator*(const Matrix<T>& other) const;  // +
+    Matrix<T> operator*(const T scalar) const;  // +
+    MathVector<T> operator*(const MathVector<T>& vector) const;  // +
+
+    Matrix<T>& operator+=(const Matrix<T>& second);  // +
+    Matrix<T>& operator-=(const Matrix<T>& second);  // +
+    Matrix<T>& operator*=(const Matrix<T>& second);  // +
+    Matrix<T>& operator*=(const T scalar); // +
+
+    MathVector<T>& operator[](const size_t index) noexcept;  // +
+    const MathVector<T>& operator[](const size_t index) const noexcept;  // +
+
+    Matrix<T>& operator=(const Matrix<T>& other) noexcept;  // +
+
+    bool operator==(const Matrix<T>& second) const noexcept;  // +
+    bool operator!=(const Matrix<T>& second) const noexcept;  // +
+
+    friend MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix) {
+        if (vec.is_empty() || matrix.is_empty())
+            throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+        if (vec.size() != matrix.get_m())
+            throw std::invalid_argument("The matrix and vector are not compatible in size!");
+            
+        MathVector<T> res(matrix.get_n());
+        Matrix<T> trans_matrix = matrix.Trans();
+        for (size_t i = 0; i < matrix.get_n(); i++) {
+            res[i] = vec * trans_matrix[i];
+        }
+        return res;
+    }
+
+    friend std::ostream& operator<< <T>(std::ostream& os, const Matrix<T>&);
+    friend std::istream& operator>> <T>(std::istream& is, Matrix<T>&);
+};
+
+template <class T>
+Matrix<T>::Matrix() : MathVector<MathVector<T>>() {
+    _m = 0;
+    _n = 0;
+}
+template <class T>
+Matrix<T>::Matrix(const size_t m, const size_t n) : MathVector<MathVector<T>>(m) {
+    _m = m;
+    _n = n;
+    for (int i = 0; i < m; i++) {
+        (*this)[i] = MathVector<T>(n);
+    }
+}
+template <class T>
+Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> lists) : 
+    MathVector<MathVector<T>>(lists.size()) {
+    _m = lists.size();
+    _n = (_m > 0) ? lists.begin()->size() : 0;
+
+    auto it = lists.begin();
+    for (size_t i = 0; i < _m; i++) {
+        (*this)[i] = MathVector<T>(*it);
+        it++;
+    }
+}
+template <class T>
+Matrix<T>::Matrix(const MathVector<MathVector<T>>& matrix) 
+    : MathVector<MathVector<T>>(matrix) {
+    _m = matrix.size();
+    _n = (_m > 0) ? matrix[0].size() : 0;
+}
+template <class T>
+Matrix<T>::Matrix(const Matrix<T>& other) : MathVector<MathVector<T>>(other) {
+    _m = other._m;
+    _n = other._n;
+}
+
+template <class T>
+Matrix<T>::~Matrix() {
+
+}
+
+template <class T>
+inline void Matrix<T>::set_m(const size_t m) noexcept {
+    _m = m;
+}
+template <class T>
+inline void Matrix<T>::set_n(const size_t n) noexcept {
+    _n = n;
+}
+
+template <class T>
+inline const size_t Matrix<T>::get_m() const noexcept {
+    return _m;
+}
+template <class T>
+inline const size_t Matrix<T>::get_n() const noexcept {
+    return _n;
+}
+
+template <class T>
+inline bool Matrix<T>::is_empty() const noexcept {
+    return (_m == 0 && _n == 0);
+}
+
+template <class T>
+Matrix<T> Matrix<T>::Trans() const noexcept {
+    if (is_empty())
+        return *this;
+    Matrix<T> res(_n, _m);
+    for (size_t i = 0; i < _m; i++) {
+        for (size_t j = 0; j < _n; j++) {
+            res[j][i] = (*this)[i][j];
+        }
+    }
+    return res;
+}
+
+template <class T>
+Matrix<T> Matrix<T>::operator+(const Matrix<T>& other) const {
+    if (is_empty() || other.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != other._m || _n != other._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+
+    return Matrix<T>(this->MathVector<MathVector<T>>::operator+(other));
+}
+template <class T>
+Matrix<T> Matrix<T>::operator-(const Matrix<T>& other) const {
+    if (is_empty() || other.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != other._m || _n != other._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+
+    return Matrix<T>(this->MathVector<MathVector<T>>::operator-(other));
+}
+template <class T>
+Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
+    Matrix<T> res(*this);
+    res *= other;
+    return res;
+}
+template <class T>
+Matrix<T> Matrix<T>::operator*(const T scalar) const {
+    if (is_empty())
+        throw std::invalid_argument("You can't multiply an empty matrix by a scalar!");
+
+    Matrix<T> res(*this);
+    res *= scalar;
+    return res;
+}
+template <class T>
+MathVector<T> Matrix<T>::operator*(const MathVector<T>& vector) const {
+    if (is_empty() || vector.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_n != vector.size())
+        throw std::invalid_argument("The matrix and vector are not compatible in size!");
+
+    MathVector<T> res(_m);
+    for (size_t i = 0; i < _m; i++) {
+        res[i] = (*this)[i] * vector;
+    }
+    return res;
+}
+
+template <class T>
+Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& second) {
+    if (is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != second._m || _n != second._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+
+    this->MathVector<MathVector<T>>::operator+=(second);
+    return *this;
+}
+template <class T>
+Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& second) {
+    if (is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_m != second._m || _n != second._n)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+
+    this->MathVector<MathVector<T>>::operator-=(second);
+    return *this;
+}
+template <class T>
+Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& second) {
+    if (is_empty() || second.is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+    if (_n != second._m)
+        throw std::invalid_argument("The matrices are not compatible in size!");
+
+    Matrix<T> res(_m, second._n);
+    Matrix<T> matrix_trans = second.Trans();
+    for (size_t i = 0; i < _m; i++) {
+        for (size_t j = 0; j < second._n; j++) {
+            res[i][j] = (*this)[i] * matrix_trans[j];
+        }
+    }
+    (*this) = res;
+    return *this;
+}
+template <class T>
+Matrix<T>& Matrix<T>::operator*=(const T scalar) {
+    if (is_empty())
+        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+
+    for (size_t i = 0; i < _m; i++) {
+        (*this)[i] *= scalar;
+    }
+    return *this;
+}
+
+template <class T>
+MathVector<T>& Matrix<T>::operator[](size_t index) noexcept {
+    return this->MathVector<MathVector<T>>::operator[](index);
+}
+template <class T>
+const MathVector<T>& Matrix<T>::operator[](size_t index) const noexcept {
+    return this->MathVector<MathVector<T>>::operator[](index);
+}
+
+template <class T>
+Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) noexcept {
+    if (this != &other) {
+        this->MathVector<MathVector<T>>::operator=(other);
+        _m = other._m;
+        _n = other._n;
+    }
+    return *this;
+}
+
+template <class T>
+bool Matrix<T>::operator==(const Matrix<T>& second) const noexcept {
+    return this->MathVector<MathVector<T>>::operator==(second);
+}
+template <class T>
+bool Matrix<T>::operator!=(const Matrix<T>& second) const noexcept {
+    return !(*this == second);
+}
+
+//template <class T>
+//MathVector<T> operator*(const MathVector<T>& vec, const Matrix<T>& matrix) {
+//    if (vec.is_empty() || matrix.is_empty())
+//        throw std::invalid_argument("You cannot perform actions with an empty matrix!");
+//    if (vec.size() != matrix.get_m())
+//        throw std::invalid_argument("The matrix and vector are not compatible in size!");
+//
+//    MathVector<T> res(matrix.get_n());
+//    Matrix<T> trans_matrix = matrix.Trans();
+//    for (size_t i = 0; i < matrix.get_n(); i++) {
+//        res[i] = vec * trans_matrix[i];
+//    }
+//    return res;
+//}
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const Matrix<T>& matrix) {
+    for (size_t i = 0; i < matrix.get_m(); i++) {
+        os << matrix[i];
+        if (i < matrix.get_m() - 1) 
+            os << "\n";
+    }
+    return os;
+}
+template <class T>
+std::istream& operator>>(std::istream& is, Matrix<T>& matrix) {
+    for (size_t i = 0; i < matrix.get_m(); i++) {
+        is >> matrix[i];
+    }
+    return is;
+}
+#endif  // LIB_MATRIX_MATRIX_H_

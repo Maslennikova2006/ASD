@@ -8,6 +8,8 @@
 #include "../lib_adjacency_list_graph/adjacency_list_graph.h"
 #include "../lib_tvector/tvector.h"
 #include "../lib_queue_priority/queue_priority.h"
+#include "../lib_matrix/matrix.h"
+#include "../lib_dsu/dsu.h"
 
 enum Position { intersect, inside, no_point, match, touch };
 
@@ -248,7 +250,6 @@ TVector<int> algorithm_Dijkstra(AdjacencyListGraph<T>& graph, T start, T final) 
 
         auto cur = vertices[min_vertex_ind];
 
-        // Ќаходим список смежности дл€ этого значени€
         int ind = -1;
         for (int j = 0; j < g.size(); j++) {
             if (g[j].head()->value.first == cur) {
@@ -291,4 +292,15 @@ TVector<int> algorithm_Dijkstra(AdjacencyListGraph<T>& graph, T start, T final) 
     return path;
 }
 
+int rand_generation(int min, int max) noexcept;
+
+int find_the_local_minimum(Matrix<int>& matrix) noexcept;
+
+int count_the_number_of_islands(Matrix<int> matr);
+
+Matrix<bool> generate_labyrinth(int X, int Y, int N, int M);
+void print_labyrinth(const Matrix<bool>& walls, int n, int m);
+void check_input_data(int X, int Y, int N, int M);
+void removing_borders(Matrix<bool>& walls, int cell, int N, int M);
+void creating_path(Dsu& labyrinth, Matrix<bool>& walls, int X, int Y, int M);
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_

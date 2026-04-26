@@ -16,28 +16,20 @@ TEST(TestPointLib, can_create) {
 TEST(TestPointLib, check_setter_and_getter_x) {
     Point point;
     point.set_x(4);
-    int actual_result = point.get_x();
-    int expected_result = 4;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(4, point.get_x());
 }
 TEST(TestPointLib, check_setter_and_getter_y) {
     Point point;
     point.set_y(8);
-    int actual_result = point.get_y();
-    int expected_result = 8;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_EQ(8, point.get_y());
 }
 TEST(TestPointLib, check_the_equality) {
     Point point1(2, 3);
     Point point2(2, 3);
-    bool actual_result = (point1 == point2);
-    bool expected_result = true;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_TRUE(point1 == point2);
 }
 TEST(TestPointLib, check_the_inequality) {
     Point point1(2, 3);
     Point point2(2, 5);
-    bool actual_result = (point1 == point2);
-    bool expected_result = false;
-    EXPECT_EQ(expected_result, actual_result);
+    EXPECT_FALSE(point1 == point2);
 }

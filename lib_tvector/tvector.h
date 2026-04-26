@@ -122,7 +122,6 @@ public:
             }
             return _vec->_data[_index];
         }
-
         bool operator!=(const Iterator& other) const {
             return _vec != other._vec || _index != other._index;
         }
@@ -145,6 +144,12 @@ public:
         return Iterator(this, 0);
     }
     inline Iterator end() noexcept {
+        return Iterator(this, _capacity);
+    }
+    inline Iterator rbegin() noexcept {
+        return Iterator(this, _capacity - 1);
+    }
+    inline Iterator rend() noexcept {
         return Iterator(this, _capacity);
     }
 
