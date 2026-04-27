@@ -300,7 +300,12 @@ int count_the_number_of_islands(Matrix<int> matr);
 
 Matrix<bool> generate_labyrinth(int X, int Y, int N, int M);
 void print_labyrinth(const Matrix<bool>& walls, int n, int m);
+void print_labyrinth_path(const Matrix<bool>& walls, int n, int m, TVector<int>& path);
 void check_input_data(int X, int Y, int N, int M);
 void removing_borders(Matrix<bool>& walls, int cell, int N, int M);
 void creating_path(Dsu& labyrinth, Matrix<bool>& walls, int X, int Y, int M);
+bool belongs_path(int cell, TVector<int>& path);
+void maze_pathfinding(Matrix<bool>& lab, int X, int Y, int N, int M);
+
+AdjacencyListGraph<int> labyrinth_to_graph(Matrix<bool>& lab, int N, int M);
 #endif  // LIB_ALGORITHMS_ALGORITHMS_H_

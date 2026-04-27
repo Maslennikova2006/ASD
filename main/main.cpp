@@ -20,7 +20,7 @@
 //#define ALG_DEX
 //#define SORTED_TABLE_AVL
 //#define INTERFACE
-//#define LABYRINTH
+#define LABYRINTH
 
 #include <iostream>
 
@@ -939,9 +939,13 @@ int main() {
 #include "../lib_matrix/matrix.h"
 #include "../lib_algorithms/algorithms.h"
 void main() {
-    Matrix<bool> lab = generate_labyrinth(13, 118, 10, 12);
-    //std::cout << lab << std::endl;
-    print_labyrinth(lab, 10, 12);
+    int x = 2;
+    int y = 99;
+    int n = 10;
+    int m = 10;
+    Matrix<bool> lab = generate_labyrinth(x, y, n, m);
+
+    maze_pathfinding(lab, x, y, n, m);
 }
 
 #endif  // LABYRINTH

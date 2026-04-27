@@ -75,8 +75,8 @@ template <class T>
 void AdjacencyListGraph<T>::add_edge(const T& from, const T& to, int weight) {
     int from_ind = find_index(from);
     int to_ind = find_index(to);
-    if (_graph.size() != 0 && from_ind == -1 && to_ind == -1)
-        throw std::invalid_argument("You cannot create an unconnected edge!");
+    /*if (_graph.size() != 0 && from_ind == -1 && to_ind == -1)
+        throw std::invalid_argument("You cannot create an unconnected edge!");*/
 
     if (from_ind == -1) {
         List<Pair<T, int>> list;

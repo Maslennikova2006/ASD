@@ -48,12 +48,9 @@ add_subdirectory(lib_adjacency_list_graph)
 add_subdirectory(lib_edges_list_graph)
 add_subdirectory(lib_sorted_table_avl)
 add_subdirectory(lib_rbtree)
-
-add_subdirectory(lib_tvector)
 add_subdirectory(lib_mathvector)
 add_subdirectory(lib_matrix)
 add_subdirectory(lib_trianglematrix)
-add_subdirectory(lib_algorithms)
 add_subdirectory(lib_dsu)
 
 add_subdirectory(main)                # подключаем дополнительный CMakeLists.txt из подкаталога с именем main

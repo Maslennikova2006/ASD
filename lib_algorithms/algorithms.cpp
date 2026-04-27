@@ -439,4 +439,116 @@ void print_labyrinth(const Matrix<bool>& walls, int N, int M) {
         }
         std::cout << "\n";
     }
+    /*int cell = 1;
+    for (int i = 0; i < 2 * N + 1; i++) {
+        for (int j = 0; j < M + 1; j++) {
+            if (i % 2 == 0) {
+                if (j < M) {
+                    if (walls[i][j])
+                        std::cout << "+---";
+                    else
+                        std::cout << "+   ";
+                }
+                else {
+                    std::cout << "+";
+                }
+            }
+            else {
+                if (j < M) {
+                    if (walls[i][j]) {
+                        if (cell < 10) std::cout << "| " << cell << " ";
+                        else std::cout << "|" << cell << " ";
+                    }
+                    else {
+                        if (cell < 10) std::cout << "  " << cell << " ";
+                        else std::cout << " " << cell << " ";
+                    }
+                    cell++;
+                }
+                else {
+                    if (walls[i][j])
+                        std::cout << "|";
+                    else
+                        std::cout << " ";
+                }
+            }
+        }
+        std::cout << "\n";
+    }*/
+}
+
+void print_labyrinth_path(const Matrix<bool>& walls, int N, int M, TVector<int>& path) {
+    for (int i = 0; i < 2 * N + 1; i++) {
+        for (int j = 0; j < M + 1; j++) {
+            if (i % 2 == 0) {
+                if (j < M) {
+                    if (walls[i][j])
+                        std::cout << "+---";
+                    else
+                        std::cout << "+   ";
+                }
+                else {
+                    std::cout << "+";
+                }
+            }
+            else {
+                if (j < M) {
+                    int cell = ((i - 1) / 2) * M + j;
+
+                    if (walls[i][j]) {
+                        if (belongs_path(cell + 1, path)) {
+                            //std::cout << "| * ";
+                            std::cout << "| " << "\033[32m*\033[0m" << " ";
+                        }
+                        else
+                            std::cout << "|   ";
+                    }
+                    else {
+                        if (belongs_path(cell + 1, path)) {
+                            //std::cout << "  * ";
+                            std::cout << "  " << "\033[32m*\033[0m" << " ";
+                        }
+                        else
+                            std::cout << "    ";
+                    }
+                }
+                else {
+                    std::cout << "|";
+                }
+            }
+        }
+        std::cout << "\n";
+    }
+}
+
+bool belongs_path(int cell, TVector<int>& path) {
+    for (int i = 0; i < path.size(); i++) {
+        if (path[i] == cell)
+            return true;
+    }
+    return false;
+}
+
+
+AdjacencyListGraph<int> labyrinth_to_graph(Matrix<bool>& lab, int N, int M) {
+    AdjacencyListGraph<int> g;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            int cur_ind = (i * M + j) + 1;
+            if (i < N - 1 && !lab[2 * i + 2][j]) {
+                g.add_edge(cur_ind, cur_ind + M);
+            }
+            if (j < M - 1 && !lab[2 * i + 1][j + 1]) {
+                g.add_edge(cur_ind, cur_ind + 1);
+            }
+        }
+    }
+    return g;
+}
+
+void maze_pathfinding(Matrix<bool>& lab, int X, int Y, int N, int M) {
+    AdjacencyListGraph<int> g = labyrinth_to_graph(lab, N, M);
+    TVector<int> path = algorithm_Dijkstra_Q(g, X, Y);
+
+    print_labyrinth_path(lab, N, M, path);
 }
