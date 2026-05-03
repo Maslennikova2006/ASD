@@ -34,7 +34,6 @@ template <class TKey, class TValue>
 class AVLTree : public BSTree<TKey, TValue, AVLNode<TKey, TValue>> {
 public:
     AVLTree();
-    ~AVLTree();
 
     void insert(const TKey& key, const TValue& val);  // +
     void erase(const TKey& key);  // +
@@ -54,13 +53,7 @@ private:
 };
 
 template <class TKey, class TValue>
-AVLTree<TKey, TValue>::AVLTree() {
-    _root = nullptr;
-}
-template <class TKey, class TValue>
-AVLTree<TKey, TValue>::~AVLTree() {
-    clear();
-}
+AVLTree<TKey, TValue>::AVLTree() : BSTree<TKey, TValue, AVLNode<TKey, TValue>>() {}
 
 template <class TKey, class TValue>
 void AVLTree<TKey, TValue>::insert(const TKey& key, const TValue& val) {
