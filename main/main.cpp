@@ -17,8 +17,9 @@
 //#define HASHTABLEOA
 //#define ADJACENCY_LIST_GRAPH
 //#define EDGES_LIST_GRAPH
-#define ALG_DEX
+//#define ALG_DEX
 //#define SORTED_TABLE_AVL
+#define SORTED_TABLE_RB
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -577,3 +578,27 @@ int main() {
     return 0;
 }
 #endif  // SORTED_TABLE_AVL
+
+
+#ifdef SORTED_TABLE_RB
+#include <clocale>
+#include <string>
+#include "../lib_algorithms/algorithms.h"
+#include "../lib_sorted_table_rb/sorted_table_rb.h"
+#include "../lib_tvector/tvector.h"
+#include "../lib_itable/itable.h"
+int main() {
+    setlocale(LC_ALL, "rus");
+    SortedTableRB<int, std::string> table;
+    table.insert(52, "Нижний Новгород");
+    table.insert(97, "Москва");
+    table.insert(16, "Казань");
+    table.insert(78, "Санкт-Петербург");
+    table.insert(55, "Омск");
+    table.insert(18, "Ижевск");
+    std::cout << table;
+    const std::string* found = table.found(16);
+    std::cout << *found;
+    return 0;
+}
+#endif  // SORTED_TABLE_RB
