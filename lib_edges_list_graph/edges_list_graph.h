@@ -58,28 +58,34 @@ void EdgesListGraph<T>::add_edge(const T& from, const T& to, int weight) {
     if (_graph.size() != 0 && !vertex_exists(from) && !vertex_exists(to))
             throw std::invalid_argument("You cannot create an unconnected edge!");
 
+    bool edgeExists = false;
     for (size_t i = 0; i < _graph.size(); i++) {
         if (_graph[i].first.first == from && _graph[i].first.second == to) {
             _graph[i].second = w;
-            return;
+            edgeExists = true;
+            break;
         }
     }
-    _graph.push_back(Pair<Pair<T, T>, int>(Pair<T, T>(from, to), w));
+    if (!edgeExists)
+        _graph.push_back(Pair<Pair<T, T>, int>(Pair<T, T>(from, to), w));
     
     if (!_isDirected && from != to) {
-        bool reverse_exists = false;
+        bool reverseExists = false;
         for (size_t i = 0; i < _graph.size(); i++) {
             if (_graph[i].first.first == to && _graph[i].first.second == from) {
-                reverse_exists = true;
+                reverseExists = true;
                 break;
             }
         }
-        if (!reverse_exists)
+        if (!reverseExists)
             _graph.push_back(Pair<Pair<T, T>, int>(Pair<T, T>(to, from), w));
     }
 }
 template <class T>
 void EdgesListGraph<T>::delete_edge(const T& from, const T& to) {
+    if (_graph.is_empty())
+        throw std::invalid_argument("It cannot be deleted from an empty graph!");
+
     bool isDeleted = false;
     for (size_t i = 0; i < _graph.size(); i++) {
         if (_graph[i].first.first == from && _graph[i].first.second == to) {
@@ -103,8 +109,11 @@ void EdgesListGraph<T>::delete_edge(const T& from, const T& to) {
 }
 template <class T>
 void EdgesListGraph<T>::delete_vertex(const T& vertex) {
+    if (_graph.is_empty())
+        throw std::invalid_argument("It cannot be deleted from an empty graph!");
+
     bool isDeleted = false;
-    for (int i = _graph.size() - 1; i >= 0; i--) {
+    for (size_t i = _graph.size() - 1; i >= 0; i--) {
         if (_graph[i].first.first == vertex || _graph[i].first.second == vertex) {
             _graph.erase(i);
             isDeleted = true;

@@ -16,10 +16,10 @@
 //#define HASHTABLEC
 //#define HASHTABLEOA
 //#define ADJACENCY_LIST_GRAPH
-//#define EDGES_LIST_GRAPH
+#define EDGES_LIST_GRAPH
 //#define ALG_DEX
 //#define SORTED_TABLE_AVL
-#define SORTED_TABLE_RB
+//#define SORTED_TABLE_RB
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -482,7 +482,7 @@ int main() {
 #include "../lib_adjacency_list_graph/adjacency_list_graph.h"
 int main() {
     setlocale(LC_ALL, "rus");
-    AdjacencyListGraph<int> graph(true, true);
+    AdjacencyListGraph<int> graph(false, true);
 
     graph.add_edge(1, 7, 2);
     graph.add_edge(2, 7);
@@ -494,6 +494,7 @@ int main() {
     graph.print();
 
     graph.delete_vertex(4);
+    graph.delete_edge(2, 3);
 
     graph.print();
 

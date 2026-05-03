@@ -129,7 +129,7 @@ template <class T>
 void AdjacencyListGraph<T>::delete_edge(const T& from, const T& to) {
     int from_ind = find_index(from);
     if (from_ind == -1)
-        throw std::invalid_argument("The peak does not exist!");
+        throw std::invalid_argument("The edge does not exist!");
 
     bool isDeleted = false;
     auto it = _graph[from_ind].begin();
@@ -145,7 +145,7 @@ void AdjacencyListGraph<T>::delete_edge(const T& from, const T& to) {
     }
 
     if (!isDeleted)
-        throw std::invalid_argument("Such an edge does not exist!");
+        throw std::invalid_argument("The edge does not exist!");
 
     if (!_isDirected && from != to) {
         int to_ind = find_index(to);
@@ -176,13 +176,12 @@ void AdjacencyListGraph<T>::delete_vertex(const T& vertex) {
         it++;
 
         int pos = 1;
-        while (it != _graph[i].end()) {
+        for (it; it != _graph[i].end(); it++) {
             if (it->first == vertex) {
                 _graph[i].erase(pos);
                 break;
             }
             pos++;
-            it++;
         }
     }
     _graph.erase(ver_ind);

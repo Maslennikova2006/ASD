@@ -63,7 +63,7 @@ RBTree<TKey, TValue>::RBTree() : BSTree<TKey, TValue, RBNode<TKey, TValue>>() {}
 template <class TKey, class TValue>
 void RBTree<TKey, TValue>::insert(const TKey& key, const TValue& val) {
     RBNode<TKey, TValue>* parent = BSTree::insert(key, val);
-    if (parent == nullptr) {
+    if (!parent) {
         recolor(_root);
         return;
     }
