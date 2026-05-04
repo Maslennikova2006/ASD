@@ -16,7 +16,7 @@
 //#define HASHTABLEC
 //#define HASHTABLEOA
 //#define ADJACENCY_LIST_GRAPH
-#define EDGES_LIST_GRAPH
+//#define EDGES_LIST_GRAPH
 //#define ALG_DEX
 //#define SORTED_TABLE_AVL
 //#define SORTED_TABLE_RB
@@ -482,9 +482,11 @@ int main() {
 #include "../lib_adjacency_list_graph/adjacency_list_graph.h"
 int main() {
     setlocale(LC_ALL, "rus");
-    AdjacencyListGraph<int> graph(false, true);
+    AdjacencyListGraph<int> graph({ {{1, 7}, 1} }, true, true);
+    //AdjacencyListGraph<int> graph(false, true);
+    //AdjacencyListGraph<int> graph(true, false);
+    //AdjacencyListGraph<int> graph(false, false);
 
-    graph.add_edge(1, 7, 2);
     graph.add_edge(2, 7);
     graph.add_edge(1, 4, 5);
     graph.add_edge(4, 5, 2);
@@ -510,6 +512,10 @@ int main() {
 int main() {
     setlocale(LC_ALL, "rus");
     EdgesListGraph<int> graph({ {{1, 7}, 1}, {{2, 7}, 5}, {{1, 4}, 2}}, true, true);
+    //EdgesListGraph<int> graph({ {{1, 7}, 1}, {{2, 7}, 5}, {{1, 4}, 2} }, true, false);
+    //EdgesListGraph<int> graph({ {{1, 7}, 1}, {{2, 7}, 5}, {{1, 4}, 2} }, false, true);
+    //EdgesListGraph<int> graph({ {{1, 7}, 1}, {{2, 7}, 5}, {{1, 4}, 2} }, false, false);
+
 
     graph.add_edge(4, 5, 2);
     graph.add_edge(2, 3, 3);
