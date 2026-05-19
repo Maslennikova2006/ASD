@@ -27,15 +27,20 @@ public:
     bool is_empty() const noexcept;  // +
 
     void print_lcr() const noexcept;
+    void print() const noexcept;
 
 protected:
     TNode* find_parent(const TKey& key) const noexcept;
+    TNode* find_max_left(TNode* node) const noexcept;
 
 private:
     void print_lcr_rec(TNode* node) const noexcept;
     void clear_rec(TNode* node) noexcept;
     TNode* erase_node(TNode*& node, TNode* parent) noexcept;
-    TNode* find_max_left(TNode* node) const noexcept;
+
+    int get_height(TNode* node) const noexcept;
+    void fill_matrix(TNode* node, TVector<TVector<std::string>>& matrix,
+        int level, int left, int right) const noexcept;
 };
 
 template <class TKey, class TValue, class TNode>
@@ -218,5 +223,69 @@ TNode* BSTree<TKey, TValue, TNode>::find_max_left(TNode* node) const noexcept {
         cur = cur->right;
     }
     return cur;
+}
+
+template <class TKey, class TValue, class TNode>
+int BSTree<TKey, TValue, TNode>::get_height(TNode* node) const noexcept {
+    if (node == nullptr) return 0;
+    return 1 + std::max(get_height(node->left), get_height(node->right));
+}
+template <class TKey, class TValue, class TNode>
+void BSTree<TKey, TValue, TNode>::fill_matrix(TNode* node, TVector<TVector<std::string>>& matrix,
+    int level, int left, int right) const noexcept {
+
+    if (node == nullptr || level >= matrix.size()) return;
+
+    int mid = (left + right) / 2;
+    int row = level * 2;
+
+    matrix[row][mid] = " " + std::to_string(node->data.first);
+
+    if (node->left) {
+        int left_mid = (left + mid - 1) / 2;
+        for (int i = left_mid + 1; i < mid; ++i) {
+            matrix[row][i] = "___";
+        }
+        if (row + 1 < matrix.size()) {
+            matrix[row + 1][left_mid] = " / ";
+        }
+    }
+
+    if (node->right) {
+        int right_mid = (mid + 1 + right) / 2;
+        for (int i = mid + 1; i < right_mid; ++i) {
+            matrix[row][i] = "___";
+        }
+        if (row + 1 < matrix.size()) {
+            matrix[row + 1][right_mid] = " \\ ";
+        }
+    }
+
+    fill_matrix(node->left, matrix, level + 1, left, mid - 1);
+    fill_matrix(node->right, matrix, level + 1, mid + 1, right);
+}
+template <class TKey, class TValue, class TNode>
+void BSTree<TKey, TValue, TNode>::print() const noexcept {
+    if (is_empty()) return;
+
+    int height = get_height(_root);
+    int width = pow(2, height) - 1;
+
+    TVector<TVector<std::string>> matrix;
+    for (int i = 0; i < height * 2 - 1; i++) {
+        TVector<std::string> row;
+        for (int j = 0; j < width; j++) {
+            row.push_back("   ");
+        }
+        matrix.push_back(row);
+    }
+
+    fill_matrix(_root, matrix, 0, 0, width - 1);
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = 0; j < matrix[i].size(); ++j) {
+            std::cout << matrix[i][j];
+        }
+        std::cout << std::endl;
+    }
 }
 #endif  // LIB_BSTREE_BSTREE_H_

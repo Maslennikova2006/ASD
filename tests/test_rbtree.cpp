@@ -54,6 +54,25 @@ TEST(TestRBTreeLib, check_insert2) {
     EXPECT_EQ(root->right->left->right->color, red);  // 65
     EXPECT_EQ(root->right->right->right->left->color, red);  // 85
 }
+TEST(TestRBTreeLib, check_insert3) {
+    RBTree<int, std::string> tree;
+    tree.insert(55, "55");
+    tree.insert(33, "33");
+    tree.insert(73, "73");
+    tree.insert(20, "20");
+    tree.insert(25, "25");
+    auto root = tree.root();
+    EXPECT_EQ(root->color, black);  // 55
+    EXPECT_EQ(root->left->color, black);  // 25
+    EXPECT_EQ(root->left->left->color, red);  // 20
+    EXPECT_EQ(root->left->right->color, red);  // 33
+    EXPECT_EQ(root->right->color, black);  // 73
+    EXPECT_EQ(root->data.first, 55);
+    EXPECT_EQ(root->left->data.first, 25);
+    EXPECT_EQ(root->left->left->data.first, 20);
+    EXPECT_EQ(root->left->right->data.first, 33);
+    EXPECT_EQ(root->right->data.first, 73);
+}
 TEST(TestRBTreeLib, check_for_insertion_exception) {
     RBTree<int, std::string> tree;
     tree.insert(52, "52");
@@ -81,4 +100,63 @@ TEST(TestRBTreeLib, check_find) {
     EXPECT_EQ(expected, nullptr);
     auto expected2 = tree.find(61);
     EXPECT_EQ(*expected2, "61");
+}
+TEST(TestRBTreeLib, check_erase_root) {
+    RBTree<int, std::string> tree;
+    tree.insert(30, "30");
+    tree.erase(30);
+    EXPECT_TRUE(tree.is_empty());
+}
+TEST(TestRBTreeLib, check_erase_black_leaf) {
+    RBTree<int, std::string> tree;
+    tree.insert(30, "30");
+    tree.insert(20, "20");
+    tree.insert(40, "40");
+    tree.insert(50, "50");
+    tree.erase(20);
+    tree.print();
+    auto root = tree.root();
+    EXPECT_EQ(root->color, black);
+    EXPECT_EQ(root->left->color, black);
+    EXPECT_EQ(root->right->color, black);
+    EXPECT_EQ(root->data.first, 40);
+    EXPECT_EQ(root->left->data.first, 30);
+    EXPECT_EQ(root->right->data.first, 50);
+}
+TEST(TestRBTreeLib, check_erase_red_leaf) {
+    RBTree<int, std::string> tree;
+    tree.insert(30, "30");
+    tree.insert(20, "20");
+    tree.insert(40, "40");
+    tree.insert(50, "50");
+    tree.erase(50);
+    auto root = tree.root();
+    EXPECT_EQ(root->color, black);
+    EXPECT_EQ(root->left->color, black);
+    EXPECT_EQ(root->right->color, black);
+    EXPECT_EQ(root->data.first, 30);
+    EXPECT_EQ(root->left->data.first, 20);
+    EXPECT_EQ(root->right->data.first, 40);
+}
+TEST(TestRBTreeLib, check_erase_red_node_with_two_black_children) {
+    RBTree<int, std::string> tree;
+    tree.insert(50, "50");
+    tree.insert(30, "30");
+    tree.insert(75, "75");
+    tree.insert(15, "15");
+    tree.insert(35, "35");
+    tree.insert(10, "10");
+    tree.erase(30);
+    tree.print();
+    auto root = tree.root();
+    EXPECT_EQ(root->color, black);
+    EXPECT_EQ(root->left->color, black);
+    EXPECT_EQ(root->right->color, black);
+    EXPECT_EQ(root->left->left->color, red);
+    EXPECT_EQ(root->left->right->color, red);
+    EXPECT_EQ(root->data.first, 50);
+    EXPECT_EQ(root->left->data.first, 15);
+    EXPECT_EQ(root->right->data.first, 75);
+    EXPECT_EQ(root->left->left->data.first, 10);
+    EXPECT_EQ(root->left->right->data.first, 35);
 }

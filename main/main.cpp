@@ -15,7 +15,7 @@
 //#define QUEUEPRIORITY
 //#define HASHTABLEC
 //#define HASHTABLEOA
-//#define ADJACENCY_LIST_GRAPH
+#define ADJACENCY_LIST_GRAPH
 //#define EDGES_LIST_GRAPH
 //#define ALG_DEX
 //#define SORTED_TABLE_AVL
@@ -482,7 +482,7 @@ int main() {
 #include "../lib_adjacency_list_graph/adjacency_list_graph.h"
 int main() {
     setlocale(LC_ALL, "rus");
-    AdjacencyListGraph<int> graph({ {{1, 7}, 1} }, true, true);
+    AdjacencyListGraph<int> graph({ {{1, 7}, 1} }, false, true);
     //AdjacencyListGraph<int> graph(false, true);
     //AdjacencyListGraph<int> graph(true, false);
     //AdjacencyListGraph<int> graph(false, false);

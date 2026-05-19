@@ -81,9 +81,10 @@ TEST(TestAVLTreeLib, check_the_erase_of_a_node_with_two_children) {
     tree.insert(20, "20");
     tree.insert(88, "88");
     tree.insert(55, "55");
-    tree.insert(23, "23");
+    tree.insert(25, "25");
     tree.insert(67, "67");
     tree.insert(90, "90");
+    tree.insert(23, "23");
     tree.erase(67);  // два ребенка (55 и 88)
     auto expected = tree.find(67);
     EXPECT_EQ(expected, nullptr);
@@ -93,7 +94,8 @@ TEST(TestAVLTreeLib, check_the_erase_of_a_node_with_two_children) {
     tree.erase(52);  // корень
     auto expected2 = tree.find(52);
     EXPECT_EQ(expected2, nullptr);
-    EXPECT_EQ(tree.root()->data.first, 23);
+    EXPECT_EQ(tree.root()->data.first, 25);
+    EXPECT_EQ(tree.root()->left->right->data.first, 23);
 }
 TEST(TestAVLTreeLib, check_erase) {
     AVLTree<int, std::string> tree;

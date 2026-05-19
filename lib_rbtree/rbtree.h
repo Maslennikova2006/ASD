@@ -1,4 +1,4 @@
-// Copyright 2026 Mary Maslennikova
+﻿// Copyright 2026 Mary Maslennikova
 
 #ifndef LIB_RBTREE_RBTREE_H_
 #define LIB_RBTREE_RBTREE_H_
@@ -11,7 +11,7 @@
 #include <string>
 #include <algorithm>
 
-enum Color {red, black};
+enum Color {red, black, blackBlack};
 
 template <class TKey, class TValue>
 struct RBNode {
@@ -55,6 +55,7 @@ private:
     void LR(RBNode<TKey, TValue>* node);
 
     void recover_balance(RBNode<TKey, TValue>* node);
+    void erase_blackBlack() noexcept;
 };
 
 template <class TKey, class TValue>
@@ -77,6 +78,405 @@ void RBTree<TKey, TValue>::insert(const TKey& key, const TValue& val) {
 
     if (parent->color == red)
         recover_balance(node);
+}
+template <class TKey, class TValue>
+void RBTree<TKey, TValue>::erase(const TKey& key) {
+    //RBNode<TKey, TValue>* parent_d = BSTree::find_parent(key);
+    //if (!parent_d) return;
+
+    //RBNode<TKey, TValue>* d = nullptr;
+    //if (parent_d == _root && _root->data.first == key)
+    //    d = _root;
+    //else if (parent_d->right && parent_d->right->data.first == key)
+    //    d = parent_d->right;
+    //else if (parent_d->left && parent_d->left->data.first == key)
+    //    d = parent_d->left;
+    //if (!d) return;
+
+    //Color deleted_color = d->color;
+    //bool dHasTwoChildren = (d->left && d->right);
+    //bool dIsLeftChildren = (parent_d->left == d);
+
+    //RBNode<TKey, TValue>* r = nullptr;
+    //if (!d->left && !d->right)
+    //    r = nullptr;
+    //else if (!d->left)
+    //    r = d->right;
+    //else if (!d->right)
+    //    r = d->left;
+    //else {
+    //    r = BSTree::find_max_left(d);
+    //    deleted_color = r->color;
+    //}
+
+    //RBNode<TKey, TValue>* parent_r = BSTree::erase(key);
+    //if (!parent_r && !_root) return;
+    //if (!parent_r && _root) {
+    //    _root->color = black;
+    //    return;
+    //}
+
+    //RBNode<TKey, TValue>* p = nullptr;
+    //bool isVirtual = false;  // флаг виртуального узла
+
+    //if (dHasTwoChildren) {
+    //    if (deleted_color == black) {
+    //        p = new RBNode<TKey, TValue>();
+    //        p->color = blackBlack;
+    //        p->parent = parent_r;
+    //        isVirtual = true;
+
+    //        if (parent_r->left == nullptr)
+    //            parent_r->left = p;
+    //        else
+    //            parent_r->right = p;
+    //    }
+    //    else {
+    //        if (_root) _root->color = black;
+    //        return;
+    //    }
+    //}
+    //else if (r) {
+    //    p = r;
+    //}
+    //else {
+    //    p = new RBNode<TKey, TValue>();
+    //    p->color = blackBlack;
+    //    p->parent = parent_r;
+    //    isVirtual = true;
+
+    //    if (dIsLeftChildren)
+    //        parent_r->left = p;
+    //    else
+    //        parent_r->right = p;
+    //}
+    //if (!p) return;
+
+    //// Простые случаи
+    //if (deleted_color == black && p->color == red) {
+    //    if (isVirtual) {
+    //        RBNode<TKey, TValue>* parent = p->parent;
+    //        if (parent) {
+    //            if (parent->left == p) parent->left = nullptr;
+    //            else parent->right = nullptr;
+    //        }
+    //        delete p;
+    //    }
+    //    else {
+    //        recolor(p);
+    //    }
+    //    if (_root) _root->color = black;
+    //    return;
+    //}
+
+    //if (deleted_color == red) {
+    //    if (isVirtual) {
+    //        RBNode<TKey, TValue>* parent = p->parent;
+    //        if (parent) {
+    //            if (parent->left == p) parent->left = nullptr;
+    //            else parent->right = nullptr;
+    //        }
+    //        delete p;
+    //    }
+    //    if (_root) _root->color = black;
+    //    return;
+    //}
+
+    //p->color = blackBlack;
+
+    //while (p->color == blackBlack) {
+    //    auto P = p->parent;
+    //    if (!P) {
+    //        p->color = black;
+    //        break;
+    //    }
+
+    //    bool pIsLeftChildren = (P->left == p);
+    //    RBNode<TKey, TValue>* S = pIsLeftChildren ? P->right : P->left;
+    //    RBNode<TKey, TValue>* CS = nullptr;
+
+    //    if (S && S->color == red) {
+    //        recolor(P);
+    //        recolor(S);
+    //        if (pIsLeftChildren)
+    //            RR(P);
+    //        else
+    //            LL(P);
+    //        continue;
+    //    }
+
+    //    if (!S || S->color == black) {
+    //        CS = (S && pIsLeftChildren) ? S->right : (S ? S->left : nullptr);
+    //        if (CS && CS->color == red) {
+    //            if (pIsLeftChildren)
+    //                RR(P);
+    //            else
+    //                LL(P);
+    //            swap_colors(P, S);
+    //            recolor(CS);
+    //            p->color = black;
+    //            break;
+    //        }
+
+    //        CS = (S && pIsLeftChildren) ? S->left : (S ? S->right : nullptr);
+    //        if (CS && CS->color == red) {
+    //            if (pIsLeftChildren)
+    //                LL(S);
+    //            else
+    //                RR(S);
+    //            swap_colors(S, CS);
+    //            continue;
+    //        }
+
+    //        if (S)
+    //            recolor(S);
+    //        if (P->color == red) {
+    //            recolor(P);
+    //            p->color = black;
+    //            p = _root;
+    //        }
+    //        else {
+    //            if (S)
+    //                P->color = blackBlack;
+    //            p = P;
+    //        }
+    //        continue;
+    //    }
+    //}
+
+    //// Удаляем виртуальный узел (ДЛЯ ВСЕХ СЛУЧАЕВ!)
+    //if (isVirtual && p) {
+    //    RBNode<TKey, TValue>* parent = p->parent;
+    //    if (parent) {
+    //        if (parent->left == p)
+    //            parent->left = nullptr;
+    //        else
+    //            parent->right = nullptr;
+    //    }
+    //    delete p;
+    //}
+
+    //if (_root)
+    //    _root->color = black;
+
+    RBNode<TKey, TValue>* parent_d = BSTree::find_parent(key);
+    if (!parent_d) return;
+
+    RBNode<TKey, TValue>* d = nullptr;
+    if (parent_d == _root && _root->data.first == key)
+    d = _root;
+    else if (parent_d->right && parent_d->right->data.first == key)
+    d = parent_d->right;
+    else if (parent_d->left && parent_d->left->data.first == key)
+    d = parent_d->left;
+    if (!d) return;
+
+    Color deletedColor = d->color;
+    bool hasTwoChildren = (d->left && d->right);
+    bool isLeftChild = (d->parent && d->parent->left == d);
+    RBNode<TKey, TValue>* originalParent = d->parent;
+    bool isLeaf = (!d->left && !d->right);
+
+    // ============================================================
+    // 3. ОПРЕДЕЛЯЕМ ПРЕЕМНИКА (ДЛЯ СЛУЧАЯ ДВУХ ДЕТЕЙ)
+    // ============================================================
+    RBNode<TKey, TValue>* successor = nullptr;
+    RBNode<TKey, TValue>* successorParent = nullptr;
+    bool successorIsLeft = false;
+
+    if (hasTwoChildren) {
+        successor = BSTree::find_max_left(d);
+        deletedColor = successor->color;
+        successorParent = successor->parent;
+        successorIsLeft = (successorParent && successorParent->left == successor);
+    }
+
+    // ============================================================
+    // 4. ВЫПОЛНЯЕМ УДАЛЕНИЕ
+    // ============================================================
+    BSTree::erase(key);
+
+    if (!_root) return;
+
+    // ============================================================
+    // 5. ПРОСТЫЕ СЛУЧАИ
+    // ============================================================
+
+    // Удалён красный узел
+    if (deletedColor == red) {
+        if (_root) _root->color = black;
+        return;
+    }
+
+    // ============================================================
+    // 6. УДАЛЁН ЧЁРНЫЙ УЗЕЛ - НУЖНА БАЛАНСИРОВКА
+    // ============================================================
+
+    RBNode<TKey, TValue>* problem = nullptr;
+
+    if (hasTwoChildren) {
+        // При двух детях: физически удалён successor
+        problem = successorParent;
+        if (!problem) {
+            if (_root) _root->color = black;
+            return;
+        }
+        problem->color = blackBlack;
+    }
+    else if (isLeaf) {
+        // УДАЛЁН ЧЁРНЫЙ ЛИСТ
+        // Проблема у родителя
+        problem = originalParent;
+        if (!problem) {
+            // Удалили корень-лист
+            return;
+        }
+        problem->color = blackBlack;
+    }
+    else {
+        // Узел с одним ребёнком: ребёнок встал на место
+        problem = isLeftChild ? originalParent->left : originalParent->right;
+        if (problem) {
+            problem->color = blackBlack;
+        }
+        else {
+            problem = originalParent;
+            if (problem) problem->color = blackBlack;
+            else return;
+        }
+    }
+
+    if (!problem) return;
+
+    // ============================================================
+    // 7. БАЛАНСИРОВКА
+    // ============================================================
+    while (problem && problem->color == blackBlack) {
+        // Если дошли до корня
+        if (problem == _root) {
+            // Если у корня есть красный ребёнок, его нужно поднять
+            if (problem->right && problem->right->color == red) {
+                left_rotate(problem);
+                problem->color = black;
+                if (problem->left) problem->left->color = black;
+            }
+            else if (problem->left && problem->left->color == red) {
+                right_rotate(problem);
+                problem->color = black;
+                if (problem->right) problem->right->color = black;
+            }
+            else {
+                problem->color = black;
+            }
+            break;
+        }
+
+        RBNode<TKey, TValue>* parent = problem->parent;
+        if (!parent) {
+            problem->color = black;
+            break;
+        }
+
+        bool isProblemLeft = (parent->left == problem);
+        RBNode<TKey, TValue>* sibling = isProblemLeft ? parent->right : parent->left;
+
+        // ========================================================
+        // СЛУЧАЙ 1: Брат красный
+        // ========================================================
+        if (sibling && sibling->color == red) {
+            // Перекрашиваем
+            sibling->color = black;
+            parent->color = red;
+
+            // Поворачиваем
+            if (isProblemLeft) {
+                left_rotate(parent);
+            }
+            else {
+                right_rotate(parent);
+            }
+            // Продолжаем с тем же problem (он не изменился)
+            continue;
+        }
+
+        // ========================================================
+        // СЛУЧАЙ 2: Брат чёрный (или nullptr)
+        // ========================================================
+        if (!sibling || sibling->color == black) {
+            // Дальний племянник (far)
+            RBNode<TKey, TValue>* farNephew = isProblemLeft ?
+                (sibling ? sibling->right : nullptr) :
+                (sibling ? sibling->left : nullptr);
+
+            // ====================================================
+            // СЛУЧАЙ 2b: Дальний племянник красный
+            // ====================================================
+            if (farNephew && farNephew->color == red) {
+                // Поворачиваем
+                if (isProblemLeft) {
+                    left_rotate(parent);
+                }
+                else {
+                    right_rotate(parent);
+                }
+
+                // Перекрашиваем
+                farNephew->color = black;
+                if (sibling) sibling->color = parent->color;
+                parent->color = black;
+                problem->color = black;
+                break;
+            }
+
+            // Ближний племянник (near)
+            RBNode<TKey, TValue>* nearNephew = isProblemLeft ?
+                (sibling ? sibling->left : nullptr) :
+                (sibling ? sibling->right : nullptr);
+
+            // ====================================================
+            // СЛУЧАЙ 2c: Ближний племянник красный
+            // ====================================================
+            if (nearNephew && nearNephew->color == red) {
+                // Малый поворот
+                if (isProblemLeft) {
+                    right_rotate(sibling);
+                }
+                else {
+                    left_rotate(sibling);
+                }
+
+                // Перекрашиваем
+                nearNephew->color = black;
+                if (sibling) sibling->color = red;
+                continue;
+            }
+
+            // ====================================================
+            // СЛУЧАЙ 2a: Оба племянника чёрные
+            // ====================================================
+            if (sibling) {
+                sibling->color = red;
+            }
+
+            if (parent->color == red) {
+                parent->color = black;
+                problem->color = black;
+                problem = _root;
+            }
+            else {
+                parent->color = blackBlack;
+                problem = parent;
+            }
+            continue;
+        }
+    }
+
+    // ============================================================
+    // 8. ГАРАНТИРУЕМ ЧЁРНЫЙ КОРЕНЬ
+    // ============================================================
+    if (_root) {
+        _root->color = black;
+    }
 }
 
 template <class TKey, class TValue>
