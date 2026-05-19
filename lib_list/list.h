@@ -112,8 +112,6 @@ public:
     void erase(Node<T>* node);  // +
     void erase(size_t pos);  // +
 
-    List<T>& operator=(const List<T>& other);
-
     friend std::ostream& operator<<(std::ostream& os, const List<T>& list) {
         Node<T>* cur = list._head;
         while (cur) {
@@ -122,6 +120,9 @@ public:
         }
         return os;
     }
+    void clear() noexcept;
+
+    List<T>& operator=(const List<T>& second);
 };
 
 template <class T>
@@ -283,18 +284,6 @@ template <class T>
 void List<T>::erase(Node<T>* node) {
     if (node == nullptr || is_empty())
         throw std::invalid_argument("You can't erase an item based on a pointer!\n");
-    /*if (node == _head) {
-        pop_front();
-        return;
-    }*/
-    /*Node<T>* cur = _head;
-    while (cur->next != node) {
-        cur = cur->next;
-    }
-    cur->next = node->next;
-    if (node == _tail) {
-        _tail = cur;
-    }*/
     if (node->next == nullptr) {
         throw std::invalid_argument("Cannot erase: no next node to delete!\n");
     }
@@ -329,17 +318,28 @@ void List<T>::erase(size_t pos) {
 }
 
 template <class T>
-List<T>& List<T>::operator=(const List<T>& other) {
-    if (this != &other) {
-        while (!is_empty()) {
-            pop_front();
-        }
+void List<T>::clear() noexcept {
+    Node<T>* cur = _head;
+    while (cur != nullptr) {
+        Node<T>* next_node = cur->next;
+        delete cur;
+        cur = next_node;
+    }
+    _head = nullptr;
+    _tail = nullptr;
+    _count = 0;
+}
 
-        Node<T>* cur = other._head;
-        while (cur != nullptr) {
-            push_back(cur->value);
-            cur = cur->next;
-        }
+template <class T>
+List<T>& List<T>::operator=(const List<T>& second) {
+    _head = nullptr;
+    _tail = nullptr;
+    _count = 0;
+
+    Node<T>* cur = second._head;
+    for (int i = 0; i < second._count; i++) {
+        push_back(cur->value);
+        cur = cur->next;
     }
     return *this;
 }

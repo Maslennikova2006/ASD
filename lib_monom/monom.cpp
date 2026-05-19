@@ -1,6 +1,9 @@
 // Copyright 2026 Mary Maslennikova
 
 #include "../lib_monom/monom.h"
+#include "../lib_parser/parser.h"
+#include <iostream>
+#include <string>
 
 Monom::Monom(double coeff, const int* powers) {
     _coeff = coeff;
@@ -21,6 +24,8 @@ Monom::Monom(const Monom& other) {
         _powers[i] = other._powers[i];
     }
 }
+Monom::Monom(const std::string& str) : Monom(Parser::parse_monom(str)) {
+}
 
 Monom::~Monom() {}
 
@@ -31,7 +36,14 @@ const int* Monom::get_powers() const noexcept {
     return _powers;
 }
 
-Monom& Monom::operator+=(const Monom& second) {  // нужна ли проверка на x, y, z?
+void Monom::set_coeff(double coeff) noexcept {
+    _coeff = coeff;
+}
+void Monom::set_power(int ind, int value) noexcept {
+    _powers[ind] = value;
+}
+
+Monom& Monom::operator+=(const Monom& second) {
     if (*this != second)
         throw std::logic_error("You can't add dissimilar monoms!");
     _coeff += second._coeff;
@@ -51,6 +63,8 @@ Monom& Monom::operator*=(const Monom& second) {
     return *this;
 }
 Monom& Monom::operator/=(const Monom& second) {
+    if (second._coeff == 0)
+        throw std::invalid_argument("Division by zero monom!");
     _coeff /= second._coeff;
     for (int i = 0; i < VAR_COUNT; i++) {
         _powers[i] -= second._powers[i];
@@ -62,6 +76,8 @@ Monom& Monom::operator*=(const double scalar) {
     return *this;
 }
 Monom& Monom::operator/=(const double scalar) {
+    if (scalar == 0)
+        throw std::invalid_argument("Division by zero monom!");
     _coeff /= scalar;
     return *this;
 }
@@ -76,7 +92,7 @@ Monom Monom::operator-(const Monom& second) const {
     res -= second;
     return res;
 }
-Monom Monom::operator-() const {  // нужно ли менять сам объект?
+Monom Monom::operator-() const {
     Monom res(*this);
     res._coeff = -_coeff;
     return res;
@@ -103,9 +119,11 @@ Monom Monom::operator/(const double scalar) {
 }
 
 Monom& Monom::operator=(const Monom& second) {
-    _coeff = second._coeff;
-    for (int i = 0; i < VAR_COUNT; i++) {
-        _powers[i] = second._powers[i];
+    if (this != &second) {
+        _coeff = second._coeff;
+        for (int i = 0; i < VAR_COUNT; i++) {
+            _powers[i] = second._powers[i];
+        }
     }
     return *this;
 }
@@ -120,42 +138,57 @@ bool Monom::operator==(const Monom& second) const noexcept {
 bool Monom::operator!=(const Monom& second) const noexcept {
     return !(*this == second);
 }
-bool Monom::operator>(const Monom& second) const noexcept {  // как именно сравнивать?
+bool Monom::operator>(const Monom& second) const noexcept {
     for (int i = 0; i < VAR_COUNT; i++) {
         if (_powers[i] != second._powers[i]) {
             return _powers[i] > second._powers[i];
         }
     }
-    return _coeff > second._coeff;
+    return false;
 }
 bool Monom::operator<(const Monom& second) const noexcept {
-    if (*this == second) return false;
-    return !(*this > second);
+    return second > *this;
 }
 
-
-std::ostream& operator<<(std::ostream& os, const Monom& monom) {
-    os << monom._coeff;
+double Monom::calculate(double x, double y, double z) const noexcept {
+    double res = _coeff * pow(x, _powers[0]) * pow(y, _powers[1]) * pow(z, _powers[2]);
+    return res;
+}
+std::string Monom::toString() const noexcept {
+    std::string str = std::to_string(_coeff);
     for (int i = 0; i < VAR_COUNT; i++) {
-        if (monom._powers[i] > 0) {
-            switch (i)
-            {
+        if (_powers[i] > 0) {
+            switch (i) {
             case 0:
-                os << 'x^' << monom._powers[i];
+                str += "x";
                 break;
             case 1:
-                os << 'y^' << monom._powers[i];
+                str += "y";
                 break;
             case 2:
-                os << 'z^' << monom._powers[i];
+                str += "z";
                 break;
-            default:
-                break;
+            }
+            if (_powers[i] > 1) {
+                str += "^";
+                str += std::to_string(_powers[i]);
             }
         }
     }
+    return str;
+}
+
+std::ostream& operator<<(std::ostream& os, const Monom& monom) {
+    os << monom.toString();
     return os;
 }
 std::istream& operator>>(std::istream& is, Monom& monom) {
+    std::string str;
+    is >> str;
+    monom = Parser::parse_monom(str);
     return is;
+}
+
+Monom operator*(const double scalar, const Monom& monom) {
+    return monom * scalar;
 }
