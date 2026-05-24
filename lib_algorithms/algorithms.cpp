@@ -439,42 +439,6 @@ void print_labyrinth(const Matrix<bool>& walls, int N, int M) {
         }
         std::cout << "\n";
     }
-    /*int cell = 1;
-    for (int i = 0; i < 2 * N + 1; i++) {
-        for (int j = 0; j < M + 1; j++) {
-            if (i % 2 == 0) {
-                if (j < M) {
-                    if (walls[i][j])
-                        std::cout << "+---";
-                    else
-                        std::cout << "+   ";
-                }
-                else {
-                    std::cout << "+";
-                }
-            }
-            else {
-                if (j < M) {
-                    if (walls[i][j]) {
-                        if (cell < 10) std::cout << "| " << cell << " ";
-                        else std::cout << "|" << cell << " ";
-                    }
-                    else {
-                        if (cell < 10) std::cout << "  " << cell << " ";
-                        else std::cout << " " << cell << " ";
-                    }
-                    cell++;
-                }
-                else {
-                    if (walls[i][j])
-                        std::cout << "|";
-                    else
-                        std::cout << " ";
-                }
-            }
-        }
-        std::cout << "\n";
-    }*/
 }
 
 void print_labyrinth_path(const Matrix<bool>& walls, int N, int M, TVector<int>& path) {
@@ -497,7 +461,6 @@ void print_labyrinth_path(const Matrix<bool>& walls, int N, int M, TVector<int>&
 
                     if (walls[i][j]) {
                         if (belongs_path(cell + 1, path)) {
-                            //std::cout << "| * ";
                             std::cout << "| " << "\033[32m*\033[0m" << " ";
                         }
                         else
@@ -505,7 +468,6 @@ void print_labyrinth_path(const Matrix<bool>& walls, int N, int M, TVector<int>&
                     }
                     else {
                         if (belongs_path(cell + 1, path)) {
-                            //std::cout << "  * ";
                             std::cout << "  " << "\033[32m*\033[0m" << " ";
                         }
                         else
