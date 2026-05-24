@@ -6,6 +6,7 @@
 #include "../lib_itable/itable.h"
 #include "../lib_tree/tree.h"
 #include "../lib_bstree/bstree.h"
+#include "../lib_tvector/tvector.h"
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -42,6 +43,7 @@ public:
     void insert(const TKey& key, const TValue& val);  // +
     void erase(const TKey& key);
 
+
 private:
     void recolor(RBNode<TKey, TValue>* node);
     void swap_colors(RBNode<TKey, TValue>* first, RBNode<TKey, TValue>* second);
@@ -55,6 +57,9 @@ private:
     void LR(RBNode<TKey, TValue>* node);
 
     void recover_balance(RBNode<TKey, TValue>* node);
+
+    void fill_matrix(RBNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
+        int level, int left, int right) const noexcept override;
 };
 
 template <class TKey, class TValue>
@@ -418,5 +423,43 @@ void RBTree<TKey, TValue>::recover_balance(RBNode<TKey, TValue>* node) {
         LR(G);
         swap_colors(G, C);
     }
+}
+
+template <class TKey, class TValue>
+void RBTree<TKey, TValue>::fill_matrix(RBNode<TKey, TValue>* node, TVector<TVector<std::string>>& matrix,
+    int level, int left, int right) const noexcept {
+
+    if (node == nullptr || level >= matrix.size()) return;
+
+    int mid = (left + right) / 2;
+    int row = level * 2;
+
+    if (node->color == black)
+        matrix[row][mid] = " [" + std::to_string(node->data.first) + "]";
+    else
+        matrix[row][mid] = " (" + std::to_string(node->data.first) + ")";
+
+    if (node->left) {
+        int left_mid = (left + mid - 1) / 2;
+        for (int i = left_mid + 1; i < mid; ++i) {
+            matrix[row][i] = "_____";
+        }
+        if (row + 1 < matrix.size()) {
+            matrix[row + 1][left_mid] = "  /  ";
+        }
+    }
+
+    if (node->right) {
+        int right_mid = (mid + 1 + right) / 2;
+        for (int i = mid + 1; i < right_mid; ++i) {
+            matrix[row][i] = "_____";
+        }
+        if (row + 1 < matrix.size()) {
+            matrix[row + 1][right_mid] = "  \\  ";
+        }
+    }
+
+    fill_matrix(node->left, matrix, level + 1, left, mid - 1);
+    fill_matrix(node->right, matrix, level + 1, mid + 1, right);
 }
 #endif  // LIB_RBTREE_RBTREE_H_

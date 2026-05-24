@@ -54,6 +54,54 @@ TEST(TestRBTreeLib, check_insert2) {
     EXPECT_EQ(root->right->left->right->color, red);  // 65
     EXPECT_EQ(root->right->right->right->left->color, red);  // 85
 }
+TEST(TestRBTreeLib, check_insert3) {
+    RBTree<int, std::string> tree;
+    tree.insert(55, "55");
+    tree.insert(33, "33");
+    tree.insert(73, "73");
+    tree.insert(20, "20");
+    tree.insert(25, "25");
+    auto root = tree.root();
+    EXPECT_EQ(root->color, black);  // 55
+    EXPECT_EQ(root->left->color, black);  // 25
+    EXPECT_EQ(root->left->left->color, red);  // 20
+    EXPECT_EQ(root->left->right->color, red);  // 33
+    EXPECT_EQ(root->right->color, black);  // 73
+    EXPECT_EQ(root->data.first, 55);
+    EXPECT_EQ(root->left->data.first, 25);
+    EXPECT_EQ(root->left->left->data.first, 20);
+    EXPECT_EQ(root->left->right->data.first, 33);
+    EXPECT_EQ(root->right->data.first, 73);
+}
+TEST(TestRBTreeLib, check_insert4) {
+    RBTree<int, std::string> tree;
+    tree.insert(75, "75");
+    tree.insert(50, "50");
+    tree.insert(100, "100");
+    tree.insert(35, "35");
+    tree.insert(60, "60");
+    tree.insert(25, "25");
+    tree.insert(40, "40");
+    tree.insert(10, "10");
+    auto root = tree.root();
+    tree.print();
+    EXPECT_EQ(root->color, black);  // 50
+    EXPECT_EQ(root->left->color, red);  // 35
+    EXPECT_EQ(root->left->left->color, black);  // 25
+    EXPECT_EQ(root->left->left->left->color, red);  // 10
+    EXPECT_EQ(root->left->right->color, black);  // 40
+    EXPECT_EQ(root->right->color, red);  // 75
+    EXPECT_EQ(root->right->left->color, black);  // 60
+    EXPECT_EQ(root->right->right->color, black);  // 100
+    EXPECT_EQ(root->data.first, 50);
+    EXPECT_EQ(root->left->data.first, 35);
+    EXPECT_EQ(root->left->left->data.first, 25);
+    EXPECT_EQ(root->left->left->left->data.first, 10);
+    EXPECT_EQ(root->left->right->data.first, 40);
+    EXPECT_EQ(root->right->data.first, 75);
+    EXPECT_EQ(root->right->left->data.first, 60);
+    EXPECT_EQ(root->right->right->data.first, 100);
+}
 TEST(TestRBTreeLib, check_for_insertion_exception) {
     RBTree<int, std::string> tree;
     tree.insert(52, "52");
