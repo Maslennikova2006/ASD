@@ -78,6 +78,184 @@ void RBTree<TKey, TValue>::insert(const TKey& key, const TValue& val) {
     if (parent->color == red)
         recover_balance(node);
 }
+template <class TKey, class TValue>
+void RBTree<TKey, TValue>::erase(const TKey& key) {
+    RBNode<TKey, TValue>* parent_d = BSTree::find_parent(key);
+    if (!parent_d) return;
+
+    RBNode<TKey, TValue>* d = nullptr;
+    if (parent_d == _root && _root->data.first == key)
+        d = _root;
+    else if (parent_d->right && parent_d->right->data.first == key)
+        d = parent_d->right;
+    else if (parent_d->left && parent_d->left->data.first == key)
+        d = parent_d->left;
+    if (!d) return;
+
+    Color deleted_color = d->color;
+    bool dHasTwoChildren = (d->left && d->right);
+    bool dIsLeftChildren = (parent_d->left == d);
+
+    RBNode<TKey, TValue>* r = nullptr;
+    if (!d->left && !d->right)
+        r = nullptr;
+    else if (!d->left)
+        r = d->right;
+    else if (!d->right)
+        r = d->left;
+    else {
+        r = BSTree::find_max_left(d);
+        deleted_color = r->color;
+    }
+
+    RBNode<TKey, TValue>* parent_r = BSTree::erase(key);
+    if (!parent_r && !_root) return;
+    if (!parent_r && _root) {
+        _root->color = black;
+        return;
+    }
+
+    RBNode<TKey, TValue>* p = nullptr;
+    bool isVirtual = false;
+
+    if (dHasTwoChildren) {
+        if (deleted_color == black) {
+            p = new RBNode<TKey, TValue>();
+            p->color = blackBlack;
+            p->parent = parent_r;
+            isVirtual = true;
+
+            if (parent_r->left == nullptr)
+                parent_r->left = p;
+            else
+                parent_r->right = p;
+        }
+        else {
+            if (_root) _root->color = black;
+            return;
+        }
+    }
+    else if (r) {
+        p = r;
+    }
+    else {
+        p = new RBNode<TKey, TValue>();
+        p->color = blackBlack;
+        p->parent = parent_r;
+        isVirtual = true;
+
+        if (dIsLeftChildren)
+            parent_r->left = p;
+        else
+            parent_r->right = p;
+    }
+    if (!p) return;
+
+    if (deleted_color == black && p->color == red) {
+        if (isVirtual) {
+            RBNode<TKey, TValue>* parent = p->parent;
+            if (parent) {
+                if (parent->left == p) parent->left = nullptr;
+                else parent->right = nullptr;
+            }
+            delete p;
+        }
+        else {
+            recolor(p);
+        }
+        if (_root) _root->color = black;
+        return;
+    }
+
+    if (deleted_color == red) {
+        if (isVirtual) {
+            RBNode<TKey, TValue>* parent = p->parent;
+            if (parent) {
+                if (parent->left == p) parent->left = nullptr;
+                else parent->right = nullptr;
+            }
+            delete p;
+        }
+        if (_root) _root->color = black;
+        return;
+    }
+
+    p->color = blackBlack;
+
+    while (p->color == blackBlack) {
+        auto P = p->parent;
+        if (!P) {
+            p->color = black;
+            break;
+        }
+
+        bool pIsLeftChildren = (P->left == p);
+        RBNode<TKey, TValue>* S = pIsLeftChildren ? P->right : P->left;
+        RBNode<TKey, TValue>* CS = nullptr;
+
+        if (S && S->color == red) {
+            recolor(P);
+            recolor(S);
+            if (pIsLeftChildren)
+                RR(P);
+            else
+                LL(P);
+            continue;
+        }
+
+        if (!S || S->color == black) {
+            CS = (S && pIsLeftChildren) ? S->right : (S ? S->left : nullptr);
+            if (CS && CS->color == red) {
+                if (pIsLeftChildren)
+                    RR(P);
+                else
+                    LL(P);
+                swap_colors(P, S);
+                recolor(CS);
+                p->color = black;
+                break;
+            }
+
+            CS = (S && pIsLeftChildren) ? S->left : (S ? S->right : nullptr);
+            if (CS && CS->color == red) {
+                if (pIsLeftChildren)
+                    LL(S);
+                else
+                    RR(S);
+                swap_colors(S, CS);
+                continue;
+            }
+
+            if (S)
+                recolor(S);
+            if (P->color == red) {
+                recolor(P);
+                p->color = black;
+                p = _root;
+            }
+            else {
+                if (S)
+                    P->color = blackBlack;
+                p = P;
+            }
+            continue;
+        }
+    }
+
+    if (isVirtual && p) {
+        RBNode<TKey, TValue>* parent = p->parent;
+        if (parent) {
+            if (parent->left == p)
+                parent->left = nullptr;
+            else
+                parent->right = nullptr;
+        }
+        delete p;
+    }
+
+    if (_root)
+        _root->color = black;
+}
 
 template <class TKey, class TValue>
 void RBTree<TKey, TValue>::recolor(RBNode<TKey, TValue>* node) {

@@ -82,3 +82,62 @@ TEST(TestRBTreeLib, check_find) {
     auto expected2 = tree.find(61);
     EXPECT_EQ(*expected2, "61");
 }
+//TEST(TestRBTreeLib, check_erase_root) {
+//    RBTree<int, std::string> tree;
+//    tree.insert(30, "30");
+//    tree.erase(30);
+//    EXPECT_TRUE(tree.is_empty());
+//}
+//TEST(TestRBTreeLib, check_erase_black_leaf) {
+//    RBTree<int, std::string> tree;
+//    tree.insert(30, "30");
+//    tree.insert(20, "20");
+//    tree.insert(40, "40");
+//    tree.insert(50, "50");
+//    tree.erase(20);
+//    tree.print();
+//    auto root = tree.root();
+//    EXPECT_EQ(root->color, black);
+//    EXPECT_EQ(root->left->color, black);
+//    EXPECT_EQ(root->right->color, black);
+//    EXPECT_EQ(root->data.first, 40);
+//    EXPECT_EQ(root->left->data.first, 30);
+//    EXPECT_EQ(root->right->data.first, 50);
+//}
+//TEST(TestRBTreeLib, check_erase_red_leaf) {
+//    RBTree<int, std::string> tree;
+//    tree.insert(30, "30");
+//    tree.insert(20, "20");
+//    tree.insert(40, "40");
+//    tree.insert(50, "50");
+//    tree.erase(50);
+//    auto root = tree.root();
+//    EXPECT_EQ(root->color, black);
+//    EXPECT_EQ(root->left->color, black);
+//    EXPECT_EQ(root->right->color, black);
+//    EXPECT_EQ(root->data.first, 30);
+//    EXPECT_EQ(root->left->data.first, 20);
+//    EXPECT_EQ(root->right->data.first, 40);
+//}
+//TEST(TestRBTreeLib, check_erase_red_node_with_two_black_children) {
+//    RBTree<int, std::string> tree;
+//    tree.insert(50, "50");
+//    tree.insert(30, "30");
+//    tree.insert(75, "75");
+//    tree.insert(15, "15");
+//    tree.insert(35, "35");
+//    tree.insert(10, "10");
+//    tree.erase(30);
+//    tree.print();
+//    auto root = tree.root();
+//    EXPECT_EQ(root->color, black);
+//    EXPECT_EQ(root->left->color, black);
+//    EXPECT_EQ(root->right->color, black);
+//    EXPECT_EQ(root->left->left->color, red);
+//    EXPECT_EQ(root->left->right->color, red);
+//    EXPECT_EQ(root->data.first, 50);
+//    EXPECT_EQ(root->left->data.first, 15);
+//    EXPECT_EQ(root->right->data.first, 75);
+//    EXPECT_EQ(root->left->left->data.first, 10);
+//    EXPECT_EQ(root->left->right->data.first, 35);
+//}
