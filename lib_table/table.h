@@ -9,7 +9,7 @@
 #include <string>
 
 #define KEY_WIDTH 10
-#define VALUE_WIDTH 40
+#define VALUE_WIDTH 120
 #define DIVIDER_WIDTH 3
 #define TOTAL_WIDTH KEY_WIDTH + VALUE_WIDTH + DIVIDER_WIDTH
 

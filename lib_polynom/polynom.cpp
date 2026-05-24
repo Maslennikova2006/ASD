@@ -4,11 +4,11 @@
 #include "../lib_parser/parser.h"
 #include <iostream>
 
-Polynom::Polynom() {
-    Monom zero;
-    _polynom.push_back(zero);
+Polynom::Polynom() : _polynom() {
+    /*Monom zero;
+    _polynom.push_back(zero);*/
 }
-Polynom::Polynom(const Monom& monom) : _polynom() {
+Polynom::Polynom(const Monom& monom) {
     _polynom.push_back(monom);
 }
 Polynom::Polynom(const Polynom& other) {

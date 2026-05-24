@@ -15,13 +15,13 @@
 //#define QUEUEPRIORITY
 //#define HASHTABLEC
 //#define HASHTABLEOA
-#define ADJACENCY_LIST_GRAPH
+//#define ADJACENCY_LIST_GRAPH
 //#define EDGES_LIST_GRAPH
 //#define ALG_DEX
 //#define SORTED_TABLE_AVL
 //#define SORTED_TABLE_RB
 //#define POLYNOM
-
+#define EXPERIMENT
 
 #ifdef EASY_EXAMPLE
 #include <iostream>
@@ -626,5 +626,164 @@ int main() {
     std::cout << p1;
     return 0;
 }
-
 #endif  // POLYNOM
+
+#ifdef EXPERIMENT
+#include "../lib_experiment/experiment.h"
+#include "../lib_unsorted_table_m/unsorted_table_m.h"
+#include "../lib_sorted_table_m/sorted_table_m.h"
+#include "../lib_sorted_table_bst/sorted_table_bst.h"
+#include <clocale>
+#include <iostream>
+#include <chrono>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+#define SIZE 100000
+#define COUNT_NOT_EXIST_KEYS 5
+#define COUNT_EXPERIMENT 10
+
+int main() {
+    setlocale(LC_ALL, "rus");
+    TVector<double> insert;
+    TVector<double> found;
+    TVector<double> erase;
+
+    for (int i = 1; i <= COUNT_EXPERIMENT; i++) {
+        //UnsortedTableM<std::string, Polynom> table;
+        //SortedTableM<std::string, Polynom> table;
+        SortedTableBST<std::string, Polynom> table;
+        auto sec_insert = std::chrono::duration<double>::zero();
+        TVector<std::string> exist_keys;
+        std::ifstream in("C:/GitHub/ASD/polynoms.txt");
+        if (!in.is_open()) {
+            std::cout << "Файл polynoms.txt не открывается!\n";
+            return 1;
+        }
+        std::string line;
+        int count = 0;
+        while (std::getline(in, line)) {
+            if (line.empty()) continue;
+            size_t sepPos = line.find(';');
+            if (sepPos == std::string::npos) continue;
+
+            std::string name = line.substr(0, sepPos);
+            Polynom p;
+
+            std::string rest = line.substr(sepPos + 1);
+            std::stringstream ss(rest);
+            std::string monomStr;
+
+            while (std::getline(ss, monomStr, ';')) {
+                std::stringstream monomSs(monomStr);
+                std::string numStr;
+                int coeff, pow1, pow2, pow3;
+
+                std::getline(monomSs, numStr, ','); coeff = std::stoi(numStr);
+                std::getline(monomSs, numStr, ','); pow1 = std::stoi(numStr);
+                std::getline(monomSs, numStr, ','); pow2 = std::stoi(numStr);
+                std::getline(monomSs, numStr, ','); pow3 = std::stoi(numStr);
+                int powers[3] = { pow1, pow2, pow3 };
+                Monom m(coeff, powers);
+                p += m;
+            }
+
+            auto start_insert = std::chrono::high_resolution_clock::now();
+            table.insert(name, p);
+            auto end_insert = std::chrono::high_resolution_clock::now();
+
+            sec_insert += std::chrono::duration<double>(end_insert - start_insert);
+
+            exist_keys.push_back(name);
+            count++;
+            if (count == SIZE)
+                break;
+        }
+
+        std::cout << i << ") Вставка: " << sec_insert.count() << " сек" << std::endl;
+        insert.push_back(sec_insert.count());
+
+        shuffle(exist_keys);
+
+        // Поиск
+        auto start_found = std::chrono::high_resolution_clock::now();
+        for (int j = 0; j < SIZE; j++) {
+            if (j >= SIZE - COUNT_NOT_EXIST_KEYS)
+                table.found(exist_keys[j] + "h");
+            else
+                table.found(exist_keys[j]);
+        }
+        auto end_found = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> sec_found = end_found - start_found;
+        std::cout << i << ") Поиск: " << sec_found.count() << " сек" << std::endl;
+        found.push_back(sec_found.count());
+
+        // Удаление
+        auto start_erase = std::chrono::high_resolution_clock::now();
+        for (int j = 0; j < exist_keys.size(); j++) {
+            table.erase(exist_keys[j]);
+        }
+        auto end_erase = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> sec_erase = end_erase - start_erase;
+        std::cout << i << ") Удаление: " << sec_erase.count() << " сек" << std::endl;
+        erase.push_back(sec_erase.count());
+    }
+
+
+    double total_insert = 0.0, total_found = 0.0, total_erase = 0.0;
+    for (int i = 0; i < COUNT_EXPERIMENT; i++) {
+        total_insert += insert[i];
+        total_found += found[i];
+        total_erase += erase[i];
+    }
+    std::cout << std::endl << "Среднее время вставки: " << total_insert / COUNT_EXPERIMENT << std::endl;
+    std::cout << "Среднее время поиска: " << total_found / COUNT_EXPERIMENT << std::endl;
+    std::cout << "Среднее время удаление: " << total_erase / COUNT_EXPERIMENT << std::endl;
+
+    //generator.print();
+    //std::cout << table;
+
+    //std::cout « table;
+    //GeneratorPolynoms gen;
+    //int size = 100000;
+
+    //TVector<Pair<int, Polynom>> data = gen.generate_data(size, 5);
+    //SortedTableRB<int, Polynom> table;
+    //auto start_insert = std::chrono::high_resolution_clock::now();
+    //for (int i = 0; i < size; i++) {
+    //    table.insert(data[i].first, data[i].second);
+    //}
+    //auto end_insert = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> sec_insert = end_insert - start_insert;
+    //std::cout << "Вставка: " << sec_insert.count() << " сек" << std::endl;
+    ////std::cout << table;
+
+    //TVector<int> exist_keys;
+    //TVector<int> not_exist_keys;
+    //for (int i = 0; i < size; i += 10) {
+    //    exist_keys.push_back(data[i].first);
+    //    not_exist_keys.push_back(-data[i].first);
+    //}
+    //auto start_found = std::chrono::high_resolution_clock::now();
+    //for (int i = 0; i < exist_keys.size(); i++) {
+    //    table.found(exist_keys[i]);
+    //    table.found(not_exist_keys[i]);
+    //}
+    //auto end_found = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> sec_found = end_found - start_found;
+    //std::cout << "Поиск: " << sec_found.count() << " сек" << std::endl;
+
+
+    //auto start_erase = std::chrono::high_resolution_clock::now();
+    //for (int i = 0; i < exist_keys.size(); i++) {
+    //    table.erase(exist_keys[i]);
+    //}
+    //auto end_erase = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> sec_erase = end_erase - start_erase;
+    //std::cout << "Удаление: " << sec_erase.count() << " сек" << std::endl;
+    ////generator.print();
+    ////std::cout << table;
+    return 0;
+}
+#endif  // EXPERIMENT
